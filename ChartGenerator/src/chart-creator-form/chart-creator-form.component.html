@@ -1,0 +1,87 @@
+<div class="container margin-top-5">
+  <button type="button" class="btn btn-primary" (click)="openChartModal()">Create Chart</button>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="chartModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="progress" style="height: 3px;">
+            <div class="progress-bar" role="progressbar" [style.width.%]="progressValue"
+                 [attr.aria-valuenow]="progressValue" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+
+          <div class="step-container text-center" style="margin: 10px 0;">
+            <span *ngFor="let step of [1,2,3,4,5,6]"
+                  class="step-circle"
+                  [ngClass]="{'active': currentStep === step}"
+                  (click)="displayStep(step)">{{ step }}</span>
+          </div>
+          <form class="ChartFrom">
+            <div class="margin-Bottom-3" *ngIf="currentStep === 1">
+              <h3>Step 1</h3>
+              <div>
+                <label class="control-label">Select Type:</label>
+                <select class="form-control input-sm" type="select" [(ngModel)]="SelectedType" [ngModelOptions]="{standalone: true}" (change)="fetchTables()">
+                  <option selected value="">Choose one</option>
+                  <option value="All"> All</option>
+                  <option value="Table">Table</option>
+                  <option value="View">View</option>
+                </select>
+              </div>
+              <div style="margin-top: 20px">
+                <label class="control-label">Select Table:</label>
+                <select class="form-control input-sm" type="select" [(ngModel)]="SeletedTable" [ngModelOptions]="{standalone: true}" (change)="fetchColumns()">
+                  <option selected value="">Open this select menu</option>
+                  <option *ngFor="let table of tables" [value]="table">{{table}}</option>
+                </select>
+              </div>
+
+
+            </div>
+
+
+            <div class="margin-Bottom-3" *ngIf="currentStep === 2">
+              <h3>Step 2</h3>
+
+              <div class="panel panel-info">
+                <div class="panel-heading">Filter</div>
+                <div class="panel-body">
+                  <div *ngfor="let filter of filters let i=index" class="flex" style="margin-bottom: 10px">
+
+                    <div >
+
+
+                    </div>
+
+
+
+                  </div>
+
+                </div>
+              </div>
+
+            
+            </div>
+
+
+          </form>
+          <button type="button" class="btn btn-primary" (click)="nextStep()"  *ngIf="currentStep < 6"> Next</button>
+
+
+
+
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
