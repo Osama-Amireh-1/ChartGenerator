@@ -1,0 +1,11 @@
+
+<app-chart-creator-form
+   [GetViewsAndTablesURL]="GetViewsAndTablesURL"
+   [GetTablesURL]="GetTablesURL"
+   [GetViewsURL]="GetViewsURL"
+   [TableType] ="TableType"
+   [GetColumnURL]="GetColumnURL"
+    (Execute)="fetchData($event)"></app-chart-creator-form>
+<div *ngFor="let chart of charts">
+  <app-chart [Data]="chart.Data" [ChartType]="chart.ChartType" [ChartSize]="chart.ChartSize"></app-chart>
+</div>

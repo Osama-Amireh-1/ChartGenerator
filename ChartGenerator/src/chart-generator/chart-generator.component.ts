@@ -1,0 +1,74 @@
+import { Component, input, Input } from '@angular/core';
+import { DatabaseServiceService } from '../chart-creator-form/database-service.service';
+import { ChartCreatorFormComponent } from '../chart-creator-form/chart-creator-form.component';
+import { ChartResources } from './Interface/chart-resources';
+import { ChartComponent } from '../chart/chart.component';
+import { CommonModule } from '@angular/common';
+import { HttpParams } from '@angular/common/http';
+
+@Component({
+  selector: 'app-chart-generator',
+  imports: [ChartCreatorFormComponent, ChartComponent, CommonModule],
+  templateUrl: './chart-generator.component.html',
+  styleUrl: './chart-generator.component.css',
+  standalone: true
+})
+export class ChartGeneratorComponent {
+
+  @Input({ required: true }) GetViewsAndTablesURL = "";
+  @Input({ required: true }) GetTablesURL = "";
+  @Input({ required: true }) GetViewsURL = "";
+  @Input({ required: true }) GetColumnURL = "";
+  @Input({ required: true }) GetDataURL = "";
+  @Input({ required: true }) TableType = "";
+  charts: ChartResources[] = [];
+
+  constructor(private DatabaseServ: DatabaseServiceService) {
+
+    
+  }
+  buildHttpParams(requestData: any): HttpParams {
+    let params = new HttpParams();
+
+    Object.entries(requestData).forEach(([key, values]) => {
+      if (Array.isArray(values)) {
+        values.forEach(value => {
+          if (value !== undefined && value !== null) {
+            params = params.append(key, String(value)); 
+          }
+        });
+      } else if (values !== undefined && values !== null) {
+        params = params.append(key, String(values));
+      }
+    });
+
+    return params;
+  }
+  fetchData(request: any) {
+    console.log("Received from child:", request);
+    const requestData = this.buildHttpParams(request.dataRequste);
+    console.log(request.dataRequste)
+    const ddata = [
+      { label: 'A', value: 10 },
+      { label: 'B', value: 20 },
+      { label: 'C', value: 30 }
+    ];
+    //this.DatabaseServ.getData(this.GetDataURL, requestData).subscribe(data => {
+    //  this.charts.push({
+    //    Data: data,
+    //    ChartType: request.chartType,
+    //    ChartSize: request.chartSize
+    //  });
+    //});
+
+    this.charts.push({
+      Data: ddata,
+      ChartType: request.chartType,
+        ChartSize: request.chartSize
+    })
+   
+  }
+
+
+
+}
