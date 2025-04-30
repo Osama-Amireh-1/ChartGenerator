@@ -5,13 +5,16 @@ import { ChartResources } from './Interface/chart-resources';
 import { ChartComponent } from '../chart/chart.component';
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { GridViewComponent } from '../grid-view/grid-view.component';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-chart-generator',
-  imports: [ChartCreatorFormComponent, ChartComponent, CommonModule],
+  imports: [ChartCreatorFormComponent, ChartComponent, CommonModule, MatGridListModule, GridViewComponent],
   templateUrl: './chart-generator.component.html',
   styleUrl: './chart-generator.component.css',
-  standalone: true
+  standalone: true,
 })
 export class ChartGeneratorComponent {
 
@@ -62,9 +65,12 @@ export class ChartGeneratorComponent {
     //});
 
     this.charts.push({
+      Id: uuidv4(),
       Data: ddata,
       ChartType: request.chartType,
-        ChartSize: request.chartSize
+      ChartSize: request.chartSize,
+      NumberOfRows: request.NumberOfRows,
+      NumberOfColumns: request.NumberOfColumns
     })
    
   }

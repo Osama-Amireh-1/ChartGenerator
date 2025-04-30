@@ -9,15 +9,15 @@ export class DatabaseServiceService {
 
   constructor(private http: HttpClient) { }
 
-  getTable(URL: string) {
+  //getTable(URL: string) {
 
-    return this.http.get<string[]>(URL)
-  }
-  getColumns(URL: string) {
+  //  return this.http.get<string[]>(URL)
+  //}
+  //getColumns(URL: string) {
 
-    return this.http.get<string[]>(URL)
-  }
-  getData(url: string, params: HttpParams): Observable<any> {
-    return this.http.get(url, { params });
-  }
+  //  return this.http.get<string[]>(URL)
+  //}
+  //getData(url: string, params: HttpParams): Observable<any> {
+  //  return this.http.get(url, { params });
+  //}
 }

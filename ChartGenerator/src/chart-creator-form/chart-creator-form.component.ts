@@ -6,6 +6,8 @@ import { Filter } from './Interfaces/filter';
 import { FilterParenthesesGroup } from './Interfaces/filter-parentheses-group';
 import { Aggregate } from './Interfaces/Aggregate';
 import { IRequstData } from './Interfaces/requst-data';
+import { v4 as uuidv4 } from 'uuid';
+
 import { filter } from 'rxjs';
 declare var $: any; 
 
@@ -46,6 +48,8 @@ export class ChartCreatorFormComponent implements OnInit {
   logicalAggregateLink: string[] = [];
   ChartType: string = "";
   ChartSize: string = "";
+  NumberOfRows=0
+  NumberOfColumns=0
   constructor(private DatabaseServ: DatabaseServiceService) {
 
   }
@@ -81,25 +85,27 @@ export class ChartCreatorFormComponent implements OnInit {
   }
   fetchTables(): void {
     if (this.SelectedType === "All")
-      this.DatabaseServ.getTable(this.GetViewsAndTablesURL).subscribe((Tables) => {
-        this.tables = Tables;
-      });
+    {
+      //this.DatabaseServ.getTable(this.GetViewsAndTablesURL).subscribe((Tables) => {
+      //  this.tables = Tables;
+      //});
+    }
     else if (this.SelectedType === "Table") {
-      this.DatabaseServ.getTable(this.GetViewsAndTablesURL).subscribe((Tables) => {
-        this.tables = Tables;
-      });
+      //this.DatabaseServ.getTable(this.GetViewsAndTablesURL).subscribe((Tables) => {
+      //  this.tables = Tables;
+      //});
     }
     else if (this.SelectedType === "View") {
-      this.DatabaseServ.getTable(this.GetViewsAndTablesURL).subscribe((Tables) => {
-        this.tables = Tables;
-      });
+      //this.DatabaseServ.getTable(this.GetViewsAndTablesURL).subscribe((Tables) => {
+      //  this.tables = Tables;
+      //});
     }
   }
   fetchColumns(): void {
     const CURL = `${this.GetColumnURL}/${this.SeletedTable}`;
-    this.DatabaseServ.getColumns(CURL).subscribe((Columns) => {
-      this.columns = Columns;
-    });
+    //this.DatabaseServ.getColumns(CURL).subscribe((Columns) => {
+    //  this.columns = Columns;
+    //});
 
 
   }
@@ -463,17 +469,53 @@ export class ChartCreatorFormComponent implements OnInit {
 
       this.dataRequste.logicalAggregateLink = [...this.logicalAggregateLink];
 
+      
 
     }
+    this.dataRequste.groupByFields = this.GroupByFelid;
   }
 
   ExcuteQureyButtonClicked() {
       this.prepareRequestData()
     this.Execute.emit({
+      Id: uuidv4(),
       dataRequste: this.dataRequste,
       chartType: this.ChartType,
-      chartSize: this.ChartSize
+      chartSize: this.ChartSize,
+      NumberOfRows: this.NumberOfRows,
+      NumberOfColumns: this.NumberOfColumns
     });
+   this.restartForm()
+
+
+  }
+
+  restartForm(): void {
+    this.currentStep = 1;
+    this.progressValue = 0;
+    this.SelectedType = "";
+    this.SeletedTable = "";
+    this.tables = [];
+    this.columns = ['a', 'b'];
+    this.GroupByFelid = [];
+    this.Wherefilters = [];
+    this.AggregateFilters = [];
+    this.Aggregates = [];
+    this.parenthesesGroups = [];
+    this.aggregateParenthesesGroups = [];
+    this.filterCount = 0;
+    this.aggregateFilterCount = 0;
+    this.aggregateCount = 0;
+    this.groupCount = 0;
+    this.aggregateGroupCount = 0;
+    this.logicalFilterLink = [];
+    this.logicalAggregateLink = [];
+    this.ChartType = "";
+    this.ChartSize = "";
+    this.NumberOfRows = 0;
+    this.NumberOfColumns = 0;
+    $('#chartModal').modal('hide');
+
   }
   }
 

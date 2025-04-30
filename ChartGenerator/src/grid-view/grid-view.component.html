@@ -1,0 +1,11 @@
+<div cdkDropList cdkDropListOrientation="mixed"  (cdkDropListDropped)="drop($event)" class="enhanced-grid-list">
+
+  <mat-grid-list cols="7" rowHeight="200px" gutterSize="15px" class="enhanced-grid-tile">
+    <mat-grid-tile *ngFor="let chart of charts; trackBy: trackChart" style="background-color: burlywood" cdkDrag
+                   [colspan]="+chart.NumberOfColumns" [rowspan]="+chart.NumberOfRows">
+      
+        <app-chart [Data]="chart.Data" [ChartType]="chart.ChartType" [ChartSize]="chart.ChartSize" class="tile-content"></app-chart>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+</div>

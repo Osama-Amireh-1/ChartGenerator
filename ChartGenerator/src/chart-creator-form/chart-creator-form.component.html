@@ -329,7 +329,7 @@
                 <div class="panel-body">
                   <div>
                     <label>Chart Type:</label>
-                    <select class="form-control input-sm"[(ngModel)]="ChartType" [ngModelOptions]="{standalone: true}">
+                    <select class="form-control input-sm" [(ngModel)]="ChartType" [ngModelOptions]="{standalone: true}">
                       <option value="">None</option>
                       <option value="bar">Bar</option>
                       <option value="line">Line</option>
@@ -344,6 +344,33 @@
                       <option value="medium">Medium (e.g., 500px height)</option>
                       <option value="large">Large (e.g., 700px height)</option>
                       <option value="full-width">Full Width</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label>Number of Rows</label>
+                    <select class="form-control input-sm" [(ngModel)]="NumberOfRows" [ngModelOptions]="{standalone: true}">
+                      <option value="">Number of Rows:</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label>Number of Columns</label>
+                    <select class="form-control input-sm" [(ngModel)]="NumberOfColumns" [ngModelOptions]="{standalone: true}">
+                      <option value="">Number of Column:</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
                     </select>
                   </div>
                 </div>
