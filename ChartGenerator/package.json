@@ -24,7 +24,7 @@
     "@webcomponents/custom-elements": "^1.6.0",
     "angular-gridster2": "^19.0.0",
     "bootstrap": "^3.4.1",
-    "chart.js": "^1.1.1",
+    "chart.js": "^3.9.1",
     "jest-editor-support": "*",
     "jquery": "^3.7.1",
     "ngx-bootstrap": "^3.3.0",

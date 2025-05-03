@@ -64,15 +64,17 @@ export class ChartGeneratorComponent {
     //  });
     //});
 
-    this.charts.push({
+    const newChart = {
       Id: uuidv4(),
       Data: ddata,
       ChartType: request.chartType,
       ChartSize: request.chartSize,
       NumberOfRows: request.NumberOfRows,
       NumberOfColumns: request.NumberOfColumns
-    })
-   
+    };
+
+    this.charts = [...this.charts, newChart];
+
   }
 
 

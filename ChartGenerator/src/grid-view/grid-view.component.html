@@ -1,11 +1,19 @@
-<div cdkDropList cdkDropListOrientation="mixed"  (cdkDropListDropped)="drop($event)" class="enhanced-grid-list">
+<div class="gridster-container">
+  <gridster [options]="gridsterOptions">
+    <gridster-item *ngFor="let item of gridItems; trackBy: trackById"
+                   [item]="item"
+                   (itemChange)="onItemChange(item)">
+          <button class="remove-btn"
+               (mousedown)="removeItem($event, item)"
+            (touchstart)="removeItem($event, item)">
+            <span>×</span>
+          </button>
+        <app-chart [Data]="item.chartData.Data"
+                   [ChartType]="item.chartData.ChartType"
+                   [ChartSize]="item.chartData.ChartSize">
+        </app-chart>
+    </gridster-item>
+  </gridster>
 
-  <mat-grid-list cols="7" rowHeight="200px" gutterSize="15px" class="enhanced-grid-tile">
-    <mat-grid-tile *ngFor="let chart of charts; trackBy: trackChart" style="background-color: burlywood" cdkDrag
-                   [colspan]="+chart.NumberOfColumns" [rowspan]="+chart.NumberOfRows">
-      
-        <app-chart [Data]="chart.Data" [ChartType]="chart.ChartType" [ChartSize]="chart.ChartSize" class="tile-content"></app-chart>
-    </mat-grid-tile>
-  </mat-grid-list>
 
 </div>

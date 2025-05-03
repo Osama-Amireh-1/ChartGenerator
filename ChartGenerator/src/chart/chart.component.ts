@@ -1,21 +1,37 @@
-import { Component, Input, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-declare var Chart: any;
+import {Component,Input,ViewChild,ElementRef,AfterViewInit,OnChanges, SimpleChanges} from '@angular/core';
+
+import {Chart,registerables,ChartConfiguration,ChartType as ChartJSChartType} from 'chart.js';
+
+Chart.register(...registerables); 
 
 @Component({
   selector: 'app-chart',
-  template: '<canvas #chartCanvas></canvas>',
-  styleUrls: ['./chart.component.css']
+  templateUrl: './chart.component.html',
+  styleUrl: `./chart.component.css`
 })
-export class ChartComponent implements AfterViewInit {
+export class ChartComponent implements AfterViewInit, OnChanges {
   @Input({ required: true }) Data: any;
   @Input({ required: true }) ChartType: string = '';
   @Input({ required: true }) ChartSize: string = '';
-  @ViewChild('chartCanvas') chartCanvas!: ElementRef;
-
-  chart: any;
+  @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
+  chart: Chart | null = null;
 
   ngAfterViewInit(): void {
+    this.createChart();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.chart && (changes['Data'] || changes['ChartType'])) {
+      this.destroyChart();
+      setTimeout(() => this.createChart(), 0);
+    }
+  }
+
+  createChart(): void {
+    if (!this.chartCanvas) return;
+
     const ctx = this.chartCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
 
     const defaultData = {
       labels: ['A', 'B', 'C'],
@@ -23,42 +39,55 @@ export class ChartComponent implements AfterViewInit {
         {
           label: 'Dataset 1',
           data: [1, 2, 3],
-          strokeColor: '#36A2EB',
-          fillColor: '#9BD0F5',
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
         },
         {
           label: 'Dataset 2',
           data: [2, 3, 4],
-          strokeColor: '#FF6384',
-          fillColor: '#FFB1C1',
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
         }
       ]
     };
 
-    const chartData = defaultData;
+    const chartData =  defaultData;
+    const type: ChartJSChartType = (this.ChartType.toLowerCase() as ChartJSChartType) || 'bar';
 
-    const type = this.ChartType.toLowerCase() || 'bar';
+    const options: ChartConfiguration['options'] = {
+      responsive: true,
+      maintainAspectRatio: false
+    };
 
-    switch (type) {
-      case 'bar':
-        this.chart = new Chart(ctx).Bar(chartData);
-        break;
-      case 'line':
-        this.chart = new Chart(ctx).Line(chartData);
-        break;
-      case 'pie':
-        const pieData = chartData.datasets[0].data.map((value: number, index: number) => {
-          return {
-            value: value,
-            color: chartData.datasets[0].strokeColor || '#FF6384',
-            highlight: chartData.datasets[0].fillColor || '#FFB1C1',
-            label: chartData.labels[index] || `Item ${index}`
-          };
-        });
-        this.chart = new Chart(ctx).Pie(pieData);
-        break;
-      default:
-        console.warn(`Unsupported chart type: ${type}`);
+    if (type !== 'pie' && type !== 'doughnut') {
+      options.scales = {
+        y: {
+          beginAtZero: true
+        }
+      };
+    }
+
+    const config: ChartConfiguration = {
+      type: type,
+      data: chartData,
+      options: options
+    };
+
+    this.chart = new Chart(ctx, config);
+  }
+
+  destroyChart(): void {
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = null;
+    }
+  }
+
+  public resizeChart(): void {
+    if (this.chart) {
+      this.chart.resize();
     }
   }
 }
