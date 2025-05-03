@@ -9,12 +9,12 @@
 }
 
 gridster {
-  background-color: #f0f0f0;
-  border-radius: 4px;
+  background: lightgray !important;
+  border-radius: 4px !important;
 }
 
 gridster-item {
-  background-color: #ffffff;
+  background-color: white;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -22,3 +22,6 @@ gridster-item {
 }
 
 
+.drag-handler {
+  cursor: move;
+}

@@ -3,15 +3,15 @@
     <gridster-item *ngFor="let item of gridItems; trackBy: trackById"
                    [item]="item"
                    (itemChange)="onItemChange(item)">
-          <button class="remove-btn"
-               (mousedown)="removeItem($event, item)"
-            (touchstart)="removeItem($event, item)">
-            <span>×</span>
-          </button>
-        <app-chart [Data]="item.chartData.Data"
-                   [ChartType]="item.chartData.ChartType"
-                   [ChartSize]="item.chartData.ChartSize">
-        </app-chart>
+      <button  class="btn btn-danger btn-xs" mat-mini-fab
+              (mousedown)="removeItem($event, item)"
+              (touchstart)="removeItem($event, item)">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <app-chart [Data]="item.chartData.Data"
+                 [ChartType]="item.chartData.ChartType"
+                 [ChartSize]="item.chartData.ChartSize">
+      </app-chart>
     </gridster-item>
   </gridster>
 
