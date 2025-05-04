@@ -3,7 +3,7 @@
     <gridster-item *ngFor="let item of gridItems; trackBy: trackById"
                    [item]="item"
                    (itemChange)="onItemChange(item)">
-      <div class="text-right">
+      <div class="text-right margin-top-right-5">
         <button class=" btn btn-danger btn-xs" type="button" mat-mini-fab
                 (mousedown)="removeItem($event, item)"
                 (touchstart)="removeItem($event, item)">

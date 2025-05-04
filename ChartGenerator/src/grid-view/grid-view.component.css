@@ -25,3 +25,7 @@ gridster-item {
 .drag-handler {
   cursor: move;
 }
+.margin-top-right-5 {
+  margin-top: 5px;
+  margin-right:5px
+}

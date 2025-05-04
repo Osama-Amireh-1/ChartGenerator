@@ -5,6 +5,6 @@ export interface ChartResources {
   ChartSize: string
   NumberOfRows: Number
   NumberOfColumns: Number
-  x?: number;  // Added for gridster positioning
+  x?: number; 
   y?: number;
 }

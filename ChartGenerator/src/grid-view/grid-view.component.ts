@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChartResources } from '../chart-generator/Interface/chart-resources';
+import { ChartResources } from '../chart/Interface/chart-resources';
 import { ChartComponent } from '../chart/chart.component';
 import { GridsterModule, GridsterConfig, GridsterItem, GridType, CompactType, DisplayGrid, GridsterItemComponentInterface, GridsterComponentInterface, PushDirections, Resizable, Draggable, GridsterItemComponent, GridsterComponent } from 'angular-gridster2';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,18 +45,18 @@ export class GridViewComponent implements OnInit {
 
   initGridsterOptions(): void {
     this.gridsterOptions = {
-      gridType: GridType.Fit,
+      gridType: GridType.ScrollVertical,
       compactType: CompactType.None,
       margin: 10,
       outerMargin: true,
       useTransformPositioning: true,
       mobileBreakpoint: 640,
-      minCols: 6,
+      minCols: 10,
       maxCols: 100,
-      minRows: 6,
+      minRows: 7,
       maxRows: 100,
-      fixedColWidth: 105,
-      fixedRowHeight: 105,
+      fixedColWidth: 100,
+      fixedRowHeight: 100,
       draggable: {
         enabled: true,
         ignoreContent: false,
@@ -69,7 +69,7 @@ export class GridViewComponent implements OnInit {
       pushItems: true,
       disablePushOnDrag: false,
       disablePushOnResize: false,
-      pushResizeItems: true,
+      pushResizeItems: false,
       displayGrid: DisplayGrid.Always,
       disableWindowResize: false,
       scrollToNewItems: true,
@@ -84,7 +84,7 @@ export class GridViewComponent implements OnInit {
     this.gridItems = [];
 
     const calculatePosition = (index: number): { x: number, y: number } => {
-      const cols = this.gridsterOptions.minCols || 6;
+      const cols = this.gridsterOptions.minCols || 10;
       return {
         x: index % cols,
         y: Math.floor(index / cols)

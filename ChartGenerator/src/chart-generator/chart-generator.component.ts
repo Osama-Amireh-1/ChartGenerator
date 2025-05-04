@@ -1,7 +1,7 @@
 import { Component, input, Input } from '@angular/core';
 import { DatabaseServiceService } from '../chart-creator-form/database-service.service';
 import { ChartCreatorFormComponent } from '../chart-creator-form/chart-creator-form.component';
-import { ChartResources } from './Interface/chart-resources';
+import { ChartResources } from '../chart/Interface/chart-resources';
 import { ChartComponent } from '../chart/chart.component';
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';

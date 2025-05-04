@@ -1,4 +1,4 @@
-import {Component,Input,ViewChild,ElementRef,AfterViewInit,OnChanges, SimpleChanges} from '@angular/core';
+import {Component,Input,ViewChild,ElementRef,AfterViewInit} from '@angular/core';
 
 import {Chart,registerables,ChartConfiguration,ChartType as ChartJSChartType} from 'chart.js';
 
@@ -9,7 +9,7 @@ Chart.register(...registerables);
   templateUrl: './chart.component.html',
   styleUrl: `./chart.component.css`
 })
-export class ChartComponent implements AfterViewInit, OnChanges {
+export class ChartComponent implements AfterViewInit {
   @Input({ required: true }) Data: any;
   @Input({ required: true }) ChartType: string = '';
   @Input({ required: true }) ChartSize: string = '';
@@ -20,12 +20,7 @@ export class ChartComponent implements AfterViewInit, OnChanges {
     this.createChart();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.chart && (changes['Data'] || changes['ChartType'])) {
-      this.destroyChart();
-      setTimeout(() => this.createChart(), 0);
-    }
-  }
+
 
   createChart(): void {
     if (!this.chartCanvas) return;
@@ -53,7 +48,18 @@ export class ChartComponent implements AfterViewInit, OnChanges {
       ]
     };
 
-    const chartData =  defaultData;
+    const chartData = this.Data ? defaultData :{
+      labels: this.Data.map((item: { label: any; }) => item.label),
+      datasets: [
+        {
+          label: 'Your Dataset',
+          data: this.Data.map((item: { value: any; }) => item.value),
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }
+      ]
+    }  
     const type: ChartJSChartType = (this.ChartType.toLowerCase() as ChartJSChartType) || 'bar';
 
     const options: ChartConfiguration['options'] = {
@@ -70,11 +76,12 @@ export class ChartComponent implements AfterViewInit, OnChanges {
     }
 
     const config: ChartConfiguration = {
+     
       type: type,
       data: chartData,
       options: options
     };
-
+    console.log(this.Data)
     this.chart = new Chart(ctx, config);
   }
 
