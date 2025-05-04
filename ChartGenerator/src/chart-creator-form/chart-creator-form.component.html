@@ -1,6 +1,3 @@
-<div class="container margin-top-5">
-  <button type="button" class="btn btn-primary" (click)="openChartModal()">Create Chart</button>
-</div>
 
 <div class="modal" tabindex="-1" role="dialog" id="chartModal">
   <div class="modal-dialog modal-lg" role="document">
@@ -13,372 +10,43 @@
       </div>
       <div class="modal-body">
         <div class="container-fluid">
-          <div class="progress" style="height: 3px;">
-            <div class="progress-bar" role="progressbar" [style.width.%]="progressValue"
-                 [attr.aria-valuenow]="progressValue" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-
-          <div class="step-container text-center" style="margin: 10px 0;">
-            <span *ngFor="let step of [1,2,3,4,5,6]"
-                  class="step-circle"
-                  [ngClass]="{'active': currentStep === step}"
-                  (click)="displayStep(step)">{{ step }}</span>
-          </div>
-          <form class="ChartFrom">
+          <app-progress-bar [currentStep]="currentStep" [progressValue]="progressValue"  (stepClicked)="displayStep($event)"></app-progress-bar>
+          <form class="ChartFrom" >
             <div class="margin-Bottom-3" *ngIf="currentStep === 1">
               <h3>Step 1</h3>
-             
-              <div style="margin-top: 20px">
-                <label class="control-label">Select Table:</label>
-                <select class="form-control input-sm" type="select" [(ngModel)]="SeletedTable" [ngModelOptions]="{standalone: true}" (change)="fetchColumns()">
-                  <option selected value="">Open this select menu</option>
-                  <option *ngFor="let table of tables" [value]="table">{{table}}</option>
-                </select>
-              </div>
-
-
+              <app-table-selector [TableType]="TableType" [GetTablesURL]="GetTablesURL" (tableSelected)=fetchColumns($event)></app-table-selector>
             </div>
 
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 2">
               <h3>Step 2</h3>
-              <div class="panel panel-info">
-                <div class="panel-heading">Filter</div>
-                <div class="panel-body">
-                  <p>Add filters to refine your data. You can group filters using parentheses for complex conditions.</p>
-                  <div *ngFor="let filter of Wherefilters; let i = index" class="row" style="margin-bottom: 10px">
-
-                    <div class="col-xs-1">
-                      <select *ngIf="i > 0" class="form-control input-sm" [(ngModel)]="filter.logicalLink" [ngModelOptions]="{standalone: true}">
-                        <option value="AND">AND</option>
-                        <option value="OR">OR</option>
-                      </select>
-                    </div>
-                    <div class="col-xs-1">
-                      <span *ngFor="let group of parenthesesGroups">
-                        <span *ngIf="isFirstInGroup(group, filter.id)" style="font-size: 18px; font-weight: bold;">(</span>
-                      </span>
-                    </div>
-
-
-                    <div class="col-xs-3">
-                      <select class="form-control input-sm" [(ngModel)]="filter.field" [ngModelOptions]="{standalone: true}">
-                        <option value="">Select column</option>
-                        <option *ngFor="let column of columns" [value]="column">{{column}}</option>
-                      </select>
-                    </div>
-
-                    <div class="col-xs-2">
-                      <select class="form-control input-sm" [(ngModel)]="filter.operator" [ngModelOptions]="{standalone: true}">
-                        <option value="=">=</option>
-                        <option value="<>">≠</option>
-                        <option value=">">></option>
-                        <option value="<"><</option>
-                        <option value=">=">≥</option>
-                        <option value="<=">≤</option>
-                      </select>
-                    </div>
-
-                    <div class="col-xs-3">
-                      <input type="text" class="form-control input-sm" placeholder="Value" [(ngModel)]="filter.value" [ngModelOptions]="{standalone: true}">
-                    </div>
-
-                    <div class="col-xs-1">
-                      <span *ngFor="let group of parenthesesGroups">
-                        <span *ngIf="isLastInGroup(group, filter.id)" style="font-size: 18px; font-weight: bold;">)</span>
-                      </span>
-                    </div>
-
-                    <div class="col-xs-1" *ngIf="Wherefilters.length > 1">
-                      <button type="button" class="btn btn-danger btn-sm" (click)="removeFilter(filter.id)">
-                        <span class="glyphicon glyphicon-remove"></span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="row" style="margin-top: 10px;">
-                    <div class="col-xs-1">
-                      <button type="button" class="btn btn-primary btn-sm" (click)="addFilter()">
-                        <span class="glyphicon glyphicon-plus"></span> Add Filter
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="panel panel-info">
-                <div class="panel-heading">
-                  <h3 class="panel-title">Filter Groups</h3>
-                </div>
-                <div class="panel-body">
-                  <p>Create groups of filters enclosed in parentheses for complex queries.</p>
-
-                  <button type="button" class="btn btn-primary btn-sm" (click)="createGroup()">
-                    <span class="glyphicon glyphicon-plus"></span> Create New Group
-                  </button>
-
-                  <div *ngIf="parenthesesGroups.length === 0" class="alert alert-info" style="margin-top: 10px;">
-                    No groups created yet. Click "Create New Group" to start.
-                  </div>
-
-                  <div *ngFor="let group of parenthesesGroups" class="well well-sm" style="margin-top: 10px;">
-                    <div class="row">
-                      <div class="col-xs-12">
-                        <strong>Group {{ group.id }}:</strong>
-                        <button type="button" class="btn btn-danger btn-xs pull-right" (click)="removeGroup(group.id)">
-                          <span class="glyphicon glyphicon-trash"></span> Remove Group
-                        </button>
-                      </div>
-                    </div>
-
-                    <div class="row" style="margin-top: 10px;">
-                      <div class="col-xs-12">
-                        <div class="checkbox-inline" *ngFor="let filter of Wherefilters">
-                          <label>
-                            <input type="checkbox"
-                                   [id]="'group-' + group.id + '-filter-' + filter.id"
-                                   [checked]="isFilterInGroup(group.id, filter.id)"
-                                   (change)="handleCheckboxChange(group.id, filter.id, $event,'Where')">
-                            Filter {{ filter.id }}
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <app-filter [columns]="columns" (UpdateFilters)="handleUpdateWhereFilter($event)" [parenthesesGroups]="parenthesesGroups" [header]="'Filter'"></app-filter>
+              <app-filter-groups [filters]="Wherefilters" (UpdateFiltersParentheses)="handleUpdateWhereFilterParentheses($event)"></app-filter-groups>
             </div>
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 3">
               <h3>Step 3</h3>
-              <div class="panel panel-info">
-                <div class="panel-heading">Group By</div>
-                <div class="panel-body">
-                  <div *ngFor="let column of columns">
-                    <input [value]="column"
-                           type="checkbox"
-                           [checked]="GroupByFelid.includes(column)"
-                           (change)="changeGroupByFiled(column,$event)
-                           " />
-                    <label>{{column}}</label>
-                  </div>
-
-                </div>
-              </div>
+              <app-group-by [columns]="columns" (UpdateGroupBy)="handleUpdateGroupBy"></app-group-by>
             </div>
 
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 4">
               <h3>Step 4</h3>
-              <div class="panel panel-info">
-                <div class="panel-heading">Aggregate</div>
-                <div class="panel-body">
-                  <div *ngFor="let Aggregate of Aggregates" class="row" style="margin-bottom: 10px">
-                    <div class="col-xs-4">
-                      <select class="form-control input-sm" [(ngModel)]="Aggregate.field" [ngModelOptions]="{standalone: true}">
-                        <option value="">Select Column</option>
-                        <option *ngFor="let column of columns" [value]="column">{{column}}</option>
-                      </select>
-                    </div>
-                    <div class="col-xs-4">
-                      <select class="form-control input-sm" [(ngModel)]="Aggregate.aggregateFunction" [ngModelOptions]="{standalone: true}">
-                        <option value="">Select Funcation</option>
-                        <option value="SUM">SUM</option>
-                        <option value="AVG">AVG</option>
-                        <option value="COUNT">COUNT</option>
-                        <option value="MAX">MAX</option>
-                        <option value="MIN">MIN</option>
-                      </select>
+              <app-aggregate [columns]="columns" (UpdateAggregates)="handleUpdateAggregates($event)"></app-aggregate>
 
-                    </div>
-
-                    <div class="col-xs-4">
-                      <button type="button" class="btn btn-danger btn-sm" (click)="removeAggregate(Aggregate.id)">
-                        <span class="glyphicon glyphicon-remove"></span>
-                      </button>
-                    </div>
-
-
-                  </div>
-                  <div class="row">
-                    <div class="col-xs-12">
-                      <button type="button" class="btn btn-primary btn-sm" (click)="addAggregate()">
-                        <span class="glyphicon glyphicon-plus"></span> Add Aggregate
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
             </div>
             <div class="margin-Bottom-3" *ngIf="currentStep === 5">
               <h3>Step 5</h3>
-              <div class="panel panel-info">
-                <div class="panel-heading">Aggregate Filter</div>
-                <div class="panel-body">
-                  <div *ngFor="let AggregateFilter of AggregateFilters; let i = index" class="row" style="margin-bottom: 10px">
-
-                    <div class="col-xs-1">
-                      <select *ngIf="i > 0" class="form-control input-sm" [(ngModel)]="AggregateFilter.logicalLink" [ngModelOptions]="{standalone: true}">
-                        <option value="AND">AND</option>
-                        <option value="OR">OR</option>
-                      </select>
-                    </div>
-                    <div class="col-xs-1">
-                      <span *ngFor="let group of aggregateParenthesesGroups">
-                        <span *ngIf="isFirstInGroup(group, AggregateFilter.id)" style="font-size: 18px; font-weight: bold;">(</span>
-                      </span>
-                    </div>
-                    <div class="col-xs-3">
-                      <select class="form-control input-sm" [(ngModel)]="AggregateFilter.field" [ngModelOptions]="{standalone: true}">
-                        <option value="">Select Aggregate Felid</option>
-                        <option *ngFor="let Aggregate of Aggregates" value="{{Aggregate.aggregateFunction | lowercase}}_{{Aggregate.field}}">{{Aggregate.aggregateFunction | lowercase}}_{{Aggregate.field}}</option>
-                      </select>
-                    </div>
-                    <div class="col-xs-2">
-                      <select class="form-control input-sm" [(ngModel)]="AggregateFilter.operator" [ngModelOptions]="{standalone: true}">
-                        <option value="=">=</option>
-                        <option value="<>">≠</option>
-                        <option value=">">></option>
-                        <option value="<"><</option>
-                        <option value=">=">≥</option>
-                        <option value="<=">≤</option>
-                      </select>
-                    </div>
-
-
-                    <div class="col-xs-3">
-                      <input type="text" class="form-control input-sm" placeholder="Value" [(ngModel)]="AggregateFilter.value" [ngModelOptions]="{standalone: true}">
-                    </div>
-
-                    <div class="col-xs-1">
-                      <span *ngFor="let group of aggregateParenthesesGroups">
-                        <span *ngIf="isLastInGroup(group, AggregateFilter.id)" style="font-size: 18px; font-weight: bold;">)</span>
-                      </span>
-                    </div>
-                    <div class="col-xs-1" *ngIf="AggregateFilters.length > 1">
-                      <button type="button" class="btn btn-danger btn-sm" (click)="removeAggregateFilter(AggregateFilter.id)">
-                        <span class="glyphicon glyphicon-remove"></span>
-                      </button>
-                    </div>
-
-                  </div>
-
-
-                  <div class="row" style="margin-top: 10px;">
-                    <div class="col-xs-12">
-                      <button type="button" class="btn btn-primary btn-sm" (click)="addAggregateFilter()">
-                        <span class="glyphicon glyphicon-plus"></span> Add Filter
-                      </button>
-                    </div>
-                  </div>
-
-
-                </div>
-
-
-              </div>
-
-
-              <div class="panel panel-info">
-                <div class="panel-heading">
-                  <h3 class="panel-title">Aggregate Filter Groups</h3>
-                </div>
-                <div class="panel-body">
-                  <p>Create groups of filters enclosed in parentheses for complex queries.</p>
-
-                  <button type="button" class="btn btn-primary btn-sm" (click)="createAggregateGroup()">
-                    <span class="glyphicon glyphicon-plus"></span> Create New Group
-                  </button>
-
-                  <div *ngIf="aggregateParenthesesGroups.length === 0" class="alert alert-info" style="margin-top: 10px;">
-                    No groups created yet. Click "Create New Group" to start.
-                  </div>
-
-                  <div *ngFor="let group of aggregateParenthesesGroups" class="well well-sm" style="margin-top: 10px;">
-                    <div class="row">
-                      <div class="col-xs-12">
-                        <strong>Group {{ group.id }}:</strong>
-                        <button type="button" class="btn btn-danger btn-xs pull-right" (click)="removeAggregateGroup(group.id)">
-                          <span class="glyphicon glyphicon-trash"></span> Remove Group
-                        </button>
-                      </div>
-                    </div>
-
-                    <div class="row" style="margin-top: 10px;">
-                      <div class="col-xs-12">
-                        <div class="checkbox-inline" *ngFor="let filter of AggregateFilters">
-                          <label>
-                            <input type="checkbox"
-                                   [id]="'group-' + group.id + '-filter-' + filter.id"
-                                   [checked]="isAggregateFilterInGroup(group.id, filter.id)"
-                                   (change)="handleCheckboxChange(group.id, filter.id, $event,'Having')">
-                            Filter {{ filter.id }}
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <app-filter [columns]="AggregateFiltersColumns" (UpdateFilters)="handleUpdateHavingFilter($event)" [parenthesesGroups]="aggregateParenthesesGroups" [header]="'Aggregate Filter'"></app-filter>
+              <app-filter-groups [filters]="AggregateFilters" (UpdateFiltersParentheses)="handleUpdateHavingFilterParentheses($event)"></app-filter-groups>
             </div>
             <div class="margin-Bottom-3" *ngIf="currentStep === 6">
               <h3>Step 6</h3>
-              <div class="panel panel-info">
-                <div class="panel-heading">Chart Type</div>
-                <div class="panel-body">
-                  <div>
-                    <label>Chart Type:</label>
-                    <select class="form-control input-sm" [(ngModel)]="ChartType" [ngModelOptions]="{standalone: true}">
-                      <option value="">None</option>
-                      <option value="bar">Bar</option>
-                      <option value="line">Line</option>
-                      <option value="pie">Pie</option>
-                    </select>
-                  </div>
-                  <!--<div>
-                    <label>Chart Size</label>
-                    <select class="form-control input-sm" [(ngModel)]="ChartSize" [ngModelOptions]="{standalone: true}">
-                      <option value="">Select size:</option>
-                      <option value="small">Small (e.g., 300px height)</option>
-                      <option value="medium">Medium (e.g., 500px height)</option>
-                      <option value="large">Large (e.g., 700px height)</option>
-                      <option value="full-width">Full Width</option>
-                    </select>
-                  </div>-->
-
-                  <div>
-                    <label>Number of Rows</label>
-                    <select class="form-control input-sm" [(ngModel)]="NumberOfRows" [ngModelOptions]="{standalone: true}">
-                      <option value="">Number of Rows:</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label>Number of Columns</label>
-                    <select class="form-control input-sm" [(ngModel)]="NumberOfColumns" [ngModelOptions]="{standalone: true}">
-                      <option value="">Number of Column:</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
+              <app-chart-selector (UpdateChart)="handleChartUpdate($event)"></app-chart-selector>
             </div>
 
           </form>
-          <div class="text-right">
-            <button type="button" class="btn btn-default" style="margin-right:5px" (click)="prevStep()" *ngIf="currentStep > 1"> Back</button>
-            <button type="button" class="btn btn-primary" (click)="nextStep()" *ngIf="currentStep < 6"> Next</button>
-            <button type="button" class="btn btn-success" *ngIf="currentStep == 6" (click)="ExcuteQureyButtonClicked()">Generate Chart</button>
-          </div>
+          <app-form-actions [currentStep]="currentStep" (prevStepClicked)="prevStep()" (nextStepClicked)="nextStep()" (ExcuteQureyClicked)="ExcuteQureyButtonClicked()"></app-form-actions>
 
 
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'
 import { DatabaseServiceService } from './database-service.service';
@@ -7,24 +7,32 @@ import { FilterParenthesesGroup } from './Interfaces/filter-parentheses-group';
 import { Aggregate } from './Interfaces/Aggregate';
 import { IRequstData } from './Interfaces/requst-data';
 import { v4 as uuidv4 } from 'uuid';
-
-import { filter } from 'rxjs';
+import { TableSelectorComponent } from '../table-selector/table-selector.component';
+import { FilterComponent } from '../filter/filter.component'
+import { FilterGroupsComponent } from '../filter-groups/filter-groups.component';
+import { GroupByComponent } from '../group-by/group-by.component';
+import { AggregateComponent } from '../aggregate/aggregate.component';
+import { map } from 'rxjs';
+import { ChartConfig } from '../chart-selector/Interface/chart-config';
+import { ChartSelectorComponent } from '../chart-selector/chart-selector.component';
+import { FormActionsComponent } from '../form-actions/form-actions.component';
+import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 declare var $: any; 
 
 @Component({
   selector: 'app-chart-creator-form',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TableSelectorComponent, FilterComponent, FilterGroupsComponent, GroupByComponent, AggregateComponent,
+    ChartSelectorComponent, FormActionsComponent, ProgressBarComponent],
   templateUrl: './chart-creator-form.component.html',
   styleUrl: './chart-creator-form.component.css',
   standalone: true,
 })
-export class ChartCreatorFormComponent implements OnInit {
+export class ChartCreatorFormComponent {
   currentStep: number = 1;
   progressValue: number = 0;
-  SelectedType: string = "";
   SeletedTable: string = "";
-  tables: string[] = [];
-  columns: string[] = ["a", "b"];
+  columns: string[] = [];
+  tables: string[] = ["a",'b'];
   GroupByFelid: string[] = [];
   @Input() GetViewsAndTablesURL = "";
   @Input() GetTablesURL = "";
@@ -36,26 +44,27 @@ export class ChartCreatorFormComponent implements OnInit {
   AggregateFilters: Filter[] = [];
   parenthesesGroups: FilterParenthesesGroup[] = [];
   Aggregates: Aggregate[] = [];
-  filterCount = 0;
-  aggregateFilterCount = 0;
+  AggregateFiltersColumns: string[] = [];
   aggregateParenthesesGroups: FilterParenthesesGroup[] = [];
-  aggregateGroupCount = 0;
-  groupCount = 0;
-  aggregateCount = 0;
   @Output() Execute = new EventEmitter<any>();
   dataRequste!: IRequstData;
   logicalFilterLink: string[] = [];
   logicalAggregateLink: string[] = [];
   ChartType: string = "";
-  ChartSize: string = "";
   NumberOfRows=0
-  NumberOfColumns=0
+  NumberOfColumns = 0
+  @Input() openRequested: boolean = false;
+
+
   constructor(private DatabaseServ: DatabaseServiceService) {
 
   }
-  ngOnInit() {
-   this.fetchTables();
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['openRequested'] && this.openRequested) {
+      this.openChartModal(); 
+    }
   }
+
   nextStep(): void {
     if (this.currentStep < 6) {
       this.currentStep++;
@@ -83,156 +92,7 @@ export class ChartCreatorFormComponent implements OnInit {
     $('#chartModal').modal('show');
 
   }
-  fetchTables(): void {
-    if (this.SelectedType === "All")
-    {
-      //this.DatabaseServ.getTable(this.GetViewsAndTablesURL).subscribe((Tables) => {
-      //  this.tables = Tables;
-      //});
-    }
-    else if (this.SelectedType === "Table") {
-      //this.DatabaseServ.getTable(this.GetViewsAndTablesURL).subscribe((Tables) => {
-      //  this.tables = Tables;
-      //});
-    }
-    else if (this.SelectedType === "View") {
-      //this.DatabaseServ.getTable(this.GetViewsAndTablesURL).subscribe((Tables) => {
-      //  this.tables = Tables;
-      //});
-    }
-  }
-  fetchColumns(): void {
-    const CURL = `${this.GetColumnURL}/${this.SeletedTable}`;
-    //this.DatabaseServ.getColumns(CURL).subscribe((Columns) => {
-    //  this.columns = Columns;
-    //});
 
-
-  }
-  addAggregate(): void {
-    const newAggregate: Aggregate = {
-      id: this.aggregateCount++,
-      field: '',
-      aggregateFunction: ''
-    };
-    this.Aggregates.push(newAggregate);
-  }
-  addFilter(): void {
-    const newFilter: Filter = {
-      id: this.filterCount++,
-      field: '',
-      operator: '',
-      value: '',
-      logicalLink: this.Wherefilters.length > 0 ? 'AND' : "OR"
-    };
-    this.Wherefilters.push(newFilter);
-  }
-
-
-  removeFilter(id: number): void {
-    if (this.Wherefilters.length <= 1) {
-      alert("Cannot remove the last filter");
-      return;
-    }
-
-    this.Wherefilters = this.Wherefilters.filter(f => f.id !== id);
-
-    this.Wherefilters.forEach((filter, index) => {
-      filter.id = index;
-    });
-
-    this.parenthesesGroups.forEach(group => {
-      group.filterIds = group.filterIds
-        .filter(fid => fid !== id)
-        .map(fid => (fid > id ? fid - 1 : fid));
-    });
-
-    this.parenthesesGroups = this.parenthesesGroups.filter(g => g.filterIds.length > 0);
-  }
-
-  removeGroup(groupId: number): void {
-    this.parenthesesGroups = this.parenthesesGroups.filter(g => g.id !== groupId);
-  }
-  removeAggregateGroup(groupId: number): void {
-    this.aggregateParenthesesGroups = this.aggregateParenthesesGroups.filter(g => g.id !== groupId);
-  }
-
-  isFilterInGroup(groupId: number, filterId: number): boolean {
-    const group = this.parenthesesGroups.find(g => g.id === groupId);
-    return group ? group.filterIds.includes(filterId) : false;
-  }
-
-  isAggregateFilterInGroup(groupId: number, filterId: number): boolean {
-    const group = this.aggregateParenthesesGroups.find(g => g.id === groupId);
-    return group ? group.filterIds.includes(filterId) : false;
-  }
-
-  createAggregateGroup(): void {
-    const newGroup: FilterParenthesesGroup = {
-      id: this.aggregateGroupCount++,
-      filterIds: []
-    };
-    this.aggregateParenthesesGroups.push(newGroup);
-  }
-
-  createGroup(): void {
-    const newGroup: FilterParenthesesGroup = {
-      id: this.groupCount++,
-      filterIds: []
-    };
-    this.parenthesesGroups.push(newGroup);
-  }
-
-
-  isFirstInGroup(group: FilterParenthesesGroup, filterId: number): boolean {
-    return group.filterIds.length > 0 && filterId === Math.min(...group.filterIds);
-  }
-
-  isLastInGroup(group: FilterParenthesesGroup, filterId: number): boolean {
-    return group.filterIds.length > 0 && filterId === Math.max(...group.filterIds);
-  }
-
-  toggleFilterInGroup(groupId: number, filterId: number, checked: boolean): void {
-    const group = this.parenthesesGroups.find(g => g.id === groupId);
-    if (!group) return;
-    if (checked) {
-      if (!group.filterIds.includes(filterId)) {
-        group.filterIds.push(filterId);
-      }
-    }
-    else {
-      group.filterIds = group.filterIds.filter(id => id !== filterId);
-    }
-
-    if (group.filterIds.length === 0) {
-      this.parenthesesGroups = this.parenthesesGroups.filter(g => g.id !== groupId);
-    }
-  }
-
-  toggleAggregateFilterInGroup(groupId: number, filterId: number, checked: boolean): void {
-    const group = this.aggregateParenthesesGroups.find(g => g.id === groupId);
-    if (!group) return;
-    if (checked) {
-      if (!group.filterIds.includes(filterId)) {
-        group.filterIds.push(filterId);
-      }
-    }
-    else {
-      group.filterIds = group.filterIds.filter(id => id !== filterId);
-    }
-
-    if (group.filterIds.length === 0) {
-      this.aggregateParenthesesGroups = this.aggregateParenthesesGroups.filter(g => g.id !== groupId);
-    }
-  }
-
-  handleCheckboxChange(groupId: number, filterId: number, event: Event, type: string): void {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    if (type == "Where")
-      this.toggleFilterInGroup(groupId, filterId, isChecked);
-    else if (type == "Having")
-      this.toggleAggregateFilterInGroup(groupId, filterId, isChecked);
-  }
 
   getFilterIds(): number[] {
     return this.Wherefilters.map(f => f.id);
@@ -241,72 +101,22 @@ export class ChartCreatorFormComponent implements OnInit {
   getGroupIds(): number[] {
     return this.parenthesesGroups.map(g => g.id);
   }
-  showLeftParenthesis(filterId: number): boolean {
-    for (const group of this.parenthesesGroups) {
-      if (this.isFirstInGroup(group, filterId)) {
-        return true;
-      }
-    }
-    return false;
-  }
 
-  showRightParenthesis(filterId: number): boolean {
-    for (const group of this.parenthesesGroups) {
-      if (this.isLastInGroup(group, filterId)) {
-        return true;
-      }
-    }
-    return false;
-  }
 
-  changeGroupByFiled(vale: string, event: Event): void {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    if (isChecked) {
-      this.GroupByFelid.push(vale)
-    }
-    else {
-      this.GroupByFelid = this.GroupByFelid.filter(g => g !== vale);
 
-    }
-    console.log(this.GroupByFelid.length)
 
-  }
 
-  removeAggregate(id: number): void {
-    this.Aggregates = this.Aggregates.filter(f => f.id !== id);
 
-    this.Aggregates.forEach((filter, index) => {
-      filter.id = index;
-    });
-  }
-
-  removeAggregateFilter(id: number): void {
-
-    this.AggregateFilters = this.AggregateFilters.filter(f => f.id !== id);
-
-    this.AggregateFilters.forEach((filter, index) => {
-      filter.id = index;
-    });
-
-    this.aggregateParenthesesGroups.forEach(group => {
-      group.filterIds = group.filterIds
-        .filter(fid => fid !== id)
-        .map(fid => (fid > id ? fid - 1 : fid));
-    });
-
-    this.aggregateParenthesesGroups = this.aggregateParenthesesGroups.filter(g => g.filterIds.length > 0);
-  }
-
-  addAggregateFilter(): void {
-    const newFilter: Filter = {
-      id: this.aggregateFilterCount++,
-      field: '',
-      operator: '',
-      value: '',
-      logicalLink: this.Wherefilters.length > 0 ? 'AND' : undefined
-    };
-    this.AggregateFilters.push(newFilter);
-  }
+  //addAggregateFilter(): void {
+  //  const newFilter: Filter = {
+  //    id: this.aggregateFilterCount++,
+  //    field: '',
+  //    operator: '',
+  //    value: '',
+  //    logicalLink: this.Wherefilters.length > 0 ? 'AND' : undefined
+  //  };
+  //  this.AggregateFilters.push(newFilter);
+  //}
 
 
   prepareRequestData(): void {
@@ -481,7 +291,6 @@ export class ChartCreatorFormComponent implements OnInit {
       Id: uuidv4(),
       dataRequste: this.dataRequste,
       chartType: this.ChartType,
-      chartSize: this.ChartSize,
       NumberOfRows: this.NumberOfRows,
       NumberOfColumns: this.NumberOfColumns
     });
@@ -489,11 +298,12 @@ export class ChartCreatorFormComponent implements OnInit {
 
 
   }
+  
 
   restartForm(): void {
     this.currentStep = 1;
     this.progressValue = 0;
-    this.SelectedType = "";
+    this.TableType = "";
     this.SeletedTable = "";
     this.tables = [];
     this.columns = ['a', 'b'];
@@ -503,19 +313,64 @@ export class ChartCreatorFormComponent implements OnInit {
     this.Aggregates = [];
     this.parenthesesGroups = [];
     this.aggregateParenthesesGroups = [];
-    this.filterCount = 0;
-    this.aggregateFilterCount = 0;
-    this.aggregateCount = 0;
-    this.groupCount = 0;
-    this.aggregateGroupCount = 0;
+    //this.filterCount = 0;
+    //this.aggregateFilterCount = 0;
+    //this.aggregateCount = 0;
+    //this.groupCount = 0;
+    //this.aggregateGroupCount = 0;
     this.logicalFilterLink = [];
     this.logicalAggregateLink = [];
     this.ChartType = "";
-    this.ChartSize = "";
     this.NumberOfRows = 0;
     this.NumberOfColumns = 0;
     $('#chartModal').modal('hide');
 
   }
+  fetchColumns(SelectedTable: string) {
+    this.SeletedTable = SelectedTable;
+    console.log("Fetch Columns", this.SeletedTable)
+    const CURL = `${this.GetColumnURL}/${this.SeletedTable}`;
+    this.columns = ['a', 'b'];
+
+    //this.DatabaseServ.getColumns(CURL).subscribe((Columns) => {
+    //  this.columns = Columns;
+    //});
+
   }
+
+  handleUpdateWhereFilter(filters: Filter[]) {
+    this.Wherefilters = filters;
+  }
+  handleUpdateWhereFilterParentheses(parenthesesGroups: FilterParenthesesGroup[]) {
+    this.parenthesesGroups = parenthesesGroups;
+  }
+  handleUpdateGroupBy(GroupByFelids: string[]) {
+    this.GroupByFelid = GroupByFelids;
+  }
+  handleUpdateAggregates(Aggregates: Aggregate[]) {
+    this.Aggregates = Aggregates
+
+    const cols = Aggregates.map(item =>
+      `${item.aggregateFunction.toLowerCase()}_${item.field}`
+
+    );
+    console.log(this.Aggregates)
+  
+    this.AggregateFiltersColumns = cols;
+    console.log(this.AggregateFiltersColumns)
+  }
+  handleUpdateHavingFilter(filters: Filter[]) {
+    this.AggregateFilters = filters
+  }
+  handleUpdateHavingFilterParentheses(parenthesesGroups: FilterParenthesesGroup[]) {
+    this.aggregateParenthesesGroups = parenthesesGroups
+  }
+  handleChartUpdate(chartConfig: ChartConfig) {
+    console.log(chartConfig)
+    this.ChartType = chartConfig.ChartType
+    this.NumberOfRows = chartConfig.NumberOfRows
+    this.NumberOfColumns = chartConfig.NumberOfColumns
+
+  }
+}
 

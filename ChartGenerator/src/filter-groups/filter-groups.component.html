@@ -1,0 +1,41 @@
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">Filter Groups</h3>
+  </div>
+  <div class="panel-body">
+    <p>Create groups of filters enclosed in parentheses for complex queries.</p>
+
+    <button type="button" class="btn btn-primary btn-sm" (click)="createGroup()">
+      <span class="glyphicon glyphicon-plus"></span> Create New Group
+    </button>
+
+    <div *ngIf="parenthesesGroups.length === 0" class="alert alert-info" style="margin-top: 10px;">
+      No groups created yet. Click "Create New Group" to start.
+    </div>
+
+    <div *ngFor="let group of parenthesesGroups" class="well well-sm" style="margin-top: 10px;">
+      <div class="row">
+        <div class="col-xs-12">
+          <strong>Group {{ group.id }}:</strong>
+          <button type="button" class="btn btn-danger btn-xs pull-right" (click)="removeGroup(group.id)">
+            <span class="glyphicon glyphicon-trash"></span> Remove Group
+          </button>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 10px;">
+        <div class="col-xs-12">
+          <div class="checkbox-inline" *ngFor="let filter of filters">
+            <label>
+              <input type="checkbox"
+                     [id]="'group-' + group.id + '-filter-' + filter.id"
+                     [checked]="isFilterInGroup(group.id, filter.id)"
+                     (change)="handleCheckboxChange(group.id, filter.id, $event)">
+              Filter {{ filter.id }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

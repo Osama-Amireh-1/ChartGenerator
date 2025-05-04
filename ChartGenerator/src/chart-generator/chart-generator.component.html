@@ -1,10 +1,15 @@
+<div class="container margin-top-5">
+  <button type="button" class="btn btn-primary" (click)="openChartModalClicked()">Create Chart</button>
+</div>
+
 
 <app-chart-creator-form [GetViewsAndTablesURL]="GetViewsAndTablesURL"
                         [GetTablesURL]="GetTablesURL"
                         [GetViewsURL]="GetViewsURL"
                         [TableType]="TableType"
                         [GetColumnURL]="GetColumnURL"
-                        (Execute)="fetchData($event)"></app-chart-creator-form>
+                        (Execute)="fetchData($event)"
+                        [openRequested]="openForm"></app-chart-creator-form>
 
 
-  <app-grid-view [charts]="charts"></app-grid-view>
+<app-grid-view [charts]="charts"></app-grid-view>

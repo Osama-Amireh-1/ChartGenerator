@@ -1,0 +1,36 @@
+<div class="panel panel-info">
+  <div class="panel-heading">Chart Type</div>
+  <div class="panel-body">
+    <div>
+      <label>Chart Type:</label>
+      <select class="form-control input-sm" [(ngModel)]="ChartType"  (ngModelChange)="OnChartChange()" [ngModelOptions]="{standalone: true}">
+        <option value=''>None</option>
+        <option value="bar">Bar</option>
+        <option value="line">Line</option>
+        <option value="pie">Pie</option>
+      </select>
+    </div>
+    <div>
+      <label>Number of Rows</label>
+      <select class="form-control input-sm" [(ngModel)]="NumberOfRows" (ngModelChange)="OnChartChange()" [ngModelOptions]="{standalone: true}">
+        <option value="">Number of Rows:</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+    </div>
+    <div>
+      <label>Number of Columns</label>
+      <select class="form-control input-sm" [(ngModel)]="NumberOfColumns" (ngModelChange)="OnChartChange()" [ngModelOptions]="{standalone: true}">
+        <option value="">Number of Column:</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+    </div>
+  </div>
+</div>

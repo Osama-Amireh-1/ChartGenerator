@@ -1,0 +1,23 @@
+.step-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.step-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  margin: 0 10px;
+  transform: translateY(-85%);
+}
+.step-circle.active {
+  background-color: #337ab7;
+  color: white;
+}

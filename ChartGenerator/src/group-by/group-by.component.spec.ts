@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SelectTableComponent } from './select-table.component';
+import { GroupByComponent } from './group-by.component';
 
-describe('SelectTableComponent', () => {
-  let component: SelectTableComponent;
-  let fixture: ComponentFixture<SelectTableComponent>;
+describe('GroupByComponent', () => {
+  let component: GroupByComponent;
+  let fixture: ComponentFixture<GroupByComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SelectTableComponent]
+      imports: [GroupByComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SelectTableComponent);
+    fixture = TestBed.createComponent(GroupByComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

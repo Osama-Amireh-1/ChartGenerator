@@ -1,4 +1,4 @@
-import { Component, input, Input } from '@angular/core';
+import { Component, EventEmitter, input, Input, Output } from '@angular/core';
 import { DatabaseServiceService } from '../chart-creator-form/database-service.service';
 import { ChartCreatorFormComponent } from '../chart-creator-form/chart-creator-form.component';
 import { ChartResources } from '../chart/Interface/chart-resources';
@@ -25,6 +25,7 @@ export class ChartGeneratorComponent {
   @Input({ required: true }) GetDataURL = "";
   @Input({ required: true }) TableType = "";
   charts: ChartResources[] = [];
+  openForm = false;
 
   constructor(private DatabaseServ: DatabaseServiceService) {
 
@@ -76,6 +77,12 @@ export class ChartGeneratorComponent {
     this.charts = [...this.charts, newChart];
 
   }
+
+  openChartModalClicked() {
+    this.openForm = true;
+
+    // Reset it after triggering so future clicks work again (optional)
+    setTimeout(() => this.openForm = false, 0);  }
 
 
 

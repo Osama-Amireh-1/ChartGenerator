@@ -1,0 +1,11 @@
+<div class="progress" style="height: 3px;">
+  <div class="progress-bar" role="progressbar" [style.width.%]="progressValue"
+       [attr.aria-valuenow]="progressValue" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+
+<div class="step-container text-center" style="margin: 10px 0;">
+  <span *ngFor="let step of [1,2,3,4,5,6]"
+        class="step-circle"
+        [ngClass]="{'active': currentStep === step}"
+        (click)="displayStep(step)">{{ step }}</span>
+</div>

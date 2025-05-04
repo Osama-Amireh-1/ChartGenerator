@@ -1,0 +1,14 @@
+<div class="panel panel-info">
+  <div class="panel-heading">Group By</div>
+  <div class="panel-body">
+    <div *ngFor="let column of columns">
+      <input [value]="column"
+             type="checkbox"
+             [checked]="GroupByFelid.includes(column)"
+             (change)="changeGroupByFiled(column,$event)
+              " />
+      <label>{{column}}</label>
+    </div>
+
+  </div>
+</div>
