@@ -81,7 +81,6 @@ export class ChartGeneratorComponent {
   openChartModalClicked() {
     this.openForm = true;
 
-    // Reset it after triggering so future clicks work again (optional)
     setTimeout(() => this.openForm = false, 0);  }
 
 
