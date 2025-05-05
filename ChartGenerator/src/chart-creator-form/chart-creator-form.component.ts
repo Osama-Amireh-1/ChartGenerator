@@ -107,16 +107,7 @@ export class ChartCreatorFormComponent {
 
 
 
-  //addAggregateFilter(): void {
-  //  const newFilter: Filter = {
-  //    id: this.aggregateFilterCount++,
-  //    field: '',
-  //    operator: '',
-  //    value: '',
-  //    logicalLink: this.Wherefilters.length > 0 ? 'AND' : undefined
-  //  };
-  //  this.AggregateFilters.push(newFilter);
-  //}
+  
 
 
   prepareRequestData(): void {
@@ -314,11 +305,6 @@ export class ChartCreatorFormComponent {
     this.Aggregates = [];
     this.parenthesesGroups = [];
     this.aggregateParenthesesGroups = [];
-    //this.filterCount = 0;
-    //this.aggregateFilterCount = 0;
-    //this.aggregateCount = 0;
-    //this.groupCount = 0;
-    //this.aggregateGroupCount = 0;
     this.logicalFilterLink = [];
     this.logicalAggregateLink = [];
     this.ChartType = "";
@@ -348,23 +334,45 @@ export class ChartCreatorFormComponent {
   handleUpdateGroupBy(GroupByFelids: string[]) {
     this.GroupByFelid = GroupByFelids;
   }
-  handleUpdateAggregates(Aggregates: Aggregate[]) {
-    this.Aggregates = Aggregates
+  handleAddAggregates(Aggregates: Aggregate[]) {
+    this.Aggregates = [...Aggregates];
 
-    const cols = Aggregates.map(item => {
-      if (item.aggregateFunction.toLowerCase().length > 0 && item.field.length > 0)
-        return `${item.aggregateFunction.toLowerCase()}_${item.field}`
+    const aggregateColumns = this.Aggregates
+      .filter(item => item.aggregateFunction?.toLowerCase().length > 0 && item.field?.length > 0)
+      .map(item => `${item.aggregateFunction.toLowerCase()}_${item.field}`);
 
-      return ''
+    this.AggregateFiltersColumns = aggregateColumns;
+  }
+  handleRemoveAggregates(Aggregates: Aggregate[]) {
+    this.Aggregates = [...Aggregates];
 
-    }
-
+    const aggregateColumns = this.Aggregates
+      .filter(item => item.aggregateFunction?.toLowerCase().length > 0 && item.field?.length > 0)
+      .map(item => `${item.aggregateFunction.toLowerCase()}_${item.field}`);
+    this.AggregateFilters = this.AggregateFilters.filter(item =>
+      item.field && aggregateColumns.includes(item.field)
     );
-    console.log(this.Aggregates)
 
-    this.AggregateFiltersColumns = cols.filter(item => item.length>1);
+    const idMap = new Map<number, number>();
+    this.AggregateFilters.forEach((filter, index) => {
+      idMap.set(filter.id, index);
+      filter.id = index;
+    });
 
-    console.log(this.AggregateFiltersColumns)
+    const updatedGroups = this.aggregateParenthesesGroups.map(group => {
+      const newFilterIds = group.filterIds
+        .filter(fid => idMap.has(fid))
+        .map(fid => idMap.get(fid)!);
+
+      return {
+        ...group,
+        filterIds: newFilterIds
+      };
+    }).filter(group => group.filterIds.length > 0);
+
+    this.aggregateParenthesesGroups = updatedGroups;
+    this.AggregateFiltersColumns = aggregateColumns;
+
   }
   handleUpdateHavingFilter(filters: Filter[]) {
     this.AggregateFilters = filters

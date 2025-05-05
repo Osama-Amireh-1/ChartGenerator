@@ -4,6 +4,7 @@ import { ChartResources } from '../chart/Interface/chart-resources';
 import { ChartComponent } from '../chart/chart.component';
 import { GridsterModule, GridsterConfig, GridsterItem, GridType, CompactType, DisplayGrid, GridsterItemComponentInterface, GridsterComponentInterface, PushDirections, Resizable, Draggable, GridsterItemComponent, GridsterComponent } from 'angular-gridster2';
 import { MatIconModule } from '@angular/material/icon';
+import { TableComponent } from '../table/table.component';
 
 interface Safe extends GridsterConfig {
   draggable: Draggable;
@@ -13,7 +14,7 @@ interface Safe extends GridsterConfig {
 
 @Component({
   selector: 'app-grid-view',
-  imports: [GridsterModule, ChartComponent, CommonModule, GridsterItemComponent, GridsterComponent, MatIconModule],
+  imports: [GridsterModule, ChartComponent, CommonModule, GridsterItemComponent, GridsterComponent, MatIconModule, TableComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   templateUrl: './grid-view.component.html',

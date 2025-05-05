@@ -32,7 +32,7 @@
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 4">
               <h3>Step 4</h3>
-              <app-aggregate [columns]="columns" (UpdateAggregates)="handleUpdateAggregates($event)" [Aggregates]="Aggregates"></app-aggregate>
+              <app-aggregate [columns]="columns" (AddAggregates)="handleAddAggregates($event)" (RemoveAggregates)="handleRemoveAggregates($event)" [Aggregates]="Aggregates"></app-aggregate>
             </div>
             <div class="margin-Bottom-3" *ngIf="currentStep === 5">
               <h3>Step 5</h3>

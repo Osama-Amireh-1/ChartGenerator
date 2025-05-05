@@ -53,9 +53,14 @@ export class ChartGeneratorComponent {
     const requestData = this.buildHttpParams(request.dataRequste);
     console.log(request.dataRequste)
     const ddata = [
-      { label: 'A', value: 10 },
-      { label: 'B', value: 20 },
-      { label: 'C', value: 30 }
+      { brand: "Toyota", countCard: 3 },
+      { brand: "Honda", countCard: 3 },
+      { brand: "Ford", countCard: 3 },
+      { brand: "BMW", countCard: 3 },
+      { brand: "Mercedes", countCard: 3 },
+      { brand: "Tesla", countCard: 2 },
+      { brand: "Nissan", countCard: 2 },
+      { brand: "Chevrolet", countCard: 1 }
     ];
     //this.DatabaseServ.getData(this.GetDataURL, requestData).subscribe(data => {
     //  this.charts.push({

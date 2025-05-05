@@ -28,43 +28,49 @@ export class ChartComponent implements AfterViewInit {
     const ctx = this.chartCanvas.nativeElement.getContext('2d');
     if (!ctx) return;
 
-    const defaultData = {
-      labels: ['A', 'B', 'C'],
-      datasets: [
-        {
-          label: 'Dataset 1',
-          data: [1, 2, 3],
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1
-        },
-        {
-          label: 'Dataset 2',
-          data: [2, 3, 4],
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          borderWidth: 1
-        }
-      ]
-    };
+    
+    const labels = this.Data.map((item: { brand: any; }) => item.brand);
+    const data = this.Data.map((item: { countCard: any; }) => item.countCard);
+    const backgroundColors = this.generateColors(labels.length, 0.7);
+    const borderColors = this.generateColors(labels.length, 1);
 
-    const chartData = this.Data ? defaultData :{
-      labels: this.Data.map((item: { label: any; }) => item.label),
-      datasets: [
-        {
-          label: 'Your Dataset',
-          data: this.Data.map((item: { value: any; }) => item.value),
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1
-        }
-      ]
-    }  
+
     const type: ChartJSChartType = (this.ChartType.toLowerCase() as ChartJSChartType) || 'bar';
+
+    let chartData: any;
+
+    if (type === 'pie' || type === 'doughnut') {
+      chartData = {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: backgroundColors,
+          borderColor: borderColors,
+          borderWidth: 1
+        }]
+      };
+    } else {
+      chartData = {
+        labels: labels,
+        datasets: [{
+          label: 'Car Brands Count',
+          data: data,
+          backgroundColor: backgroundColors,
+          borderColor: borderColors,
+          borderWidth: 1
+        }]
+      };
+    }
 
     const options: ChartConfiguration['options'] = {
       responsive: true,
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        },
+      }
     };
 
     if (type !== 'pie' && type !== 'doughnut') {
@@ -79,6 +85,7 @@ export class ChartComponent implements AfterViewInit {
      
       type: type,
       data: chartData,
+      
       options: options
     };
     console.log(this.Data)
@@ -96,5 +103,14 @@ export class ChartComponent implements AfterViewInit {
     if (this.chart) {
       this.chart.resize();
     }
+  }
+
+  private generateColors(count: number, alpha: number): string[] {
+    const colors: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const hue = (i * 360 / count) % 360;
+      colors.push(`hsla(${hue}, 70%, 60%, ${alpha})`);
+    }
+    return colors;
   }
 }

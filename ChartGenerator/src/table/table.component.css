@@ -1,0 +1,11 @@
+.table td, .table th {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.responsive-table {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  table-layout: fixed;
+}

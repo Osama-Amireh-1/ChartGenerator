@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { Aggregate } from '../chart-creator-form/Interfaces/Aggregate';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Filter } from '../chart-creator-form/Interfaces/filter';
+import { FilterParenthesesGroup } from '../chart-creator-form/Interfaces/filter-parentheses-group';
 
 @Component({
   selector: 'app-aggregate',
@@ -14,7 +16,8 @@ export class AggregateComponent implements OnChanges {
   @Input() Aggregates: Aggregate[] = [];
   aggregateCount = 0;
   @Input() columns: string[] = [];
-  @Output() UpdateAggregates = new EventEmitter<Aggregate[]>();
+  @Output() AddAggregates = new EventEmitter<Aggregate[]>();
+  @Output() RemoveAggregates = new EventEmitter<Aggregate[]>();
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['Aggregates'] && this.Aggregates) {
@@ -33,7 +36,7 @@ export class AggregateComponent implements OnChanges {
 
     const updatedAggregates = [...this.Aggregates, newAggregate];
     this.Aggregates = updatedAggregates;
-    this.UpdateAggregates.emit(updatedAggregates);
+    this.AddAggregates.emit(updatedAggregates);
   }
 
   removeAggregate(id: number): void {
@@ -47,19 +50,16 @@ export class AggregateComponent implements OnChanges {
     this.aggregateCount = updatedAggregates.length;
 
     this.Aggregates = updatedAggregates;
-    this.UpdateAggregates.emit(updatedAggregates);
+
+
+    this.RemoveAggregates.emit(updatedAggregates);
 
   }
   onAggregateChange() {
 
-    //const validAggregates = this.Aggregates.filter(agg =>
-    //  agg.field && agg.field !== '' &&
-    //  agg.aggregateFunction && agg.aggregateFunction !== ''
-    //);
 
-    //if (validAggregates.length > 0) {
-    this.UpdateAggregates.emit(this.Aggregates);
-    //}
+    this.AddAggregates.emit(this.Aggregates);
+
   }
 
   }

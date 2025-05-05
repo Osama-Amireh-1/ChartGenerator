@@ -11,10 +11,13 @@
         </button>
       </div>
  
-      <app-chart [Data]="item.chartData.Data"
+      <app-chart *ngIf="item.chartData.ChartType !== 'Table'"  [Data]="item.chartData.Data"
                  [ChartType]="item.chartData.ChartType"
                  [ChartSize]="item.chartData.ChartSize">
+
       </app-chart>
+
+      <app-table *ngIf="item.chartData.ChartType === 'Table'" [Data]="item.chartData.Data"></app-table>
     </gridster-item>
   </gridster>
 
