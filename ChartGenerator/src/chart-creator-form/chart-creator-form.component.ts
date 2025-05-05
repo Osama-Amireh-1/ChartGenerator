@@ -12,12 +12,12 @@ import { FilterComponent } from '../filter/filter.component'
 import { FilterGroupsComponent } from '../filter-groups/filter-groups.component';
 import { GroupByComponent } from '../group-by/group-by.component';
 import { AggregateComponent } from '../aggregate/aggregate.component';
-import { map } from 'rxjs';
+import { map, retry } from 'rxjs';
 import { ChartConfig } from '../chart-selector/Interface/chart-config';
 import { ChartSelectorComponent } from '../chart-selector/chart-selector.component';
 import { FormActionsComponent } from '../form-actions/form-actions.component';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
-declare var $: any; 
+//declare var $: any; 
 
 @Component({
   selector: 'app-chart-creator-form',
@@ -54,7 +54,7 @@ export class ChartCreatorFormComponent {
   NumberOfRows=0
   NumberOfColumns = 0
   @Input() openRequested: boolean = false;
-
+  groupCount = 0;
 
   constructor(private DatabaseServ: DatabaseServiceService) {
 
@@ -89,7 +89,7 @@ export class ChartCreatorFormComponent {
   }
 
   openChartModal() {
-    $('#chartModal').modal('show');
+    (window as any).$('#chartModal').modal('show');
 
   }
 
@@ -294,6 +294,7 @@ export class ChartCreatorFormComponent {
       NumberOfRows: this.NumberOfRows,
       NumberOfColumns: this.NumberOfColumns
     });
+
    this.restartForm()
 
 
@@ -323,7 +324,7 @@ export class ChartCreatorFormComponent {
     this.ChartType = "";
     this.NumberOfRows = 0;
     this.NumberOfColumns = 0;
-    $('#chartModal').modal('hide');
+    (window as any).$('#chartModal').modal('hide');
 
   }
   fetchColumns(SelectedTable: string) {
@@ -350,13 +351,19 @@ export class ChartCreatorFormComponent {
   handleUpdateAggregates(Aggregates: Aggregate[]) {
     this.Aggregates = Aggregates
 
-    const cols = Aggregates.map(item =>
-      `${item.aggregateFunction.toLowerCase()}_${item.field}`
+    const cols = Aggregates.map(item => {
+      if (item.aggregateFunction.toLowerCase().length > 0 && item.field.length > 0)
+        return `${item.aggregateFunction.toLowerCase()}_${item.field}`
+
+      return ''
+
+    }
 
     );
     console.log(this.Aggregates)
-  
-    this.AggregateFiltersColumns = cols;
+
+    this.AggregateFiltersColumns = cols.filter(item => item.length>1);
+
     console.log(this.AggregateFiltersColumns)
   }
   handleUpdateHavingFilter(filters: Filter[]) {
@@ -371,6 +378,9 @@ export class ChartCreatorFormComponent {
     this.NumberOfRows = chartConfig.NumberOfRows
     this.NumberOfColumns = chartConfig.NumberOfColumns
 
+  }
+  handlegroupCountUpdate(groupCount: number) {
+    this.groupCount = groupCount;
   }
 }
 

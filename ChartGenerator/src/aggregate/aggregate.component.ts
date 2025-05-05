@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Aggregate } from '../chart-creator-form/Interfaces/Aggregate';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,13 +9,20 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './aggregate.component.html',
   styleUrl: './aggregate.component.css'
 })
-export class AggregateComponent {
+export class AggregateComponent implements OnChanges {
+
+  @Input() Aggregates: Aggregate[] = [];
   aggregateCount = 0;
-  Aggregates: Aggregate[] = [];
   @Input() columns: string[] = [];
   @Output() UpdateAggregates = new EventEmitter<Aggregate[]>();
 
-
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['Aggregates'] && this.Aggregates) {
+      this.aggregateCount = this.Aggregates.length > 0
+        ? Math.max(...this.Aggregates.map(agg => agg.id)) + 1
+        : 0;
+    }
+  }
 
   addAggregate(): void {
     const newAggregate: Aggregate = {
@@ -23,29 +30,36 @@ export class AggregateComponent {
       field: '',
       aggregateFunction: ''
     };
-    this.Aggregates.push(newAggregate)
+
+    const updatedAggregates = [...this.Aggregates, newAggregate];
+    this.Aggregates = updatedAggregates;
+    this.UpdateAggregates.emit(updatedAggregates);
   }
 
   removeAggregate(id: number): void {
-    this.Aggregates = this.Aggregates.filter(f => f.id !== id);
+    const filteredAggregates = this.Aggregates.filter(agg => agg.id !== id);
 
-    this.Aggregates.forEach((filter, index) => {
-      filter.id = index;
-    });
+    const updatedAggregates = filteredAggregates.map((agg, index) => ({
+      ...agg,
+      id: index
+    }));
 
-    this.UpdateAggregates.emit(this.Aggregates)
+    this.aggregateCount = updatedAggregates.length;
+
+    this.Aggregates = updatedAggregates;
+    this.UpdateAggregates.emit(updatedAggregates);
 
   }
   onAggregateChange() {
 
-    const validAggregates = this.Aggregates.filter(agg =>
-      agg.field && agg.field !== '' &&
-      agg.aggregateFunction && agg.aggregateFunction !== ''
-    );
+    //const validAggregates = this.Aggregates.filter(agg =>
+    //  agg.field && agg.field !== '' &&
+    //  agg.aggregateFunction && agg.aggregateFunction !== ''
+    //);
 
-    if (validAggregates.length > 0) {
-      this.UpdateAggregates.emit(validAggregates);
-    }
+    //if (validAggregates.length > 0) {
+    this.UpdateAggregates.emit(this.Aggregates);
+    //}
   }
 
   }

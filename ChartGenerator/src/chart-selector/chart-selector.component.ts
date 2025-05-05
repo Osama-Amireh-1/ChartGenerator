@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ChartConfig } from './Interface/chart-config';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,9 +11,9 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './chart-selector.component.css'
 })
 export class ChartSelectorComponent {
-  ChartType: string = '';
-  NumberOfRows = 0
-  NumberOfColumns = 0
+  @Input() ChartType: string = '';
+  @Input() NumberOfRows = 0
+  @Input() NumberOfColumns = 0
   @Output() UpdateChart = new EventEmitter<ChartConfig>();
 
   OnChartChange() {

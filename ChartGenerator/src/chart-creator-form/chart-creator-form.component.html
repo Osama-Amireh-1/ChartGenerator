@@ -14,35 +14,34 @@
           <form class="ChartFrom" >
             <div class="margin-Bottom-3" *ngIf="currentStep === 1">
               <h3>Step 1</h3>
-              <app-table-selector [TableType]="TableType" [GetTablesURL]="GetTablesURL" (tableSelected)=fetchColumns($event)></app-table-selector>
+              <app-table-selector [TableType]="TableType" [GetTablesURL]="GetTablesURL" [SeletedTable]="SeletedTable" (tableSelected)=fetchColumns($event) ></app-table-selector>
             </div>
 
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 2">
               <h3>Step 2</h3>
-              <app-filter [columns]="columns" (UpdateFilters)="handleUpdateWhereFilter($event)" [parenthesesGroups]="parenthesesGroups" [header]="'Filter'"></app-filter>
-              <app-filter-groups [filters]="Wherefilters" (UpdateFiltersParentheses)="handleUpdateWhereFilterParentheses($event)"></app-filter-groups>
+              <app-filter [columns]="columns" (UpdateFilters)="handleUpdateWhereFilter($event)" (updateParenthesesGroups)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="parenthesesGroups" [header]="'Filter'" [filters]="Wherefilters"></app-filter>
+              <app-filter-groups [filters]="Wherefilters" (UpdateFiltersParentheses)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="parenthesesGroups"></app-filter-groups>
             </div>
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 3">
               <h3>Step 3</h3>
-              <app-group-by [columns]="columns" (UpdateGroupBy)="handleUpdateGroupBy"></app-group-by>
+              <app-group-by [columns]="columns" (UpdateGroupBy)="handleUpdateGroupBy" [GroupByFelid]="GroupByFelid"></app-group-by>
             </div>
 
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 4">
               <h3>Step 4</h3>
-              <app-aggregate [columns]="columns" (UpdateAggregates)="handleUpdateAggregates($event)"></app-aggregate>
-
+              <app-aggregate [columns]="columns" (UpdateAggregates)="handleUpdateAggregates($event)" [Aggregates]="Aggregates"></app-aggregate>
             </div>
             <div class="margin-Bottom-3" *ngIf="currentStep === 5">
               <h3>Step 5</h3>
-              <app-filter [columns]="AggregateFiltersColumns" (UpdateFilters)="handleUpdateHavingFilter($event)" [parenthesesGroups]="aggregateParenthesesGroups" [header]="'Aggregate Filter'"></app-filter>
-              <app-filter-groups [filters]="AggregateFilters" (UpdateFiltersParentheses)="handleUpdateHavingFilterParentheses($event)"></app-filter-groups>
+              <app-filter [columns]="AggregateFiltersColumns" (UpdateFilters)="handleUpdateHavingFilter($event)" (updateParenthesesGroups)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups" [header]="'Aggregate Filter'" [filters]="AggregateFilters"></app-filter>
+              <app-filter-groups [filters]="AggregateFilters" (UpdateFiltersParentheses)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups"></app-filter-groups>
             </div>
             <div class="margin-Bottom-3" *ngIf="currentStep === 6">
               <h3>Step 6</h3>
-              <app-chart-selector (UpdateChart)="handleChartUpdate($event)"></app-chart-selector>
+              <app-chart-selector (UpdateChart)="handleChartUpdate($event)"  [ChartType]="ChartType" [NumberOfColumns]="NumberOfColumns" [NumberOfRows]="NumberOfRows"></app-chart-selector>
             </div>
 
           </form>

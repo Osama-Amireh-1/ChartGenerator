@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FilterParenthesesGroup } from '../chart-creator-form/Interfaces/filter-parentheses-group';
 import { Filter } from '../chart-creator-form/Interfaces/filter';
 import { CommonModule } from '@angular/common';
@@ -10,13 +10,21 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './filter-groups.component.html',
   styleUrl: './filter-groups.component.css'
 })
-export class FilterGroupsComponent {
+export class FilterGroupsComponent implements OnChanges {
 
-  parenthesesGroups: FilterParenthesesGroup[] = [];
-  groupCount = 0;
+  @Input() parenthesesGroups: FilterParenthesesGroup[] = [];
+  @Input() groupCount = 0;
   @Input() filters: Filter[] = [];
   @Output() UpdateFiltersParentheses = new EventEmitter<FilterParenthesesGroup[]>();
+  @Output() UpateGroupCount = new EventEmitter<number>(); 
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['parenthesesGroups'] && this.parenthesesGroups) {
+      this.groupCount = this.parenthesesGroups.length > 0
+        ? Math.max(...this.parenthesesGroups.map(g => g.id)) + 1
+        : 0;
+    }
+  }
 
 
   createGroup(): void {
@@ -25,6 +33,7 @@ export class FilterGroupsComponent {
       filterIds: []
     };
     this.parenthesesGroups.push(newGroup);
+    this.UpateGroupCount.emit(this.groupCount)
   }
 
   handleCheckboxChange(groupId: number, filterId: number, event: Event): void {
@@ -41,6 +50,7 @@ export class FilterGroupsComponent {
     if (checked) {
       if (!group.filterIds.includes(filterId)) {
         group.filterIds.push(filterId);
+        group.filterIds.sort((a, b) => a - b);
       }
     }
     else {
@@ -54,6 +64,8 @@ export class FilterGroupsComponent {
 
   removeGroup(groupId: number): void {
     this.parenthesesGroups = this.parenthesesGroups.filter(g => g.id !== groupId);
+    console.log(this.parenthesesGroups)
+
     this.UpdateFiltersParentheses.emit(this.parenthesesGroups)
 
   }

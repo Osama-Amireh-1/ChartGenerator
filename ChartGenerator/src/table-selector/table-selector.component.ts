@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class TableSelectorComponent {
   @Input({ required: true }) TableType: string = "";
-  SeletedTable: string = "";
+  @Input() SeletedTable: string = "";
   tables: string[] = ["a","B"];
   @Input() GetTablesURL = "";
   columns: string[] = [];

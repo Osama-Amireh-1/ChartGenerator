@@ -8,7 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './group-by.component.css'
 })
 export class GroupByComponent {
-  GroupByFelid: string[] = [];
+  @Input() GroupByFelid: string[] = [];
   @Input() columns: string[] = [];
   @Output() UpdateGroupBy = new EventEmitter<string[]>();
   changeGroupByFiled(vale: string, event: Event): void {
