@@ -58,7 +58,6 @@ export class FilterComponent implements OnChanges {
         filterIds: group.filterIds
           .filter(fid => fid !== id)  
           .map(fid => {
-           
             return idMap.has(fid) ? idMap.get(fid)! : 
                    fid > id ? fid - 1 : fid;
           })
@@ -99,7 +98,6 @@ export class FilterComponent implements OnChanges {
 
   OnFilterChange() {
     this.UpdateFilters.emit(this.filters);
-
    
   }
 }

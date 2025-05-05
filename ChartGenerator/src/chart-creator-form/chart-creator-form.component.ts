@@ -42,7 +42,7 @@ export class ChartCreatorFormComponent {
   @Input({ required: true }) TableType = "";
   Wherefilters: Filter[] = [];
   AggregateFilters: Filter[] = [];
-  parenthesesGroups: FilterParenthesesGroup[] = [];
+  whereParenthesesGroups: FilterParenthesesGroup[] = [];
   Aggregates: Aggregate[] = [];
   AggregateFiltersColumns: string[] = [];
   aggregateParenthesesGroups: FilterParenthesesGroup[] = [];
@@ -94,22 +94,6 @@ export class ChartCreatorFormComponent {
   }
 
 
-  getFilterIds(): number[] {
-    return this.Wherefilters.map(f => f.id);
-  }
-
-  getGroupIds(): number[] {
-    return this.parenthesesGroups.map(g => g.id);
-  }
-
-
-
-
-
-
-  
-
-
   prepareRequestData(): void {
     this.dataRequste = {
       tableName: '',
@@ -142,7 +126,7 @@ export class ChartCreatorFormComponent {
         let openingGroups: number[] = [];
         let closingGroups: number[] = [];
 
-        this.parenthesesGroups.forEach(group => {
+        this.whereParenthesesGroups.forEach(group => {
           const sortedFilters = [...group.filterIds].sort((a, b) => a - b);
           if (sortedFilters.includes(filterId)) {
             if (sortedFilters[0] === filterId) {
@@ -303,7 +287,7 @@ export class ChartCreatorFormComponent {
     this.Wherefilters = [];
     this.AggregateFilters = [];
     this.Aggregates = [];
-    this.parenthesesGroups = [];
+    this.whereParenthesesGroups = [];
     this.aggregateParenthesesGroups = [];
     this.logicalFilterLink = [];
     this.logicalAggregateLink = [];
@@ -329,13 +313,13 @@ export class ChartCreatorFormComponent {
     this.Wherefilters = filters;
   }
   handleUpdateWhereFilterParentheses(parenthesesGroups: FilterParenthesesGroup[]) {
-    this.parenthesesGroups = parenthesesGroups;
+    this.whereParenthesesGroups = parenthesesGroups;
   }
   handleUpdateGroupBy(GroupByFelids: string[]) {
     this.GroupByFelid = GroupByFelids;
   }
   handleAddAggregates(Aggregates: Aggregate[]) {
-    this.Aggregates = [...Aggregates];
+    this.Aggregates = Aggregates;
 
     const aggregateColumns = this.Aggregates
       .filter(item => item.aggregateFunction?.toLowerCase().length > 0 && item.field?.length > 0)
@@ -344,7 +328,7 @@ export class ChartCreatorFormComponent {
     this.AggregateFiltersColumns = aggregateColumns;
   }
   handleRemoveAggregates(Aggregates: Aggregate[]) {
-    this.Aggregates = [...Aggregates];
+    this.Aggregates = Aggregates;
 
     const aggregateColumns = this.Aggregates
       .filter(item => item.aggregateFunction?.toLowerCase().length > 0 && item.field?.length > 0)

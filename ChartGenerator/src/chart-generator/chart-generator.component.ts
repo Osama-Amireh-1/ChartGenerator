@@ -74,7 +74,6 @@ export class ChartGeneratorComponent {
       Id: uuidv4(),
       Data: ddata,
       ChartType: request.chartType,
-      ChartSize: request.chartSize,
       NumberOfRows: request.NumberOfRows,
       NumberOfColumns: request.NumberOfColumns
     };
@@ -86,7 +85,8 @@ export class ChartGeneratorComponent {
   openChartModalClicked() {
     this.openForm = true;
 
-    setTimeout(() => this.openForm = false, 0);  }
+    setTimeout(() => this.openForm = false, 0);
+  }
 
 
 

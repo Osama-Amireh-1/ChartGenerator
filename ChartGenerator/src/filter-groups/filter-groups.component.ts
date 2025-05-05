@@ -63,7 +63,16 @@ export class FilterGroupsComponent implements OnChanges {
   }
 
   removeGroup(groupId: number): void {
-    this.parenthesesGroups = this.parenthesesGroups.filter(g => g.id !== groupId);
+    this.parenthesesGroups = this.parenthesesGroups.filter(g => g.id !== groupId)
+      .map(item => {
+        if (item.id > groupId) {
+          return {
+            ...item,
+            id: item.id - 1
+          }
+        }
+        return item
+      });
     console.log(this.parenthesesGroups)
 
     this.UpdateFiltersParentheses.emit(this.parenthesesGroups)

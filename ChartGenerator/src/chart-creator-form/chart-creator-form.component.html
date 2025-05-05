@@ -20,8 +20,8 @@
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 2">
               <h3>Step 2</h3>
-              <app-filter [columns]="columns" (UpdateFilters)="handleUpdateWhereFilter($event)" (updateParenthesesGroups)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="parenthesesGroups" [header]="'Filter'" [filters]="Wherefilters"></app-filter>
-              <app-filter-groups [filters]="Wherefilters" (UpdateFiltersParentheses)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="parenthesesGroups"></app-filter-groups>
+              <app-filter [columns]="columns" (UpdateFilters)="handleUpdateWhereFilter($event)" (updateParenthesesGroups)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups" [header]="'Filter'" [filters]="Wherefilters"></app-filter>
+              <app-filter-groups [filters]="Wherefilters" (UpdateFiltersParentheses)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups"></app-filter-groups>
             </div>
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 3">
