@@ -12,7 +12,6 @@ Chart.register(...registerables);
 export class ChartComponent implements AfterViewInit {
   @Input({ required: true }) Data: any;
   @Input({ required: true }) ChartType: string = '';
-  @Input({ required: true }) ChartSize: string = '';
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
   chart: Chart | null = null;
 

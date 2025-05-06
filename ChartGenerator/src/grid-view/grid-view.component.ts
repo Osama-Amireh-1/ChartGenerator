@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartResources } from '../chart/Interface/chart-resources';
 import { ChartComponent } from '../chart/chart.component';
@@ -21,7 +21,7 @@ interface Safe extends GridsterConfig {
   styleUrl: './grid-view.component.css',
   standalone: true,
 })
-export class GridViewComponent implements OnInit {
+export class GridViewComponent implements OnInit, OnChanges {
   constructor(private cdr: ChangeDetectorRef) { }
 
   @Input() set charts(value: ChartResources[]) {
@@ -39,9 +39,30 @@ export class GridViewComponent implements OnInit {
   private _charts: ChartResources[] = [];
   gridsterOptions!: Safe;
   gridItems: Array<GridsterItem & { chartData: ChartResources }> = [];
-
+  @Input() isShowMode!: boolean
   ngOnInit(): void {
     this.initGridsterOptions();
+    if (this.isShowMode) {
+      this.toggleShowMode(this.isShowMode);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isShowMode']) {
+      this.toggleShowMode(this.isShowMode);
+    }
+  }
+
+  toggleShowMode(isShowMode: boolean): void {
+    if (!this.gridsterOptions) return;
+
+    this.gridsterOptions.draggable.enabled = !isShowMode;
+    this.gridsterOptions.resizable.enabled = !isShowMode;
+    this.gridsterOptions.displayGrid = isShowMode ? DisplayGrid.None : DisplayGrid.Always
+    if (this.gridsterOptions.api?.optionsChanged) {
+      this.gridsterOptions.api.optionsChanged();
+    }
+    this.cdr.detectChanges();
   }
 
   initGridsterOptions(): void {

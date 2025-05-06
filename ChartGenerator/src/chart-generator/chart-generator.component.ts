@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-chart-generator',
-  imports: [ChartCreatorFormComponent, ChartComponent, CommonModule, MatGridListModule, GridViewComponent],
+  imports: [ChartCreatorFormComponent, CommonModule, MatGridListModule, GridViewComponent],
   templateUrl: './chart-generator.component.html',
   styleUrl: './chart-generator.component.css',
   standalone: true,
@@ -26,7 +26,7 @@ export class ChartGeneratorComponent {
   @Input({ required: true }) TableType = "";
   charts: ChartResources[] = [];
   openForm = false;
-
+  isShowMode = true;
   constructor(private DatabaseServ: DatabaseServiceService) {
 
     
@@ -88,6 +88,10 @@ export class ChartGeneratorComponent {
     setTimeout(() => this.openForm = false, 0);
   }
 
-
+  changeMode()
+  {
+    this.isShowMode = !this.isShowMode;
+    console.log(this.isShowMode)
+  }
 
 }

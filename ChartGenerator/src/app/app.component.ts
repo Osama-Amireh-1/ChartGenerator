@@ -6,7 +6,7 @@ import { ChartGeneratorComponent } from '../chart-generator/chart-generator.comp
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ChartCreatorFormComponent, ChartGeneratorComponent],
+  imports: [RouterOutlet, ChartGeneratorComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

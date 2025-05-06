@@ -1,4 +1,4 @@
-<div class="gridster-container">
+<div class="gridster-container" [ngClass]="{'show-mode': isShowMode}">
   <gridster [options]="gridsterOptions">
     <gridster-item *ngFor="let item of gridItems; trackBy: trackById"
                    [item]="item"

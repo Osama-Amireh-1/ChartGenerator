@@ -8,6 +8,10 @@
   overflow: hidden;
 }
 
+.show-mode gridster {
+  background: white !important;
+}
+
 gridster {
   background: lightgray !important;
   border-radius: 4px !important;
