@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartResources } from '../chart/Interface/chart-resources';
 import { ChartComponent } from '../chart/chart.component';
@@ -22,7 +22,9 @@ interface Safe extends GridsterConfig {
   standalone: true,
 })
 export class GridViewComponent implements OnInit, OnChanges {
-  constructor(private cdr: ChangeDetectorRef) { }
+  constructor(private cdr: ChangeDetectorRef) {
+      this.initGridsterOptions();
+}
 
   @Input() set charts(value: ChartResources[]) {
     this._charts = value;
@@ -39,6 +41,8 @@ export class GridViewComponent implements OnInit, OnChanges {
   private _charts: ChartResources[] = [];
   gridsterOptions!: Safe;
   gridItems: Array<GridsterItem & { chartData: ChartResources }> = [];
+  @Output() chartPositionChanged = new EventEmitter<ChartResources>();
+  @Output() chartRemoved = new EventEmitter<string>();
   @Input() isShowMode!: boolean
   ngOnInit(): void {
     this.initGridsterOptions();
@@ -105,21 +109,51 @@ export class GridViewComponent implements OnInit, OnChanges {
   updateGridItems(): void {
     this.gridItems = [];
 
-    const calculatePosition = (index: number): { x: number, y: number } => {
+    const findFirstAvailablePosition = (): { x: number, y: number } => {
       const cols = this.gridsterOptions.minCols || 10;
-      return {
-        x: index % cols,
-        y: Math.floor(index / cols)
-      };
+      const maxRows = this.gridsterOptions.maxRows || 100;
+
+      const occupiedPositions: boolean[][] = [];
+      for (let y = 0; y < maxRows; y++) {
+        occupiedPositions[y] = [];
+        for (let x = 0; x < cols; x++) {
+          occupiedPositions[y][x] = false;
+        }
+      }
+
+      this.gridItems.forEach(item => {
+        for (let y = item.y; y < item.y + item.rows; y++) {
+          for (let x = item.x; x < item.x + item.cols; x++) {
+            if (y < maxRows && x < cols) {
+              occupiedPositions[y][x] = true;
+            }
+          }
+        }
+      });
+
+      for (let y = 0; y < maxRows; y++) {
+        for (let x = 0; x < cols; x++) {
+          if (!occupiedPositions[y][x]) {
+            return { x, y };
+          }
+        }
+      }
+
+      return { x: 0, y: 0 };
     };
 
-    this.charts.forEach((chart, index) => {
+    this.charts.forEach((chart) => {
       const cols = +chart.NumberOfColumns || 1;
       const rows = +chart.NumberOfRows || 1;
 
-      const position = calculatePosition(index);
-      const x = chart.x !== undefined ? chart.x : position.x;
-      const y = chart.y !== undefined ? chart.y : position.y;
+      let x = chart.x !== undefined ? chart.x : null;
+      let y = chart.y !== undefined ? chart.y : null;
+
+      if (x === null || y === null) {
+        const position = findFirstAvailablePosition();
+        x = position.x;
+        y = position.y;
+      }
 
       const item: GridsterItem & { chartData: ChartResources } = {
         cols: cols,
@@ -132,10 +166,10 @@ export class GridViewComponent implements OnInit, OnChanges {
       this.gridItems.push(item);
     });
 
-      if (this.gridsterOptions.api && this.gridsterOptions.api.optionsChanged) {
-        this.gridsterOptions.api.optionsChanged();
-        this.cdr.detectChanges();
-      }
+    if (this.gridsterOptions.api && this.gridsterOptions.api.optionsChanged) {
+      this.gridsterOptions.api.optionsChanged();
+      this.cdr.detectChanges();
+    }
     
   }
 
@@ -145,6 +179,10 @@ export class GridViewComponent implements OnInit, OnChanges {
       item['chartData'].NumberOfRows = item.rows;
       item['chartData'].x = item.x;
       item['chartData'].y = item.y;
+      console.log(item.x);
+      console.log(item.x);
+
+      this.chartPositionChanged.emit(item['chartData']);
 
     }
   }
@@ -172,5 +210,8 @@ export class GridViewComponent implements OnInit, OnChanges {
         }
       
     }
+
+    this.chartRemoved.emit(item.chartData.Id);
+
   }
 }

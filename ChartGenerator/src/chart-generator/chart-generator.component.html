@@ -16,4 +16,6 @@
                           [openRequested]="openForm"></app-chart-creator-form>
 
 
-  <app-grid-view [charts]="charts" [isShowMode]="isShowMode"></app-grid-view>
+  <app-grid-view [charts]="charts" [isShowMode]="isShowMode"
+                    (chartPositionChanged)="saveCharts()"
+                  (chartRemoved)="removeChart($event)"></app-grid-view>

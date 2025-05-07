@@ -1,5 +1,4 @@
 export interface IRequstData {
-
   tableName: string,
   filterField: string[],
   filterOperator: string[],
