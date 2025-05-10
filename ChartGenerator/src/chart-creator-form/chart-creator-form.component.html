@@ -11,40 +11,52 @@
       <div class="modal-body">
         <div class="container-fluid">
           <app-progress-bar [currentStep]="currentStep" [progressValue]="progressValue"  (stepClicked)="displayStep($event)"></app-progress-bar>
-          <form class="ChartFrom" >
-            <div class="margin-Bottom-3" *ngIf="currentStep === 1">
+          <form class="ChartFrom">
+            @if(currentStep === 1)
+            {
+            <div class="margin-Bottom-3">
               <h3>Step 1</h3>
-              <app-table-selector [tableType]="tableType" [getTableNamesByTypeURL]="getTableNamesByTypeURL" [seletedTable]="seletedTable" (tableSelected)=fetchColumns($event) [token]="token"
-                                 ></app-table-selector>
+              <app-table-selector [tableType]="tableType" [getTableNamesByTypeURL]="getTableNamesByTypeURL" [seletedTable]="seletedTable" (tableSelected)=fetchColumns($event) [token]="token"></app-table-selector>
             </div>
-
-
-            <div class="margin-Bottom-3" *ngIf="currentStep === 2">
+            }
+            @if(currentStep === 2)
+            {
+            <div class="margin-Bottom-3">
               <h3>Step 2</h3>
               <app-filter [columns]="columns" (updateFilters)="handleUpdateWhereFilter($event)" (updateParenthesesGroups)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups" [header]="'Filter'" [filters]="wherefilters"></app-filter>
               <app-filter-groups [filters]="wherefilters" (updateFiltersParentheses)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups"></app-filter-groups>
             </div>
-
-            <div class="margin-Bottom-3" *ngIf="currentStep === 3">
+            }
+            @if(currentStep === 3)
+            {
+            <div class="margin-Bottom-3">
               <h3>Step 3</h3>
               <app-group-by [columns]="columns" (updateGroupBy)="handleUpdateGroupBy($event)" [groupByFelids]="groupByFelids"></app-group-by>
             </div>
+            }
 
-
-            <div class="margin-Bottom-3" *ngIf="currentStep === 4">
+            @if(currentStep === 4)
+            {
+            <div class="margin-Bottom-3">
               <h3>Step 4</h3>
               <app-aggregate [columns]="columns" (addAggregates)="handleAddAggregates($event)" (removeAggregates)="handleRemoveAggregates($event)" [aggregates]="aggregates"></app-aggregate>
             </div>
-            <div class="margin-Bottom-3" *ngIf="currentStep === 5">
+            }
+            @if(currentStep === 5)
+            {
+            <div class="margin-Bottom-3">
               <h3>Step 5</h3>
               <app-filter [columns]="aggregateFiltersColumns" (updateFilters)="handleUpdateHavingFilter($event)" (updateParenthesesGroups)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups" [header]="'Aggregate Filter'" [filters]="aggregateFilters"></app-filter>
               <app-filter-groups [filters]="aggregateFilters" (updateFiltersParentheses)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups"></app-filter-groups>
             </div>
-            <div class="margin-Bottom-3" *ngIf="currentStep === 6">
+            }
+            @if(currentStep === 6)
+            {
+            <div class="margin-Bottom-3">
               <h3>Step 6</h3>
-              <app-visualization-selector (updateVisualization)="handleVisualizationUpdate($event)"  [visualizationType]="visualizationType" [numberOfColumns]="numberOfColumns" [numberOfRows]="numberOfRows" [title]="tilte"></app-visualization-selector>
+              <app-visualization-selector (updateVisualization)="handleVisualizationUpdate($event)" [visualizationType]="visualizationType" [numberOfColumns]="numberOfColumns" [numberOfRows]="numberOfRows" [title]="tilte"></app-visualization-selector>
             </div>
-
+            }
           </form>
           <app-form-actions [currentStep]="currentStep" (prevStepClicked)="prevStep()" (nextStepClicked)="nextStep()" (excuteQureyClicked)="excuteQureyButtonClicked()"></app-form-actions>
 

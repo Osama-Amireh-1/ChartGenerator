@@ -8,10 +8,12 @@
     <button type="button" class="btn btn-primary btn-sm" (click)="createGroup()">
       <span class="glyphicon glyphicon-plus"></span> Create New Group
     </button>
-
-    <div *ngIf="parenthesesGroups.length === 0" class="alert alert-info" style="margin-top: 10px;">
+    @if(parenthesesGroups.length === 0)
+    {
+    <div class="alert alert-info" style="margin-top: 10px;">
       No groups created yet. Click "Create New Group" to start.
     </div>
+    }
     @for(group of parenthesesGroups; track group.id)
     {
     <div class="well well-sm" style="margin-top: 10px;">

@@ -26,69 +26,24 @@ export class ChartComponent implements AfterViewInit {
 
     const type: ChartJSChartType = (this.chartType.toLowerCase() as ChartJSChartType) || 'bar';
 
+    const { labels, datasets } = this.extractChartData(this.data);
 
-    let labels: any[] = [];
-    let datasets: any[] = [];
+    const styledDatasets = datasets.map((dataset, index) => {
+      const color = this.generateColors(1, 0.7)[0];
+      return {
+        ...dataset,
+        backgroundColor: type === 'pie' ?
+          this.generateColors(labels.length, 0.7) :
+          color,
+        borderColor: type === 'line' ? color : undefined,
+        fill: type === 'line' ? false : undefined,
+        tension: type === 'line' ? 0.1 : undefined
+      };
+    });
 
-
-    const firstItem = this.data[0];
-    const isComplexStructure = Object.values(firstItem).some(val =>
-      typeof val === 'object' && val !== null && !Array.isArray(val));
-
-    if (isComplexStructure) {
-
-      const firstProp = Object.keys(firstItem)[0];
-      const labelField = Object.keys(firstItem[firstProp])[0];
-
-      const secondProp = Object.keys(firstItem)[1];
-      const dataFields = Object.keys(firstItem[secondProp]);
-
-      labels = this.data.map(item => {
-        const labelObj = item[firstProp];
-        return labelObj.hasOwnProperty(labelField) ? labelObj[labelField] : Object.values(labelObj)[0];
-      });
-
-      datasets = dataFields.map((field, index) => {
-        const color = this.generateColors(1, 0.7)[0];
-        return {
-          label: field,
-          data: this.data.map(item => {
-            const dataObj = item[secondProp];
-            return parseFloat(dataObj[field]) || 0;
-          }),
-          backgroundColor: type === 'pie' ?
-            this.generateColors(this.data.length, 0.7) :
-            color,
-          borderColor: type === 'line' ? color : undefined,
-          fill: type === 'line' ? false : undefined,
-          tension: type === 'line' ? 0.1 : undefined
-        };
-      });
-    } else {
-      const columnNames = Object.keys(firstItem);
-      const labelColumn = columnNames[0];
-      const dataColumns = columnNames.filter(col => col !== labelColumn);
-
-      labels = this.data.map(item => item[labelColumn]);
-
-      datasets = dataColumns.map((column, index) => {
-        const color = this.generateColors(1, 0.7)[0];
-        return {
-          label: column,
-          data: this.data.map(item => parseFloat(item[column]) || 0),
-          backgroundColor: type === 'pie' ?
-            this.generateColors(this.data.length, 0.7) :
-            color,
-          borderColor: type === 'line' ? color : undefined,
-          fill: type === 'line' ? false : undefined,
-          tension: type === 'line' ? 0.1 : undefined
-        };
-      });
-    }
-
-    let finalDatasets = datasets;
-    if ((type === 'pie') && datasets.length > 1) {
-      finalDatasets = [datasets[0]];
+    let finalDatasets = styledDatasets;
+    if ((type === 'pie') && styledDatasets.length > 1) {
+      finalDatasets = [styledDatasets[0]];
       finalDatasets[0].backgroundColor = this.generateColors(labels.length, 0.7);
     }
 
@@ -130,6 +85,67 @@ export class ChartComponent implements AfterViewInit {
     this.destroyChart();
     this.chart = new Chart(ctx, config);
   }
+
+
+  extractChartData(data: any[]): { labels: any[], datasets: any[] } {
+    if (!data || data.length === 0) {
+      return { labels: [], datasets: [] };
+    }
+    
+    const firstItem = data[0];
+    
+    if (firstItem.Key && typeof firstItem.Key === 'object') {
+      const dataProperties = Object.keys(firstItem).filter(prop => prop !== 'Key');
+      
+      const labels = data.map(item => {
+        const keyObj = item.Key;
+        if (!keyObj) return 'Unknown';
+        
+        const keyValues = Object.values(keyObj);
+        return keyValues.join('-');
+      });
+      
+      const datasets = dataProperties.map(property => {
+        return {
+          label: property,
+          data: data.map(item => {
+            if (item.hasOwnProperty(property)) {
+              return parseFloat(item[property]) || 0;
+            }
+            return 0;
+          })
+        };
+      });
+      
+      return { labels, datasets };
+    }
+    
+    else {
+      const columnNames = Object.keys(firstItem);
+      const labelColumn = columnNames[0]; 
+      const dataColumns = columnNames.slice(1);
+      
+      const labels = data.map(item => {
+        const labelValue = item[labelColumn];
+        if (typeof labelValue === 'object' && labelValue !== null) {
+          return Object.values(labelValue).join('-');
+        }
+        return labelValue;
+      });
+      
+      const datasets = dataColumns.map(column => {
+        return {
+          label: column,
+          data: data.map(item => parseFloat(item[column]) || 0)
+        };
+      });
+      
+      return { labels, datasets };
+    }
+  }
+
+
+
 
   destroyChart(): void {
     if (this.chart) {

@@ -1,20 +1,25 @@
-<div class="container margin-top-5" *ngIf="!isShowMode">
+      @if(!isShowMode)
+{
+<div class="container margin-top-5">
   <button type="button" class="btn btn-primary" (click)="changeMode()">Show Mode</button>
   <button type="button" class="btn btn-primary" (click)="openChartModalClicked()">Create Chart</button>
 </div>
-<div class="container margin-top-5" *ngIf="isShowMode">
+}
+      @if(isShowMode)
+{
+<div class="container margin-top-5">
   <button type="button" class="btn btn-primary" (click)="changeMode()">Edit Mode</button>
 
 </div>
+}
+<app-chart-creator-form [getTableNamesByTypeURL]="getTableNamesByTypeURL"
+                        [tableType]="tableType"
+                        [getColumnURL]="getColumnURL"
+                        (Execute)="fetchData($event)"
+                        [openRequested]="openForm"
+                        [token]="token"></app-chart-creator-form>
 
-  <app-chart-creator-form [getTableNamesByTypeURL]="getTableNamesByTypeURL"
-                          [tableType]="tableType"
-                          [getColumnURL]="getColumnURL"
-                          (Execute)="fetchData($event)"
-                          [openRequested]="openForm"
-                          [token]="token"></app-chart-creator-form>
 
-
-  <app-grid-view [charts]="charts" [isShowMode]="isShowMode"
-                    (chartPositionChanged)="saveCharts()"
-                  (chartRemoved)="removeChart($event)"></app-grid-view>
+<app-grid-view [charts]="charts" [isShowMode]="isShowMode"
+               (chartPositionChanged)="saveCharts()"
+               (chartRemoved)="removeChart($event)"></app-grid-view>

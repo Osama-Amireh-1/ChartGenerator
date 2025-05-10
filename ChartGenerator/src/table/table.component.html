@@ -1,5 +1,5 @@
-<div class="table-responsive">
-  <table class="table table-bordered table-striped table-hover responsive-table">
+<div class="table-responsive"> 
+  <table class="table table-bordered table-striped table-hover responsive-table table-responsive">
     <caption style="text-align:center; color:black">{{ title }}</caption>
 
     <thead>
@@ -15,11 +15,7 @@
       <tr>
         @for (key of getHeaders(); track $index) {
         <td>
-          {{
-           typeof row[key] === 'object' && row[key] !== null
-         ? Object.values(row[key]).join(', ')
-         : row[key]
-          }}
+          {{ extractValue(row, key) }}
         </td>
         }
       </tr>

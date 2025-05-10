@@ -11,13 +11,16 @@
           <mat-icon>delete</mat-icon>
         </button>
       </div>
-
-      <app-chart *ngIf="item.chartData.type !== 'Table'" [data]="item.chartData.data"
-                 [chartType]="item.chartData.type" [title]="item.chartData.title">
+      @if(item.chartData.type !== 'Table')
+      {  <app-chart [data]="item.chartData.data"
+                    [chartType]="item.chartData.type" [title]="item.chartData.title">
 
       </app-chart>
-
-      <app-table *ngIf="item.chartData.type === 'Table'" [Data]="item.chartData.data" [title]="item.chartData.title"></app-table>
+      }
+      @if(item.chartData.type === 'Table')
+      {
+      <app-table [Data]="item.chartData.data" [title]="item.chartData.title"></app-table>
+      }
     </gridster-item>
     }
   </gridster>

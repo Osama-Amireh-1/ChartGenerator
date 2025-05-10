@@ -1,5 +1,15 @@
 <div class="text-right">
-  <button type="button" class="btn btn-default" style="margin-right:5px" (click)="prevStep()" *ngIf="currentStep > 1"> Back</button>
-  <button type="button" class="btn btn-primary" (click)="nextStep()" *ngIf="currentStep < 6"> Next</button>
-  <button type="button" class="btn btn-success" *ngIf="currentStep == 6" (click)="excuteQureyButtonClicked()">Generate Chart</button>
+  @if(currentStep > 1)
+  {
+  <button type="button" class="btn btn-default" style="margin-right:5px" (click)="prevStep()"> Back</button>
+  }
+  @if(currentStep < 6)
+  {
+
+  <button type="button" class="btn btn-primary" (click)="nextStep()"> Next</button>
+  }
+  @if(currentStep == 6)
+  {
+  <button type="button" class="btn btn-success" (click)="excuteQureyButtonClicked()">Generate Chart</button>
+  }
 </div>
