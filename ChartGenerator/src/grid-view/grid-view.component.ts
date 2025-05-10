@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChartResources } from '../chart/Interface/chart-resources';
 import { ChartComponent } from '../chart/chart.component';
 import { GridsterModule, GridsterConfig, GridsterItem, GridType, CompactType, DisplayGrid, GridsterItemComponentInterface, GridsterComponentInterface, PushDirections, Resizable, Draggable, GridsterItemComponent, GridsterComponent } from 'angular-gridster2';
 import { MatIconModule } from '@angular/material/icon';
 import { TableComponent } from '../table/table.component';
+import { VisualizationResource } from '../Interfaces/visualization-resource';
 
 interface Safe extends GridsterConfig {
   draggable: Draggable;
@@ -26,7 +26,7 @@ export class GridViewComponent implements OnInit, OnChanges {
       this.initGridsterOptions();
 }
 
-  @Input() set charts(value: ChartResources[]) {
+  @Input() set charts(value: VisualizationResource[]) {
     this._charts = value;
     if (value?.length) {
       this.updateGridItems();
@@ -34,14 +34,14 @@ export class GridViewComponent implements OnInit, OnChanges {
     }
   }
 
-  get charts(): ChartResources[] {
+  get charts(): VisualizationResource[] {
     return this._charts;
   }
 
-  private _charts: ChartResources[] = [];
+  private _charts: VisualizationResource[] = [];
   gridsterOptions!: Safe;
-  gridItems: Array<GridsterItem & { chartData: ChartResources }> = [];
-  @Output() chartPositionChanged = new EventEmitter<ChartResources>();
+  gridItems: Array<GridsterItem & { chartData: VisualizationResource }> = [];
+  @Output() chartPositionChanged = new EventEmitter<VisualizationResource>();
   @Output() chartRemoved = new EventEmitter<string>();
   @Input() isShowMode!: boolean
   ngOnInit(): void {
@@ -143,8 +143,8 @@ export class GridViewComponent implements OnInit, OnChanges {
     };
 
     this.charts.forEach((chart) => {
-      const cols = +chart.NumberOfColumns || 1;
-      const rows = +chart.NumberOfRows || 1;
+      const cols = +chart.numberOfColumns || 1;
+      const rows = +chart.numberOfRows || 1;
 
       let x = chart.x !== undefined ? chart.x : null;
       let y = chart.y !== undefined ? chart.y : null;
@@ -155,12 +155,13 @@ export class GridViewComponent implements OnInit, OnChanges {
         y = position.y;
       }
 
-      const item: GridsterItem & { chartData: ChartResources } = {
+      const item: GridsterItem & { chartData: VisualizationResource } = {
         cols: cols,
         rows: rows,
         x: x,
         y: y,
         chartData: chart
+       
       };
 
       this.gridItems.push(item);
@@ -179,6 +180,7 @@ export class GridViewComponent implements OnInit, OnChanges {
       item['chartData'].NumberOfRows = item.rows;
       item['chartData'].x = item.x;
       item['chartData'].y = item.y;
+      
       console.log(item.x);
       console.log(item.x);
 
@@ -187,11 +189,9 @@ export class GridViewComponent implements OnInit, OnChanges {
     }
   }
 
-  trackById(index: number, item: any): any {
-    return item.chartData.Id;
-  }
 
-  removeItem($event: MouseEvent | TouchEvent, item: GridsterItem & { chartData: ChartResources; }): void {
+
+  removeItem($event: MouseEvent | TouchEvent, item: GridsterItem & { chartData: VisualizationResource; }): void {
     $event.preventDefault();
     $event.stopPropagation();
 

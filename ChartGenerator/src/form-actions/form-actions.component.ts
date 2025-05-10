@@ -11,7 +11,7 @@ export class FormActionsComponent {
   @Input() currentStep=0
   @Output() prevStepClicked = new EventEmitter<void>();
   @Output() nextStepClicked = new EventEmitter<void>();
-  @Output() ExcuteQureyClicked = new EventEmitter<void>();
+  @Output() excuteQureyClicked = new EventEmitter<void>();
 
   prevStep() {
     this.prevStepClicked.emit();
@@ -19,7 +19,7 @@ export class FormActionsComponent {
   nextStep() {
     this.nextStepClicked.emit();
   }
-  ExcuteQureyButtonClicked() {
-    this.ExcuteQureyClicked.emit();
+  excuteQureyButtonClicked() {
+    this.excuteQureyClicked.emit();
   }
 }

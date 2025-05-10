@@ -1,15 +1,20 @@
 <div class="panel panel-info">
   <div class="panel-heading">Aggregate</div>
   <div class="panel-body">
-    <div *ngFor="let Aggregate of Aggregates" class="row" style="margin-bottom: 10px">
+    @for(Aggregate of aggregates; track Aggregate)
+    {
+    <div class="row" style="margin-bottom: 10px">
       <div class="col-xs-4">
-        <select class="form-control input-sm" [(ngModel)]="Aggregate.field"  (ngModelChange)="onAggregateChange()" [ngModelOptions]="{standalone: true}">
+        <select class="form-control input-sm" [(ngModel)]="Aggregate.field" (ngModelChange)="onAggregateChange()" [ngModelOptions]="{standalone: true}">
           <option value="">Select Column</option>
-          <option *ngFor="let column of columns" [value]="column">{{column}}</option>
+          @for(column of columns; track column)
+          {
+          <option [value]="column">{{column}}</option>
+          }
         </select>
       </div>
       <div class="col-xs-4">
-        <select class="form-control input-sm" [(ngModel)]="Aggregate.aggregateFunction"  (ngModelChange)="onAggregateChange()" [ngModelOptions]="{standalone: true}">
+        <select class="form-control input-sm" [(ngModel)]="Aggregate.aggregateFunction" (ngModelChange)="onAggregateChange()" [ngModelOptions]="{standalone: true}">
           <option value="">Select Funcation</option>
           <option value="SUM">SUM</option>
           <option value="AVG">AVG</option>
@@ -28,6 +33,7 @@
 
 
     </div>
+    }
     <div class="row">
       <div class="col-xs-12">
         <button type="button" class="btn btn-primary btn-sm" (click)="addAggregate()">

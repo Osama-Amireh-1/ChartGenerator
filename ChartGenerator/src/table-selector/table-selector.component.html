@@ -1,7 +1,11 @@
 <div style="margin-top: 20px">
   <label class="control-label">Select Table:</label>
-  <select class="form-control input-sm" type="select" [(ngModel)]="SeletedTable" [ngModelOptions]="{standalone: true}" (change)="TableSelection()">
+  <select class="form-control input-sm" type="select" [(ngModel)]="seletedTable" [ngModelOptions]="{standalone: true}" (change)="TableSelection()">
     <option selected value="">Open this select menu</option>
-    <option *ngFor="let table of tables" [value]="table">{{table}}</option>
+    @for(table of tables; track table)
+    { 
+    <option [value]="table">{{table}}</option>
+    }
+
   </select>
 </div>

@@ -1,11 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'
-import { DatabaseServiceService } from './database-service.service';
-import { Filter } from './Interfaces/filter';
-import { FilterParenthesesGroup } from './Interfaces/filter-parentheses-group';
-import { Aggregate } from './Interfaces/Aggregate';
-import { IRequstData } from './Interfaces/requst-data';
 import { v4 as uuidv4 } from 'uuid';
 import { TableSelectorComponent } from '../table-selector/table-selector.component';
 import { FilterComponent } from '../filter/filter.component'
@@ -13,16 +8,21 @@ import { FilterGroupsComponent } from '../filter-groups/filter-groups.component'
 import { GroupByComponent } from '../group-by/group-by.component';
 import { AggregateComponent } from '../aggregate/aggregate.component';
 import { map, retry } from 'rxjs';
-import { ChartConfig } from '../chart-selector/Interface/chart-config';
-import { ChartSelectorComponent } from '../chart-selector/chart-selector.component';
 import { FormActionsComponent } from '../form-actions/form-actions.component';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
+import { DatabaseService } from '../database-service/database-service.service';
+import { Filter } from '../Interfaces/filter';
+import { Aggregate } from '../Interfaces/Aggregate';
+import { RequestData } from '../Interfaces/request-data';
+import { VisualizationConfig } from '../Interfaces/visualization-config';
+import { FilterParenthesesGroup } from '../Interfaces/filter-parentheses-group';
+import { VisualizationSelectorComponent } from '../visualization-selector/visualization-selector.component';
 //declare var $: any; 
 
 @Component({
   selector: 'app-chart-creator-form',
   imports: [CommonModule, FormsModule, TableSelectorComponent, FilterComponent, FilterGroupsComponent, GroupByComponent, AggregateComponent,
-    ChartSelectorComponent, FormActionsComponent, ProgressBarComponent],
+    VisualizationSelectorComponent, FormActionsComponent, ProgressBarComponent],
   templateUrl: './chart-creator-form.component.html',
   styleUrl: './chart-creator-form.component.css',
   standalone: true,
@@ -30,33 +30,33 @@ import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 export class ChartCreatorFormComponent {
   currentStep: number = 1;
   progressValue: number = 0;
-  SeletedTable: string = "";
+  seletedTable: string = "";
   columns: string[] = [];
   tables: string[] = ["a",'b'];
-  GroupByFelid: string[] = [];
-  @Input() GetViewsAndTablesURL = "";
-  @Input() GetTablesURL = "";
-  @Input() GetViewsURL = "";
-  @Input() GetColumnURL = "";
-  @Input() GetDataURL = "";
-  @Input({ required: true }) TableType = "";
-  Wherefilters: Filter[] = [];
-  AggregateFilters: Filter[] = [];
+  groupByFelids: string[] = [];
+  @Input() getTableNamesByTypeURL = "";
+  @Input() getColumnURL = "";
+  @Input() getDataURL = "";
+  @Input({ required: true }) tableType = "";
+  wherefilters: Filter[] = [];
+  aggregateFilters: Filter[] = [];
   whereParenthesesGroups: FilterParenthesesGroup[] = [];
-  Aggregates: Aggregate[] = [];
-  AggregateFiltersColumns: string[] = [];
+  aggregates: Aggregate[] = [];
+  aggregateFiltersColumns: string[] = [];
   aggregateParenthesesGroups: FilterParenthesesGroup[] = [];
   @Output() Execute = new EventEmitter<any>();
-  dataRequste!: IRequstData;
+  dataRequste!: RequestData;
   logicalFilterLink: string[] = [];
   logicalAggregateLink: string[] = [];
-  ChartType: string = "";
-  NumberOfRows=0
-  NumberOfColumns = 0
+  visualizationType: string = "";
+  numberOfRows=0
+  numberOfColumns = 0
+  tilte =""
   @Input() openRequested: boolean = false;
   groupCount = 0;
+  @Input({ required: true }) token: string = "";
 
-  constructor(private DatabaseServ: DatabaseServiceService) {
+  constructor(private DatabaseServ: DatabaseService) {
 
   }
   ngOnChanges(changes: SimpleChanges) {
@@ -110,8 +110,8 @@ export class ChartCreatorFormComponent {
       logicalAggregateLink: [],
   
     };
-
-    const validWhereFilters = this.Wherefilters.filter(
+    this.dataRequste.tableName = this.seletedTable
+    const validWhereFilters = this.wherefilters.filter(
       filter => filter.field && filter.operator && filter.value !== undefined
     );
     validWhereFilters.forEach(filter => {
@@ -175,14 +175,14 @@ export class ChartCreatorFormComponent {
       this.dataRequste.logicalFilterLink = [...this.logicalFilterLink];
     }
 
-    this.Aggregates.forEach(agg => {
+    this.aggregates.forEach(agg => {
       if (agg.aggregateFunction && agg.field) {
         this.dataRequste.aggregateFunctions.push(agg.aggregateFunction);
         this.dataRequste.aggregateFields.push(agg.field);
       }
     });
 
-    const validAggregateFilters = this.AggregateFilters.filter(
+    const validAggregateFilters = this.aggregateFilters.filter(
       filter => filter.field && filter.operator && filter.value !== undefined
     );
 
@@ -257,17 +257,18 @@ export class ChartCreatorFormComponent {
       
 
     }
-    this.dataRequste.groupByFields = this.GroupByFelid;
+    this.dataRequste.groupByFields = this.groupByFelids;
   }
 
-  ExcuteQureyButtonClicked() {
+  excuteQureyButtonClicked() {
       this.prepareRequestData()
     this.Execute.emit({
       Id: uuidv4(),
       dataRequste: this.dataRequste,
-      chartType: this.ChartType,
-      NumberOfRows: this.NumberOfRows,
-      NumberOfColumns: this.NumberOfColumns
+      chartType: this.visualizationType,
+      NumberOfRows: this.numberOfRows,
+      NumberOfColumns: this.numberOfColumns,
+      Title: this.tilte
     });
 
    this.restartForm()
@@ -279,66 +280,65 @@ export class ChartCreatorFormComponent {
   restartForm(): void {
     this.currentStep = 1;
     this.progressValue = 0;
-    this.TableType = "";
-    this.SeletedTable = "";
+    this.seletedTable ="";
     this.tables = [];
     this.columns = ['a', 'b'];
-    this.GroupByFelid = [];
-    this.Wherefilters = [];
-    this.AggregateFilters = [];
-    this.Aggregates = [];
+    this.groupByFelids = [];
+    this.wherefilters = [];
+    this.aggregateFilters = [];
+    this.aggregates = [];
     this.whereParenthesesGroups = [];
     this.aggregateParenthesesGroups = [];
     this.logicalFilterLink = [];
     this.logicalAggregateLink = [];
-    this.ChartType = "";
-    this.NumberOfRows = 0;
-    this.NumberOfColumns = 0;
+    this.visualizationType = "";
+    this.numberOfRows = 0;
+    this.numberOfColumns = 0;
+    this.tableType = this.tableType;
+    this.tilte = "";
     (window as any).$('#chartModal').modal('hide');
 
   }
   fetchColumns(SelectedTable: string) {
-    this.SeletedTable = SelectedTable;
-    console.log("Fetch Columns", this.SeletedTable)
-    const CURL = `${this.GetColumnURL}/${this.SeletedTable}`;
-    this.columns = ['a', 'b'];
+    this.seletedTable = SelectedTable;
+    console.log("Fetch Columns", this.seletedTable);
 
-    //this.DatabaseServ.getColumns(CURL).subscribe((Columns) => {
-    //  this.columns = Columns;
-    //});
+    this.DatabaseServ.getColumns(this.getColumnURL, this.seletedTable, this.token).subscribe((response)=>{
+      this.columns = response.Columns;
 
+    });
   }
 
   handleUpdateWhereFilter(filters: Filter[]) {
-    this.Wherefilters = filters;
+    this.wherefilters = filters;
   }
   handleUpdateWhereFilterParentheses(parenthesesGroups: FilterParenthesesGroup[]) {
     this.whereParenthesesGroups = parenthesesGroups;
   }
   handleUpdateGroupBy(GroupByFelids: string[]) {
-    this.GroupByFelid = GroupByFelids;
+    this.groupByFelids = GroupByFelids;
   }
   handleAddAggregates(Aggregates: Aggregate[]) {
-    this.Aggregates = Aggregates;
+    this.aggregates = Aggregates;
 
-    const aggregateColumns = this.Aggregates
+    const aggregateColumns = this.aggregates
       .filter(item => item.aggregateFunction?.toLowerCase().length > 0 && item.field?.length > 0)
       .map(item => `${item.aggregateFunction.toLowerCase()}_${item.field}`);
 
-    this.AggregateFiltersColumns = aggregateColumns;
+    this.aggregateFiltersColumns = aggregateColumns;
   }
   handleRemoveAggregates(Aggregates: Aggregate[]) {
-    this.Aggregates = Aggregates;
+    this.aggregates = Aggregates;
 
-    const aggregateColumns = this.Aggregates
+    const aggregateColumns = this.aggregates
       .filter(item => item.aggregateFunction?.toLowerCase().length > 0 && item.field?.length > 0)
       .map(item => `${item.aggregateFunction.toLowerCase()}_${item.field}`);
-    this.AggregateFilters = this.AggregateFilters.filter(item =>
+    this.aggregateFilters = this.aggregateFilters.filter(item =>
       item.field && aggregateColumns.includes(item.field)
     );
 
     const idMap = new Map<number, number>();
-    this.AggregateFilters.forEach((filter, index) => {
+    this.aggregateFilters.forEach((filter, index) => {
       idMap.set(filter.id, index);
       filter.id = index;
     });
@@ -355,21 +355,22 @@ export class ChartCreatorFormComponent {
     }).filter(group => group.filterIds.length > 0);
 
     this.aggregateParenthesesGroups = updatedGroups;
-    this.AggregateFiltersColumns = aggregateColumns;
+    this.aggregateFiltersColumns = aggregateColumns;
 
   }
   handleUpdateHavingFilter(filters: Filter[]) {
-    this.AggregateFilters = filters
+    this.aggregateFilters = filters
   }
   handleUpdateHavingFilterParentheses(parenthesesGroups: FilterParenthesesGroup[]) {
     this.aggregateParenthesesGroups = parenthesesGroups
   }
-  handleChartUpdate(chartConfig: ChartConfig) {
+  handleVisualizationUpdate(chartConfig: VisualizationConfig) {
     console.log(chartConfig)
-    this.ChartType = chartConfig.ChartType
-    this.NumberOfRows = chartConfig.NumberOfRows
-    this.NumberOfColumns = chartConfig.NumberOfColumns
-
+    this.visualizationType = chartConfig.visualizationType
+    this.numberOfRows = chartConfig.numberOfRows
+    this.numberOfColumns = chartConfig.numberOfColumns
+    this.tilte = chartConfig.title
+    console.log(this.tilte)
   }
   handlegroupCountUpdate(groupCount: number) {
     this.groupCount = groupCount;

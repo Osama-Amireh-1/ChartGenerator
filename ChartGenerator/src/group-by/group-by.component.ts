@@ -8,19 +8,19 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './group-by.component.css'
 })
 export class GroupByComponent {
-  @Input() GroupByFelid: string[] = [];
+  @Input() groupByFelids: string[] = [];
   @Input() columns: string[] = [];
-  @Output() UpdateGroupBy = new EventEmitter<string[]>();
-  changeGroupByFiled(vale: string, event: Event): void {
+  @Output() updateGroupBy = new EventEmitter<string[]>();
+  changeGroupByFileds(vale: string, event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
     if (isChecked) {
-      this.GroupByFelid.push(vale)
+      this.groupByFelids.push(vale)
     }
     else {
-      this.GroupByFelid = this.GroupByFelid.filter(g => g !== vale);
+      this.groupByFelids = this.groupByFelids.filter(g => g !== vale);
 
     }
-    this.UpdateGroupBy.emit(this.GroupByFelid)
+    this.updateGroupBy.emit(this.groupByFelids)
 
   }
 }

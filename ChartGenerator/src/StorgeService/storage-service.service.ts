@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ChartResources } from '../chart/Interface/chart-resources';
-import { IRequstData } from '../chart-creator-form/Interfaces/requst-data';
-import { SavedChartData } from './Interface/saved-chart-data';
+import { RequestData } from '../Interfaces/request-data';
+import { VisualizationResource } from '../Interfaces/visualization-resource';
+import { SavedChartData } from '../Interfaces/saved-chart-data';
 
 @Injectable({
   providedIn: 'root',
@@ -11,15 +11,16 @@ export class StorageService {
 
   constructor() { }
 
-  saveCharts(charts: ChartResources[], formDataMap: Map<string, IRequstData>) {
+  saveCharts(charts: VisualizationResource[], formDataMap: Map<string, RequestData>) {
 
     try {
       const dataToSave: SavedChartData[] = charts.map(chart => {
         return {
           id: chart.Id,
-          chartType: chart.ChartType,
-          numberOfRows: chart.NumberOfRows,
-          numberOfColumns: chart.NumberOfColumns,
+          chartType: chart.type,
+          numberOfRows: chart.numberOfRows,
+          numberOfColumns: chart.numberOfColumns,
+          tilte: chart.title,
           x: chart.x,
           y: chart.y,
           requestData: formDataMap.get(chart.Id) || this.getEmptyRequestData()
@@ -43,7 +44,7 @@ export class StorageService {
     }
   }
 
-  private getEmptyRequestData(): IRequstData {
+  private getEmptyRequestData(): RequestData {
     return {
       tableName: '',
       filterField: [],

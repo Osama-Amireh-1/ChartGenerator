@@ -1,16 +1,16 @@
 import { Component, EventEmitter, input, Input, OnInit, Output } from '@angular/core';
-import { DatabaseServiceService } from '../chart-creator-form/database-service.service';
 import { ChartCreatorFormComponent } from '../chart-creator-form/chart-creator-form.component';
-import { ChartResources } from '../chart/Interface/chart-resources';
 import { ChartComponent } from '../chart/chart.component';
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { GridViewComponent } from '../grid-view/grid-view.component';
 import { v4 as uuidv4 } from 'uuid';
+import { SavedChartData } from '../Interfaces/saved-chart-data';
 import { StorageService } from '../StorgeService/storage-service.service';
-import { IRequstData } from '../chart-creator-form/Interfaces/requst-data';
-import { SavedChartData } from '../StorgeService/Interface/saved-chart-data';
+import { DatabaseService } from '../database-service/database-service.service';
+import { RequestData } from '../Interfaces/request-data';
+import { VisualizationResource } from '../Interfaces/visualization-resource';
 
 @Component({
   selector: 'app-chart-generator',
@@ -21,18 +21,17 @@ import { SavedChartData } from '../StorgeService/Interface/saved-chart-data';
 })
 export class ChartGeneratorComponent implements OnInit {
 
-  @Input({ required: true }) GetViewsAndTablesURL = "";
-  @Input({ required: true }) GetTablesURL = "";
-  @Input({ required: true }) GetViewsURL = "";
-  @Input({ required: true }) GetColumnURL = "";
-  @Input({ required: true }) GetDataURL = "";
-  @Input({ required: true }) TableType = "";
-  charts: ChartResources[] = [];
+  @Input({ required: true }) getTableNamesByTypeURL = "";
+  @Input({ required: true }) getColumnURL = "";
+  @Input({ required: true }) getDataURL = "";
+  @Input({ required: true }) tableType = "";
+  charts: VisualizationResource[] = [];
   openForm = false;
   isShowMode = true;
-  chartRequestData: Map<string, IRequstData> = new Map();
+  chartRequestData: Map<string, RequestData> = new Map();
+  @Input({ required: true }) token: string="";
 
-  constructor(private DatabaseServ: DatabaseServiceService, private storageService: StorageService) {}
+  constructor(private databaseServ: DatabaseService, private storageService: StorageService) {}
     ngOnInit(): void {
       this.loadSavedCharts();
   }
@@ -40,6 +39,7 @@ export class ChartGeneratorComponent implements OnInit {
   loadSavedCharts() {
     const savedCharts = this.storageService.loadSavedCharts();
     if (savedCharts.length > 0) {
+      console.log(savedCharts.length)
       savedCharts.forEach(chart => {
         this.chartRequestData.set(chart.id, chart.requestData);
         this.fetchDataForSavedChart(chart)
@@ -48,36 +48,35 @@ export class ChartGeneratorComponent implements OnInit {
 
   }
   fetchDataForSavedChart(chart: SavedChartData) {
-    const requestData = this.buildHttpParams(chart.requestData);
+    const requestData = chart.requestData;
+    const requestParams = this.buildHttpParams(requestData);
 
-    const ddata = [
-      { brand: "Toyota", countCard: 3 },
-      { brand: "Honda", countCard: 3 },
-      { brand: "Ford", countCard: 3 },
-      { brand: "BMW", countCard: 3 },
-      { brand: "Mercedes", countCard: 3 },
-      { brand: "Tesla", countCard: 2 },
-      { brand: "Nissan", countCard: 2 },
-      { brand: "Chevrolet", countCard: 1 }
-    ];
+    let Data: any
 
-    this.addChartWithData(
-      chart.id,
-      ddata,
-      chart.chartType,
-      chart.numberOfRows,
-      chart.numberOfColumns,
-      chart.x,
-      chart.y
-    );
+    this.databaseServ.postData(this.getDataURL, requestData, this.token).subscribe(data => {
+      this.addChartWithData(
+        chart.id,
+        data.Data,
+        chart.chartType,
+        chart.numberOfRows,
+        chart.numberOfColumns,
+        chart.tilte,
+        chart.x,
+        chart.y
+      );
+    });
+    console.log(Data)
+
+    
   }
-  addChartWithData(id: any, data: any[], chartType: string, rows: number, cols: number, x?: number, y?: number): void {
-    const newChart: ChartResources = {
+  addChartWithData(id: any, data: any[], chartType: string, rows: number, cols: number, Tilte: string, x?: number, y?: number, ): void {
+    const newChart: VisualizationResource = {
       Id: id,
-      Data: data,
-      ChartType: chartType,
-      NumberOfRows: rows,
-      NumberOfColumns: cols,
+      data: data,
+      type: chartType,
+      numberOfRows: rows,
+      numberOfColumns: cols,
+      title: Tilte,
       x: x,
       y: y
     };
@@ -110,38 +109,28 @@ export class ChartGeneratorComponent implements OnInit {
     this.chartRequestData.set(request.Id, requestData);
 
     console.log(request.dataRequste)
-    const ddata = [
-      { brand: "Toyota", countCard: 3 },
-      { brand: "Honda", countCard: 3 },
-      { brand: "Ford", countCard: 3 },
-      { brand: "BMW", countCard: 3 },
-      { brand: "Mercedes", countCard: 3 },
-      { brand: "Tesla", countCard: 2 },
-      { brand: "Nissan", countCard: 2 },
-      { brand: "Chevrolet", countCard: 1 }
-    ];
-    //this.DatabaseServ.getData(this.GetDataURL, requestData).subscribe(data => {
-    //  this.charts.push({
-    //    Data: data,
-    //    ChartType: request.chartType,
-    //    ChartSize: request.chartSize
-    //  });
-    //});
-
-    this.addChartWithData(
-      request.Id,
-      ddata,
-      request.chartType,
-      request.NumberOfRows,
-      request.NumberOfColumns
-    );
-
-
-    this.saveCharts();
-
+   
+    let Data: any
+    this.databaseServ.postData(this.getDataURL, requestData, this.token).subscribe(data => {
+      this.addChartWithData(
+        request.Id,
+        data.Data,
+        request.chartType,
+        request.NumberOfRows,
+        request.NumberOfColumns,
+        request.Title,
+      );
+      console.log("title", request.Title)
+      console.log("saved");
+      this.saveCharts();
+    });
   }
   saveCharts(): void {
     this.storageService.saveCharts(this.charts, this.chartRequestData);
+    console.log(this.charts)
+    console.log(this.chartRequestData)
+
+
   }
   removeChart(chartId: string): void {
     this.charts = this.charts.filter(chart => chart.Id !== chartId);

@@ -1,4 +1,4 @@
-export interface IRequstData {
+export interface RequestData {
   tableName: string,
   filterField: string[],
   filterOperator: string[],

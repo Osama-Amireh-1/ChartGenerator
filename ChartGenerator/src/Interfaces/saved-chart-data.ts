@@ -1,4 +1,4 @@
-import { IRequstData } from "../../chart-creator-form/Interfaces/requst-data";
+import { RequestData } from "./request-data";
 
 export interface SavedChartData {
   id: any;
@@ -7,5 +7,6 @@ export interface SavedChartData {
   numberOfColumns: number;
   x?: number;
   y?: number;
-  requestData: IRequstData;
+  requestData: RequestData;
+  tilte: string
 }

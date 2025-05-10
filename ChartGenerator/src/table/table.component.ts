@@ -10,5 +10,17 @@ import { Component, Input } from '@angular/core';
 })
 export class TableComponent {
   @Input({ required: true }) Data: any;
+  @Input({ required: true }) title: string=""
+  public Object = Object;
 
+  getHeaders(): string[] {
+    return this.Data?.length ? Object.keys(this.Data[0]) : [];
+  }
+
+  extractValue(value: any): string {
+    if (typeof value === 'object' && value !== null) {
+      return Object.values(value).join(', ');
+    }
+    return String(value);
+  }
 }

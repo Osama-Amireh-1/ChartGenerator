@@ -1,9 +1,9 @@
 import { Component, EventEmitter, input, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { Filter } from '../chart-creator-form/Interfaces/filter';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FilterParenthesesGroup } from '../chart-creator-form/Interfaces/filter-parentheses-group';
+import { FilterParenthesesGroup } from '../Interfaces/filter-parentheses-group';
 import { filter } from 'rxjs';
+import { Filter } from '../Interfaces/filter';
 
 @Component({
   selector: 'app-filter',
@@ -16,7 +16,7 @@ export class FilterComponent implements OnChanges {
   @Input() filters: Filter[] = [];
   filterCount = 0; k: string[] = [];
   @Input() parenthesesGroups: FilterParenthesesGroup[] = [];
-  @Output() UpdateFilters = new EventEmitter<Filter[]>();
+  @Output() updateFilters = new EventEmitter<Filter[]>();
   @Input({ required: true }) header: string = ""
   @Output() updateParenthesesGroups = new EventEmitter<FilterParenthesesGroup[]>();
 
@@ -36,7 +36,7 @@ export class FilterComponent implements OnChanges {
       logicalLink: this.filters.length > 0 ? 'AND' : "OR"
     };
     this.filters.push(newFilter);
-    this.UpdateFilters.emit(this.filters);
+    this.updateFilters.emit(this.filters);
 
   }
 
@@ -65,7 +65,7 @@ export class FilterComponent implements OnChanges {
     }).filter(g => g.filterIds.length > 0);
 
     this.parenthesesGroups = updatedGroups;
-    this.UpdateFilters.emit(this.filters);
+    this.updateFilters.emit(this.filters);
     this.updateParenthesesGroups.emit(this.parenthesesGroups);
   }
 
@@ -97,7 +97,7 @@ export class FilterComponent implements OnChanges {
   }
 
   OnFilterChange() {
-    this.UpdateFilters.emit(this.filters);
+    this.updateFilters.emit(this.filters);
    
   }
 }

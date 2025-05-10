@@ -1,30 +1,38 @@
 <div class="panel panel-info">
   <div class="panel-heading">{{header}}</div>
   <div class="panel-body">
-    <div *ngFor="let filter of filters; let i = index" class="row" style="margin-bottom: 10px">
+    @for(filter of filters; track filter.id; let i = $index)
+    {
+    <div class="row" style="margin-bottom: 10px">
 
       <div class="col-xs-1">
-        <select *ngIf="i > 0" class="form-control input-sm" [(ngModel)]="filter.logicalLink"  (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
+        <select *ngIf="i > 0" class="form-control input-sm" [(ngModel)]="filter.logicalLink" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
           <option value="AND">AND</option>
           <option value="OR">OR</option>
         </select>
       </div>
       <div class="col-xs-1">
-        <span *ngFor="let group of parenthesesGroups">
+        @for(group of parenthesesGroups; track group.id)
+        {
+        <span>
           <span *ngIf="isFirstInGroup(group, filter.id)" style="font-size: 18px; font-weight: bold;">(</span>
         </span>
+        }
       </div>
-
+      
 
       <div class="col-xs-3">
-        <select class="form-control input-sm" [(ngModel)]="filter.field"  (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
+        <select class="form-control input-sm" [(ngModel)]="filter.field" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
           <option value="">Select column</option>
-          <option *ngFor="let column of columns" [value]="column">{{column}}</option>
+          @for(column of columns; track column)
+          {
+          <option [value]="column">{{column}}</option>
+          }
         </select>
       </div>
 
       <div class="col-xs-2">
-        <select class="form-control input-sm" [(ngModel)]="filter.operator"  (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
+        <select class="form-control input-sm" [(ngModel)]="filter.operator" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
           <option value="=">=</option>
           <option value="<>">≠</option>
           <option value=">">></option>
@@ -35,13 +43,16 @@
       </div>
 
       <div class="col-xs-3">
-        <input type="text" class="form-control input-sm" placeholder="Value" [(ngModel)]="filter.value"  (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
+        <input type="text" class="form-control input-sm" placeholder="Value" [(ngModel)]="filter.value" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
       </div>
 
       <div class="col-xs-1">
-        <span *ngFor="let group of parenthesesGroups">
+        @for(group of parenthesesGroups; track group.id)
+        {
+        <span>
           <span *ngIf="isLastInGroup(group, filter.id)" style="font-size: 18px; font-weight: bold;">)</span>
         </span>
+        }
       </div>
 
       <div class="col-xs-1" *ngIf="filters.length > 0">
@@ -50,7 +61,7 @@
         </button>
       </div>
     </div>
-
+    }
     <div class="row" style="margin-top: 10px;">
       <div class="col-xs-1">
         <button type="button" class="btn btn-primary btn-sm" (click)="addFilter()">

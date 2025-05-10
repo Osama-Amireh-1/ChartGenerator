@@ -1,7 +1,8 @@
 <div class="gridster-container" [ngClass]="{'show-mode': isShowMode}">
   <gridster [options]="gridsterOptions">
-    <gridster-item *ngFor="let item of gridItems; trackBy: trackById"
-                   [item]="item"
+    @for(item of gridItems; track item.chartData.Id) 
+    {
+    <gridster-item [item]="item"
                    (itemChange)="onItemChange(item)">
       <div class="text-right margin-top-right-5">
         <button class=" btn btn-danger btn-xs" type="button" mat-mini-fab
@@ -10,14 +11,15 @@
           <mat-icon>delete</mat-icon>
         </button>
       </div>
- 
-      <app-chart *ngIf="item.chartData.ChartType !== 'Table'"  [Data]="item.chartData.Data"
-                 [ChartType]="item.chartData.ChartType">
+
+      <app-chart *ngIf="item.chartData.type !== 'Table'" [data]="item.chartData.data"
+                 [chartType]="item.chartData.type" [title]="item.chartData.title">
 
       </app-chart>
 
-      <app-table *ngIf="item.chartData.ChartType === 'Table'" [Data]="item.chartData.Data"></app-table>
+      <app-table *ngIf="item.chartData.type === 'Table'" [Data]="item.chartData.data" [title]="item.chartData.title"></app-table>
     </gridster-item>
+    }
   </gridster>
 
 

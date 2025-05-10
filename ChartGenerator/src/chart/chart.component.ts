@@ -1,17 +1,17 @@
-import {Component,Input,ViewChild,ElementRef,AfterViewInit} from '@angular/core';
-
-import {Chart,registerables,ChartConfiguration,ChartType as ChartJSChartType} from 'chart.js';
-
-Chart.register(...registerables); 
+import { Component, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Chart, registerables, ChartConfiguration, ChartType as ChartJSChartType } from 'chart.js';
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-chart',
   templateUrl: './chart.component.html',
-  styleUrl: `./chart.component.css`
+  styleUrl: './chart.component.css'
 })
 export class ChartComponent implements AfterViewInit {
-  @Input({ required: true }) Data: any;
-  @Input({ required: true }) ChartType: string = '';
+  @Input({ required: true }) data: any[] = [];
+  @Input({ required: true }) chartType: string = '';
+  @Input({ required: true }) title: string = '';
+
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
   chart: Chart | null = null;
 
@@ -19,47 +19,83 @@ export class ChartComponent implements AfterViewInit {
     this.createChart();
   }
 
-
-
   createChart(): void {
     if (!this.chartCanvas) return;
-
     const ctx = this.chartCanvas.nativeElement.getContext('2d');
-    if (!ctx) return;
+    if (!ctx || !this.data || this.data.length === 0) return;
 
-    
-    const labels = this.Data.map((item: { brand: any; }) => item.brand);
-    const data = this.Data.map((item: { countCard: any; }) => item.countCard);
-    const backgroundColors = this.generateColors(labels.length, 0.7);
-    const borderColors = this.generateColors(labels.length, 1);
+    const type: ChartJSChartType = (this.chartType.toLowerCase() as ChartJSChartType) || 'bar';
 
 
-    const type: ChartJSChartType = (this.ChartType.toLowerCase() as ChartJSChartType) || 'bar';
+    let labels: any[] = [];
+    let datasets: any[] = [];
 
-    let chartData: any;
 
-    if (type === 'pie' || type === 'doughnut') {
-      chartData = {
-        labels: labels,
-        datasets: [{
-          data: data,
-          backgroundColor: backgroundColors,
-          borderColor: borderColors,
-          borderWidth: 1
-        }]
-      };
+    const firstItem = this.data[0];
+    const isComplexStructure = Object.values(firstItem).some(val =>
+      typeof val === 'object' && val !== null && !Array.isArray(val));
+
+    if (isComplexStructure) {
+
+      const firstProp = Object.keys(firstItem)[0];
+      const labelField = Object.keys(firstItem[firstProp])[0];
+
+      const secondProp = Object.keys(firstItem)[1];
+      const dataFields = Object.keys(firstItem[secondProp]);
+
+      labels = this.data.map(item => {
+        const labelObj = item[firstProp];
+        return labelObj.hasOwnProperty(labelField) ? labelObj[labelField] : Object.values(labelObj)[0];
+      });
+
+      datasets = dataFields.map((field, index) => {
+        const color = this.generateColors(1, 0.7)[0];
+        return {
+          label: field,
+          data: this.data.map(item => {
+            const dataObj = item[secondProp];
+            return parseFloat(dataObj[field]) || 0;
+          }),
+          backgroundColor: type === 'pie' ?
+            this.generateColors(this.data.length, 0.7) :
+            color,
+          borderColor: type === 'line' ? color : undefined,
+          fill: type === 'line' ? false : undefined,
+          tension: type === 'line' ? 0.1 : undefined
+        };
+      });
     } else {
-      chartData = {
-        labels: labels,
-        datasets: [{
-          label: 'Car Brands Count',
-          data: data,
-          backgroundColor: backgroundColors,
-          borderColor: borderColors,
-          borderWidth: 1
-        }]
-      };
+      const columnNames = Object.keys(firstItem);
+      const labelColumn = columnNames[0];
+      const dataColumns = columnNames.filter(col => col !== labelColumn);
+
+      labels = this.data.map(item => item[labelColumn]);
+
+      datasets = dataColumns.map((column, index) => {
+        const color = this.generateColors(1, 0.7)[0];
+        return {
+          label: column,
+          data: this.data.map(item => parseFloat(item[column]) || 0),
+          backgroundColor: type === 'pie' ?
+            this.generateColors(this.data.length, 0.7) :
+            color,
+          borderColor: type === 'line' ? color : undefined,
+          fill: type === 'line' ? false : undefined,
+          tension: type === 'line' ? 0.1 : undefined
+        };
+      });
     }
+
+    let finalDatasets = datasets;
+    if ((type === 'pie') && datasets.length > 1) {
+      finalDatasets = [datasets[0]];
+      finalDatasets[0].backgroundColor = this.generateColors(labels.length, 0.7);
+    }
+
+    const chartData: any = {
+      labels: labels,
+      datasets: finalDatasets
+    };
 
     const options: ChartConfiguration['options'] = {
       responsive: true,
@@ -69,10 +105,14 @@ export class ChartComponent implements AfterViewInit {
           display: true,
           position: 'top'
         },
+        title: {
+          display: true,
+          text: this.title,
+        }
       }
     };
 
-    if (type !== 'pie' && type !== 'doughnut') {
+    if (type !== 'pie') {
       options.scales = {
         y: {
           beginAtZero: true
@@ -81,13 +121,13 @@ export class ChartComponent implements AfterViewInit {
     }
 
     const config: ChartConfiguration = {
-     
       type: type,
       data: chartData,
-      
       options: options
     };
-    console.log(this.Data)
+
+    console.log('Chart data:', this.data);
+    this.destroyChart();
     this.chart = new Chart(ctx, config);
   }
 

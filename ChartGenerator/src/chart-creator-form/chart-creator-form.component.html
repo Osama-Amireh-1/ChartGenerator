@@ -14,38 +14,39 @@
           <form class="ChartFrom" >
             <div class="margin-Bottom-3" *ngIf="currentStep === 1">
               <h3>Step 1</h3>
-              <app-table-selector [TableType]="TableType" [GetTablesURL]="GetTablesURL" [SeletedTable]="SeletedTable" (tableSelected)=fetchColumns($event) ></app-table-selector>
+              <app-table-selector [tableType]="tableType" [getTableNamesByTypeURL]="getTableNamesByTypeURL" [seletedTable]="seletedTable" (tableSelected)=fetchColumns($event) [token]="token"
+                                 ></app-table-selector>
             </div>
 
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 2">
               <h3>Step 2</h3>
-              <app-filter [columns]="columns" (UpdateFilters)="handleUpdateWhereFilter($event)" (updateParenthesesGroups)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups" [header]="'Filter'" [filters]="Wherefilters"></app-filter>
-              <app-filter-groups [filters]="Wherefilters" (UpdateFiltersParentheses)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups"></app-filter-groups>
+              <app-filter [columns]="columns" (updateFilters)="handleUpdateWhereFilter($event)" (updateParenthesesGroups)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups" [header]="'Filter'" [filters]="wherefilters"></app-filter>
+              <app-filter-groups [filters]="wherefilters" (updateFiltersParentheses)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups"></app-filter-groups>
             </div>
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 3">
               <h3>Step 3</h3>
-              <app-group-by [columns]="columns" (UpdateGroupBy)="handleUpdateGroupBy($event)" [GroupByFelid]="GroupByFelid"></app-group-by>
+              <app-group-by [columns]="columns" (updateGroupBy)="handleUpdateGroupBy($event)" [groupByFelids]="groupByFelids"></app-group-by>
             </div>
 
 
             <div class="margin-Bottom-3" *ngIf="currentStep === 4">
               <h3>Step 4</h3>
-              <app-aggregate [columns]="columns" (AddAggregates)="handleAddAggregates($event)" (RemoveAggregates)="handleRemoveAggregates($event)" [Aggregates]="Aggregates"></app-aggregate>
+              <app-aggregate [columns]="columns" (addAggregates)="handleAddAggregates($event)" (removeAggregates)="handleRemoveAggregates($event)" [aggregates]="aggregates"></app-aggregate>
             </div>
             <div class="margin-Bottom-3" *ngIf="currentStep === 5">
               <h3>Step 5</h3>
-              <app-filter [columns]="AggregateFiltersColumns" (UpdateFilters)="handleUpdateHavingFilter($event)" (updateParenthesesGroups)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups" [header]="'Aggregate Filter'" [filters]="AggregateFilters"></app-filter>
-              <app-filter-groups [filters]="AggregateFilters" (UpdateFiltersParentheses)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups"></app-filter-groups>
+              <app-filter [columns]="aggregateFiltersColumns" (updateFilters)="handleUpdateHavingFilter($event)" (updateParenthesesGroups)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups" [header]="'Aggregate Filter'" [filters]="aggregateFilters"></app-filter>
+              <app-filter-groups [filters]="aggregateFilters" (updateFiltersParentheses)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups"></app-filter-groups>
             </div>
             <div class="margin-Bottom-3" *ngIf="currentStep === 6">
               <h3>Step 6</h3>
-              <app-chart-selector (UpdateChart)="handleChartUpdate($event)"  [ChartType]="ChartType" [NumberOfColumns]="NumberOfColumns" [NumberOfRows]="NumberOfRows"></app-chart-selector>
+              <app-visualization-selector (updateVisualization)="handleVisualizationUpdate($event)"  [visualizationType]="visualizationType" [numberOfColumns]="numberOfColumns" [numberOfRows]="numberOfRows" [title]="tilte"></app-visualization-selector>
             </div>
 
           </form>
-          <app-form-actions [currentStep]="currentStep" (prevStepClicked)="prevStep()" (nextStepClicked)="nextStep()" (ExcuteQureyClicked)="ExcuteQureyButtonClicked()"></app-form-actions>
+          <app-form-actions [currentStep]="currentStep" (prevStepClicked)="prevStep()" (nextStepClicked)="nextStep()" (excuteQureyClicked)="excuteQureyButtonClicked()"></app-form-actions>
 
 
 

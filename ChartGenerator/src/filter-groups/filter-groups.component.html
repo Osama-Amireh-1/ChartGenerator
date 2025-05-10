@@ -12,8 +12,9 @@
     <div *ngIf="parenthesesGroups.length === 0" class="alert alert-info" style="margin-top: 10px;">
       No groups created yet. Click "Create New Group" to start.
     </div>
-
-    <div *ngFor="let group of parenthesesGroups" class="well well-sm" style="margin-top: 10px;">
+    @for(group of parenthesesGroups; track group.id)
+    {
+    <div class="well well-sm" style="margin-top: 10px;">
       <div class="row">
         <div class="col-xs-12">
           <strong>Group {{ group.id }}:</strong>
@@ -25,7 +26,9 @@
 
       <div class="row" style="margin-top: 10px;">
         <div class="col-xs-12">
-          <div class="checkbox-inline" *ngFor="let filter of filters">
+          @for(filter of filters; track filter.id)
+          {
+          <div class="checkbox-inline">
             <label>
               <input type="checkbox"
                      [id]="'group-' + group.id + '-filter-' + filter.id"
@@ -34,8 +37,10 @@
               Filter {{ filter.id }}
             </label>
           </div>
+          }
         </div>
       </div>
     </div>
+    }
   </div>
 </div>

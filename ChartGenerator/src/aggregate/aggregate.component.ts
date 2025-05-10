@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { Aggregate } from '../chart-creator-form/Interfaces/Aggregate';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Filter } from '../chart-creator-form/Interfaces/filter';
-import { FilterParenthesesGroup } from '../chart-creator-form/Interfaces/filter-parentheses-group';
+import { Aggregate } from '../Interfaces/Aggregate';
 
 @Component({
   selector: 'app-aggregate',
@@ -13,16 +11,16 @@ import { FilterParenthesesGroup } from '../chart-creator-form/Interfaces/filter-
 })
 export class AggregateComponent implements OnChanges {
 
-  @Input() Aggregates: Aggregate[] = [];
+  @Input() aggregates: Aggregate[] = [];
   aggregateCount = 0;
   @Input() columns: string[] = [];
-  @Output() AddAggregates = new EventEmitter<Aggregate[]>();
-  @Output() RemoveAggregates = new EventEmitter<Aggregate[]>();
+  @Output() addAggregates = new EventEmitter<Aggregate[]>();
+  @Output() removeAggregates = new EventEmitter<Aggregate[]>();
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['Aggregates'] && this.Aggregates) {
-      this.aggregateCount = this.Aggregates.length > 0
-        ? Math.max(...this.Aggregates.map(agg => agg.id)) + 1
+    if (changes['aggregates'] && this.aggregates) {
+      this.aggregateCount = this.aggregates.length > 0
+        ? Math.max(...this.aggregates.map(agg => agg.id)) + 1
         : 0;
     }
   }
@@ -34,13 +32,13 @@ export class AggregateComponent implements OnChanges {
       aggregateFunction: ''
     };
 
-    const updatedAggregates = [...this.Aggregates, newAggregate];
-    this.Aggregates = updatedAggregates;
-    this.AddAggregates.emit(updatedAggregates);
+    const updatedAggregates = [...this.aggregates, newAggregate];
+    this.aggregates = updatedAggregates;
+    this.addAggregates.emit(updatedAggregates);
   }
 
   removeAggregate(id: number): void {
-    const filteredAggregates = this.Aggregates.filter(agg => agg.id !== id);
+    const filteredAggregates = this.aggregates.filter(agg => agg.id !== id);
 
     const updatedAggregates = filteredAggregates.map((agg, index) => ({
       ...agg,
@@ -49,16 +47,16 @@ export class AggregateComponent implements OnChanges {
 
     this.aggregateCount = updatedAggregates.length;
 
-    this.Aggregates = updatedAggregates;
+    this.aggregates = updatedAggregates;
 
 
-    this.RemoveAggregates.emit(updatedAggregates);
+    this.removeAggregates.emit(updatedAggregates);
 
   }
   onAggregateChange() {
 
 
-    this.AddAggregates.emit(this.Aggregates);
+    this.addAggregates.emit(this.aggregates);
 
   }
 

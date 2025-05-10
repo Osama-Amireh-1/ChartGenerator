@@ -7,13 +7,12 @@
 
 </div>
 
-  <app-chart-creator-form [GetViewsAndTablesURL]="GetViewsAndTablesURL"
-                          [GetTablesURL]="GetTablesURL"
-                          [GetViewsURL]="GetViewsURL"
-                          [TableType]="TableType"
-                          [GetColumnURL]="GetColumnURL"
+  <app-chart-creator-form [getTableNamesByTypeURL]="getTableNamesByTypeURL"
+                          [tableType]="tableType"
+                          [getColumnURL]="getColumnURL"
                           (Execute)="fetchData($event)"
-                          [openRequested]="openForm"></app-chart-creator-form>
+                          [openRequested]="openForm"
+                          [token]="token"></app-chart-creator-form>
 
 
   <app-grid-view [charts]="charts" [isShowMode]="isShowMode"

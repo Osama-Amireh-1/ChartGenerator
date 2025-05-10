@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { FilterParenthesesGroup } from '../chart-creator-form/Interfaces/filter-parentheses-group';
-import { Filter } from '../chart-creator-form/Interfaces/filter';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { FilterParenthesesGroup } from '../Interfaces/filter-parentheses-group';
+import { Filter } from '../Interfaces/filter';
 
 @Component({
   selector: 'app-filter-groups',
@@ -15,8 +15,8 @@ export class FilterGroupsComponent implements OnChanges {
   @Input() parenthesesGroups: FilterParenthesesGroup[] = [];
   @Input() groupCount = 0;
   @Input() filters: Filter[] = [];
-  @Output() UpdateFiltersParentheses = new EventEmitter<FilterParenthesesGroup[]>();
-  @Output() UpateGroupCount = new EventEmitter<number>(); 
+  @Output() updateFiltersParentheses = new EventEmitter<FilterParenthesesGroup[]>();
+  @Output() upateGroupCount = new EventEmitter<number>(); 
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['parenthesesGroups'] && this.parenthesesGroups) {
@@ -33,14 +33,14 @@ export class FilterGroupsComponent implements OnChanges {
       filterIds: []
     };
     this.parenthesesGroups.push(newGroup);
-    this.UpateGroupCount.emit(this.groupCount)
+    this.upateGroupCount.emit(this.groupCount)
   }
 
   handleCheckboxChange(groupId: number, filterId: number, event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
     this.toggleFilterInGroup(groupId, filterId, isChecked);
 
-    this.UpdateFiltersParentheses.emit(this.parenthesesGroups)
+    this.updateFiltersParentheses.emit(this.parenthesesGroups)
 
   }
 
@@ -75,7 +75,7 @@ export class FilterGroupsComponent implements OnChanges {
       });
     console.log(this.parenthesesGroups)
 
-    this.UpdateFiltersParentheses.emit(this.parenthesesGroups)
+    this.updateFiltersParentheses.emit(this.parenthesesGroups)
 
   }
 

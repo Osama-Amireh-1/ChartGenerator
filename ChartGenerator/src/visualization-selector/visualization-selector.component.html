@@ -2,8 +2,12 @@
   <div class="panel-heading">Chart Type</div>
   <div class="panel-body">
     <div>
+      <label>Title</label>
+      <input type="text" [(ngModel)]="title" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}" class="form-control input-sm"/>
+    </div>
+    <div>
       <label>Chart Type:</label>
-      <select class="form-control input-sm" [(ngModel)]="ChartType"  (ngModelChange)="OnChartChange()" [ngModelOptions]="{standalone: true}">
+      <select class="form-control input-sm" [(ngModel)]="visualizationType"  (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
         <option value=''>None</option>
         <option value="bar">Bar</option>
         <option value="line">Line</option>
@@ -13,7 +17,7 @@
     </div>
     <div>
       <label>Number of Rows</label>
-      <select class="form-control input-sm" [(ngModel)]="NumberOfRows" (ngModelChange)="OnChartChange()" [ngModelOptions]="{standalone: true}">
+      <select class="form-control input-sm" [(ngModel)]="numberOfRows" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
         <option value="">Number of Rows:</option>
         <option value="2">2</option>
         <option value="3">3</option>
@@ -24,7 +28,7 @@
     </div>
     <div>
       <label>Number of Columns</label>
-      <select class="form-control input-sm" [(ngModel)]="NumberOfColumns" (ngModelChange)="OnChartChange()" [ngModelOptions]="{standalone: true}">
+      <select class="form-control input-sm" [(ngModel)]="numberOfColumns" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
         <option value="">Number of Column:</option>
         <option value="2">2</option>
         <option value="3">3</option>
