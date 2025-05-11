@@ -127,11 +127,9 @@ export class ChartGeneratorComponent implements OnInit {
   }
   saveCharts(): void {
     this.storageService.saveCharts(this.charts, this.chartRequestData);
-    console.log(this.charts)
-    console.log(this.chartRequestData)
-
-
   }
+
+  
   removeChart(chartId: string): void {
     this.charts = this.charts.filter(chart => chart.Id !== chartId);
     this.chartRequestData.delete(chartId);

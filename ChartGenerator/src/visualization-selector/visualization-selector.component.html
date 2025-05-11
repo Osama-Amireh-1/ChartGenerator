@@ -6,7 +6,7 @@
       <input type="text" [(ngModel)]="title" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}" class="form-control input-sm"/>
     </div>
     <div>
-      <label>Chart Type:</label>
+      <label>Visualization Type:</label>
       <select class="form-control input-sm" [(ngModel)]="visualizationType"  (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
         <option value=''>None</option>
         <option value="bar">Bar</option>

@@ -41,7 +41,7 @@ export class GridViewComponent implements OnInit, OnChanges {
   private _charts: VisualizationResource[] = [];
   gridsterOptions!: Safe;
   gridItems: Array<GridsterItem & { chartData: VisualizationResource }> = [];
-  @Output() chartPositionChanged = new EventEmitter<VisualizationResource>();
+  @Output() chartConfigChanged = new EventEmitter<VisualizationResource>();
   @Output() chartRemoved = new EventEmitter<string>();
   @Input() isShowMode!: boolean
   ngOnInit(): void {
@@ -176,15 +176,16 @@ export class GridViewComponent implements OnInit, OnChanges {
 
   onItemChange(item: GridsterItem): void {
     if (item['chartData']) {
-      item['chartData'].NumberOfColumns = item.cols;
-      item['chartData'].NumberOfRows = item.rows;
+
+      item['chartData'].numberOfColumns = item.cols;
+      item['chartData'].numberOfRows = item.rows;
       item['chartData'].x = item.x;
       item['chartData'].y = item.y;
       
-      console.log(item.x);
-      console.log(item.x);
+      console.log(item.cols);
+      console.log(item.rows);
 
-      this.chartPositionChanged.emit(item['chartData']);
+      this.chartConfigChanged.emit(item['chartData']);
 
     }
   }
