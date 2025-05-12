@@ -25,31 +25,39 @@ export class ChartComponent implements AfterViewInit {
     if (!ctx || !this.data || this.data.length === 0) return;
 
     const type: ChartJSChartType = (this.chartType.toLowerCase() as ChartJSChartType) || 'bar';
-
+    const isPieChart = type === 'pie';
     const { labels, datasets } = this.extractChartData(this.data);
 
+    const colorSet = [
+      "rgb(75, 192, 192)",
+      "rgb(255, 99, 132)",
+      "rgb(54, 162, 235)",
+      "rgb(255, 159, 64)",
+      "rgb(153, 102, 255)",
+      "rgb(255, 205, 86)",
+      "rgb(201, 203, 207)",
+      "rgb(0, 128, 0)"
+    ];
+
     const styledDatasets = datasets.map((dataset, index) => {
-      const color = this.generateColors(1, 0.7)[0];
+      const color = colorSet[index % colorSet.length];
+
       return {
         ...dataset,
-        backgroundColor: type === 'pie' ?
-          this.generateColors(labels.length, 0.7) :
-          color,
+        backgroundColor: isPieChart ? colorSet.slice(0, labels.length) : color,
         borderColor: type === 'line' ? color : undefined,
         fill: type === 'line' ? false : undefined,
         tension: type === 'line' ? 0.1 : undefined
       };
     });
 
-    let finalDatasets = styledDatasets;
-    if ((type === 'pie') && styledDatasets.length > 1) {
-      finalDatasets = [styledDatasets[0]];
-      finalDatasets[0].backgroundColor = this.generateColors(labels.length, 0.7);
-    }
+    
+
+  
 
     const chartData: any = {
       labels: labels,
-      datasets: finalDatasets
+      datasets: styledDatasets
     };
 
     const options: ChartConfiguration['options'] = {
@@ -64,16 +72,29 @@ export class ChartComponent implements AfterViewInit {
           display: true,
           text: this.title,
         }
-      }
-    };
 
+      }
+
+    };
+   
     if (type !== 'pie') {
       options.scales = {
-        y: {
-          beginAtZero: true
+      x: {
+        title: {
+          display: true,
+          text: "column"
         }
-      };
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: type === 'line' || type === 'bar',
+          text: 'Value'
+        }
+      }
     }
+    }
+
 
     const config: ChartConfiguration = {
       type: type,

@@ -6,9 +6,12 @@
 <div class="step-container text-center" style="margin: 10px 0;">
   @for(step of [1,2,3,4,5,6]; track step)
   {
-  <span
-        class="step-circle"
-        [ngClass]="{'active': currentStep === step}"
-        (click)="displayStep(step)">{{ step }}</span>
+  <span [attr.title]="!isAllowClick()&& step==2? 'Please select Table' : null">
+    <span class="step-circle"
+          [ngClass]="{'active': currentStep === step}"
+          (click)="displayStep(step)">
+      {{ step }}
+    </span>
+  </span>
   }
 </div>

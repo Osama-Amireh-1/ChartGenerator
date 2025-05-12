@@ -18,19 +18,16 @@ export class VisualizationSelectorComponent {
   @Output() updateVisualization = new EventEmitter<VisualizationConfig>();
 
   onVisualizationConfigChange() {
-    if (this.visualizationType && this.visualizationType !== '' && this.numberOfRows > 0 && this.numberOfColumns > 0 && this.title.length > 0) {
-      const visualizationConfig: VisualizationConfig = {
-        visualizationType: this.visualizationType,
-        numberOfRows: this.numberOfRows,
-        numberOfColumns: this.numberOfColumns,
-        title: this.title
-       
-      };
-      console
-      console.log("conf",visualizationConfig)
+    const visualizationConfig: VisualizationConfig = {
+      visualizationType: this.visualizationType,
+      numberOfRows: this.numberOfRows,
+      numberOfColumns: this.numberOfColumns,
+      title: this.title
+    }
+      
 
       this.updateVisualization.emit(visualizationConfig)
     }
   }
 
-}
+

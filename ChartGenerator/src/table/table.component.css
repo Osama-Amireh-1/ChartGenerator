@@ -1,7 +1,3 @@
-.table td, .table th {
-  vertical-align: middle;
-  text-align: center;
-}
 
 .responsive-table {
   width: 100%;
@@ -9,3 +5,18 @@
   margin: 0;
   table-layout: fixed;
 }
+
+th, td {
+  padding: 8px 12px;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+  word-break: break-word;
+}
+.table-wrapper {
+  overflow: auto;
+  max-height: calc(100% - 40px); 
+  width: 100%;
+}
+

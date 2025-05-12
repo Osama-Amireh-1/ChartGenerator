@@ -5,11 +5,29 @@
   }
   @if(currentStep < 6)
   {
+  <span [attr.title]="!isAllowClick()&& currentStep==3? 'Please select at least one group by column' : null">
+    <span [attr.title]="!isAllowClick()&& currentStep==1? 'Please select Table' : null">
+      <span [attr.title]="!isAllowClick()&& currentStep==4? 'Please select at least one Aggregate' : null">
 
-  <button type="button" class="btn btn-primary" (click)="nextStep()"> Next</button>
+        <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!isAllowClick()">Next</button>
+      </span>
+    </span>
+  </span>
+
   }
   @if(currentStep == 6)
   {
-  <button type="button" class="btn btn-success" (click)="excuteQureyButtonClicked()">Generate Chart</button>
-  }
+  <span [attr.title]="numberOfColumns==0? 'Please select Number of Columns' : null">
+    <span [attr.title]="numberOfRows==0? 'Please select Number of Rows' : null">
+      <span [attr.title]="selectedVisualizationTypeSize==0? 'Please select Visualization Type' : null">
+        <span [attr.title]="titleSize==0? 'Please enter Title' : null">
+          <button type="button" class="btn btn-success" (click)="excuteQureyButtonClicked()" [disabled]="(titleSize==0|| selectedVisualizationTypeSize==0||numberOfRows==0||numberOfColumns==0)">
+            Generate Chart
+          </button>
+        </span>
+      </span>
+    </span>
+  </span>
+
+      }
 </div>

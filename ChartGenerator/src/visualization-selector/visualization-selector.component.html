@@ -18,7 +18,7 @@
     <div>
       <label>Number of Rows</label>
       <select class="form-control input-sm" [(ngModel)]="numberOfRows" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
-        <option value="">Number of Rows:</option>
+        <option value="0">Number of Rows:</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
@@ -29,7 +29,7 @@
     <div>
       <label>Number of Columns</label>
       <select class="form-control input-sm" [(ngModel)]="numberOfColumns" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
-        <option value="">Number of Column:</option>
+        <option value="0">Number of Column:</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>

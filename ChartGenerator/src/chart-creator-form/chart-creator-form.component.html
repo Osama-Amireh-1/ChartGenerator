@@ -10,7 +10,9 @@
       </div>
       <div class="modal-body">
         <div class="container-fluid">
-          <app-progress-bar [currentStep]="currentStep" [progressValue]="progressValue"  (stepClicked)="displayStep($event)"></app-progress-bar>
+          <app-progress-bar [currentStep]="currentStep" [progressValue]="progressValue"  (stepClicked)="displayStep($event)"
+                            [selectedTableSize]="seletedTable.length" [aggregateFunctionsSize]="aggregates.length" [groupBySize]="groupByFelids.length"
+                            [aggregates]="aggregates" [titleSize]="tilte.length" [selectedVisualizationTypeSize]="visualizationType.length" [numberOfRows]="numberOfRows" [numberOfColumns]="numberOfColumns"></app-progress-bar>
           <form class="ChartFrom">
             @if(currentStep === 1)
             {
@@ -58,7 +60,8 @@
             </div>
             }
           </form>
-          <app-form-actions [currentStep]="currentStep" (prevStepClicked)="prevStep()" (nextStepClicked)="nextStep()" (excuteQureyClicked)="excuteQureyButtonClicked()"></app-form-actions>
+          <app-form-actions [currentStep]="currentStep" (prevStepClicked)="prevStep()" (nextStepClicked)="nextStep()" (excuteQureyClicked)="excuteQureyButtonClicked()" [selectedTableSize]="seletedTable.length" [aggregateFunctionsSize]="aggregates.length" [groupBySize]="groupByFelids.length"
+                            [aggregates]="aggregates" [titleSize]="tilte.length" [selectedVisualizationTypeSize]="visualizationType.length" [numberOfRows]="numberOfRows" [numberOfColumns]="numberOfColumns"></app-form-actions>
 
 
 
