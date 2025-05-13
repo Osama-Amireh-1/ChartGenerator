@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RequestData } from '../Interfaces/request-data';
 import { VisualizationResource } from '../Interfaces/visualization-resource';
-import { SavedChartData } from '../Interfaces/saved-chart-data';
+import { SavedVisualizationData } from '../Interfaces/saved-visualization-data';
 
 @Injectable({
   providedIn: 'root',
@@ -11,10 +11,10 @@ export class StorageService {
 
   constructor() { }
 
-  saveCharts(charts: VisualizationResource[], formDataMap: Map<string, RequestData>) {
+  saveVisualization(charts: VisualizationResource[], formDataMap: Map<string, RequestData>) {
 
     try {
-      const dataToSave: SavedChartData[] = charts.map(chart => {
+      const dataToSave: SavedVisualizationData[] = charts.map(chart => {
         return {
           id: chart.Id,
           chartType: chart.type,
@@ -34,7 +34,7 @@ export class StorageService {
     }
 
   }
-  loadSavedCharts(): SavedChartData[] {
+  loadSavedCharts(): SavedVisualizationData[] {
     try {
       const savedData = localStorage.getItem(this.STORAGE_KEY);
       return savedData ? JSON.parse(savedData) : [];
@@ -46,18 +46,13 @@ export class StorageService {
 
   private getEmptyRequestData(): RequestData {
     return {
-      tableName: '',
-      filterField: [],
-      filterOperator: [],
-      filterValue: [],
-      logicalFilterLink: [],
-      groupByFields: [],
-      aggregateFields: [],
-      aggregateFunctions: [],
-      filterAggregateFields: [],
-      filterAggregateOperators: [],
-      filterAggregateValues: [],
-      logicalAggregateLink: []
+      TableName: '',
+      WhereFillters: [],
+      WhereFilltersLogicalOperators: [],
+      GroupByFields: [],
+      Aggregates:[],
+      AggregateFilter: [],
+      AggregateFilterLogicalOperators : []
     };
   }
 

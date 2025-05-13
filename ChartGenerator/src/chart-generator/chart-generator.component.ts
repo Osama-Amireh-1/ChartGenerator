@@ -6,7 +6,7 @@ import { HttpParams } from '@angular/common/http';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { GridViewComponent } from '../grid-view/grid-view.component';
 import { v4 as uuidv4 } from 'uuid';
-import { SavedChartData } from '../Interfaces/saved-chart-data';
+import { SavedVisualizationData } from '../Interfaces/saved-visualization-data';
 import { StorageService } from '../StorgeService/storage-service.service';
 import { DatabaseService } from '../database-service/database-service.service';
 import { RequestData } from '../Interfaces/request-data';
@@ -25,6 +25,7 @@ export class ChartGeneratorComponent implements OnInit {
   @Input({ required: true }) getColumnURL = "";
   @Input({ required: true }) getDataURL = "";
   @Input({ required: true }) tableType = "";
+  @Input() DataSource: SavedVisualizationData[]=[]
   charts: VisualizationResource[] = [];
   openForm = false;
   isShowMode = true;
@@ -33,21 +34,29 @@ export class ChartGeneratorComponent implements OnInit {
 
   constructor(private databaseServ: DatabaseService, private storageService: StorageService) {}
     ngOnInit(): void {
-      this.loadSavedCharts();
+      this.loadSavedVisualization();
   }
 
-  loadSavedCharts() {
+  loadSavedVisualization() {
     const savedCharts = this.storageService.loadSavedCharts();
     if (savedCharts.length > 0) {
       console.log(savedCharts.length)
-      savedCharts.forEach(chart => {
+     savedCharts.forEach(chart => {
         this.chartRequestData.set(chart.id, chart.requestData);
-        this.fetchDataForSavedChart(chart)
+        this.fetchDataForSavedVisualization(chart)
       })
     }
 
+    //if (this.DataSource.length > 0) {
+    //  // console.log(savedCharts.length)
+    //  this.DataSource.forEach(chart => {
+    //    this.chartRequestData.set(chart.id, chart.requestData);
+    //    this.fetchDataForSavedVisualization(chart)
+    //  })
+    //}
+
   }
-  fetchDataForSavedChart(chart: SavedChartData) {
+  fetchDataForSavedVisualization(chart: SavedVisualizationData) {
     const requestData = chart.requestData;
     const requestParams = this.buildHttpParams(requestData);
 
@@ -110,7 +119,6 @@ export class ChartGeneratorComponent implements OnInit {
 
     console.log(request.dataRequste)
    
-    let Data: any
     this.databaseServ.postData(this.getDataURL, requestData, this.token).subscribe(data => {
       this.addChartWithData(
         request.Id,
@@ -122,18 +130,18 @@ export class ChartGeneratorComponent implements OnInit {
       );
       console.log("title", request.Title)
       console.log("saved");
-      this.saveCharts();
+      this.saveVisualizations();
     });
   }
-  saveCharts(): void {
-    this.storageService.saveCharts(this.charts, this.chartRequestData);
+  saveVisualizations(): void {
+    this.storageService.saveVisualization(this.charts, this.chartRequestData);
   }
 
   
   removeChart(chartId: string): void {
     this.charts = this.charts.filter(chart => chart.Id !== chartId);
     this.chartRequestData.delete(chartId);
-    this.saveCharts();
+    this.saveVisualizations();
   }
 
   openChartModalClicked() {

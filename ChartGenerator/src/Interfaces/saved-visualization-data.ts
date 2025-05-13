@@ -1,6 +1,6 @@
 import { RequestData } from "./request-data";
 
-export interface SavedChartData {
+export interface SavedVisualizationData {
   id: any;
   chartType: string;
   numberOfRows: number;

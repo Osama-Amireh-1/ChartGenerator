@@ -96,28 +96,27 @@ export class ChartCreatorFormComponent {
 
   prepareRequestData(): void {
     this.dataRequste = {
-      tableName: '',
-      filterField: [],
-      filterOperator: [],
-      filterValue: [],
-      logicalFilterLink: [],
-      groupByFields: [],
-      aggregateFields: [],
-      aggregateFunctions: [],
-      filterAggregateFields: [],
-      filterAggregateOperators: [],
-      filterAggregateValues: [],
-      logicalAggregateLink: [],
+      TableName: '',
+      WhereFillters:[], 
+      WhereFilltersLogicalOperators: [],
+      GroupByFields: [],
+      Aggregates:[],
+      AggregateFilter:[],
+      AggregateFilterLogicalOperators: [],
   
     };
-    this.dataRequste.tableName = this.seletedTable
+    this.dataRequste.TableName = this.seletedTable
     const validWhereFilters = this.wherefilters.filter(
       filter => filter.field && filter.operator && filter.value !== undefined
     );
     validWhereFilters.forEach(filter => {
-      this.dataRequste.filterField.push(filter.field);
-      this.dataRequste.filterOperator.push(filter.operator);
-      this.dataRequste.filterValue.push(filter.value);
+      this.dataRequste.WhereFillters.push({
+        FilterField: filter.field,
+        FilterOperator: filter.operator,
+        FilterValue: filter.value
+
+      })
+        
     });
     if (validWhereFilters.length > 1) {
       const filterInfo = validWhereFilters.map(filter => {
@@ -172,13 +171,16 @@ export class ChartCreatorFormComponent {
         });
       }
 
-      this.dataRequste.logicalFilterLink = [...this.logicalFilterLink];
+      this.dataRequste.WhereFilltersLogicalOperators = [...this.logicalFilterLink];
     }
 
     this.aggregates.forEach(agg => {
       if (agg.aggregateFunction && agg.field) {
-        this.dataRequste.aggregateFunctions.push(agg.aggregateFunction);
-        this.dataRequste.aggregateFields.push(agg.field);
+        this.dataRequste.Aggregates.push({
+          aggregateField: agg.field,
+          aggregateFunction:agg.aggregateFunction
+        })
+      
       }
     });
 
@@ -187,9 +189,12 @@ export class ChartCreatorFormComponent {
     );
 
     validAggregateFilters.forEach(filter => {
-      this.dataRequste.filterAggregateFields.push(filter.field);
-      this.dataRequste.filterAggregateOperators.push(filter.operator);
-      this.dataRequste.filterAggregateValues.push(Number(filter.value));
+      this.dataRequste.AggregateFilter.push({
+        FilterField: filter.field,
+        FilterOperator: filter.operator,
+        FilterValue: filter.value
+      })
+
     });
 
 
@@ -252,12 +257,12 @@ export class ChartCreatorFormComponent {
         });
       }
 
-      this.dataRequste.logicalAggregateLink = [...this.logicalAggregateLink];
+      this.dataRequste.AggregateFilterLogicalOperators = [...this.logicalAggregateLink];
 
       
 
     }
-    this.dataRequste.groupByFields = this.groupByFelids;
+    this.dataRequste.GroupByFields = this.groupByFelids;
   }
 
   excuteQureyButtonClicked() {
