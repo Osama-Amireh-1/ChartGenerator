@@ -1,0 +1,43 @@
+<div class="panel panel-info">
+  <div class="panel-heading">OrderBy</div>
+  <div class="panel-body">
+    @for(OrderBy of orderBies; track OrderBy)
+    {
+    <div class="row" style="margin-bottom: 10px">
+      <div class="col-xs-4">
+        <select class="form-control input-sm" [(ngModel)]="OrderBy.field" (ngModelChange)="onOrderByChange()" [ngModelOptions]="{standalone: true}">
+          <option value="">Select Column</option>
+          @for(column of columns; track column)
+          {
+          <option [value]="column">{{column}}</option>
+          }
+        </select>
+      </div>
+      <div class="col-xs-4">
+        <select class="form-control input-sm" [(ngModel)]="OrderBy.sort" (ngModelChange)="onOrderByChange()" [ngModelOptions]="{standalone: true}">
+          <option value="" selected>Select Sort Type</option>
+          <option value="0">Ascending</option>
+          <option value="1">Descending</option>
+        </select>
+
+      </div>
+
+      <div class="col-xs-4">
+        <button type="button" class="btn btn-danger btn-sm" (click)="removeOrderBy(OrderBy.id)">
+          <span class="glyphicon glyphicon-remove"></span>
+        </button>
+      </div>
+
+
+    </div>
+    }
+    <div class="row">
+      <div class="col-xs-12">
+        <button type="button" class="btn btn-primary btn-sm" (click)="addOrderBy()">
+          <span class="glyphicon glyphicon-plus"></span> Add Order By
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

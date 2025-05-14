@@ -26,7 +26,7 @@ export class GridViewComponent implements OnInit, OnChanges {
       this.initGridsterOptions();
 }
 
-  @Input() set charts(value: VisualizationResource[]) {
+  @Input() set Visualizations(value: VisualizationResource[]) {
     this._charts = value;
     if (value?.length) {
       this.updateGridItems();
@@ -34,7 +34,7 @@ export class GridViewComponent implements OnInit, OnChanges {
     }
   }
 
-  get charts(): VisualizationResource[] {
+  get Visualizations(): VisualizationResource[] {
     return this._charts;
   }
 
@@ -142,7 +142,7 @@ export class GridViewComponent implements OnInit, OnChanges {
       return { x: 0, y: 0 };
     };
 
-    this.charts.forEach((chart) => {
+    this.Visualizations.forEach((chart) => {
       const cols = +chart.numberOfColumns || 1;
       const rows = +chart.numberOfRows || 1;
 

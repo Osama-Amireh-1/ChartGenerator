@@ -15,6 +15,8 @@ export class ChartComponent implements AfterViewInit {
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
   chart: Chart | null = null;
 
+
+
   ngAfterViewInit(): void {
     this.createChart();
   }

@@ -1,5 +1,7 @@
+import { OrderBy } from "./order-by";
 import { RequestAggregate } from "./request-aggregate";
 import { RequestFilter } from "./request-filter";
+import { RequestOrderBy } from "./request-order-by";
 
 export interface RequestData {
   TableName: string,
@@ -19,6 +21,8 @@ export interface RequestData {
   AggregateFilter: RequestFilter[],
 
   AggregateFilterLogicalOperators: string[],
+  OrderBy: RequestOrderBy[]
+  maxResults: number
 
   
 }

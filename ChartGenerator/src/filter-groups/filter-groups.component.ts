@@ -16,7 +16,7 @@ export class FilterGroupsComponent implements OnChanges {
   @Input() groupCount = 0;
   @Input() filters: Filter[] = [];
   @Output() updateFiltersParentheses = new EventEmitter<FilterParenthesesGroup[]>();
-  @Output() upateGroupCount = new EventEmitter<number>(); 
+  //@Output() upateGroupCount = new EventEmitter<number>(); 
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['parenthesesGroups'] && this.parenthesesGroups) {
@@ -33,7 +33,7 @@ export class FilterGroupsComponent implements OnChanges {
       filterIds: []
     };
     this.parenthesesGroups.push(newGroup);
-    this.upateGroupCount.emit(this.groupCount)
+    //this.upateGroupCount.emit(this.groupCount)
   }
 
   handleCheckboxChange(groupId: number, filterId: number, event: Event): void {
@@ -57,9 +57,9 @@ export class FilterGroupsComponent implements OnChanges {
       group.filterIds = group.filterIds.filter(id => id !== filterId);
     }
 
-    if (group.filterIds.length === 0) {
-      this.parenthesesGroups = this.parenthesesGroups.filter(g => g.id !== groupId);
-    }
+    //if (group.filterIds.length === 0) {
+    //  this.parenthesesGroups = this.parenthesesGroups.filter(g => g.id !== groupId);
+    //}
   }
 
   removeGroup(groupId: number): void {

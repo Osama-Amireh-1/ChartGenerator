@@ -19,7 +19,8 @@ export class FilterComponent implements OnChanges {
   @Output() updateFilters = new EventEmitter<Filter[]>();
   @Input({ required: true }) header: string = ""
   @Output() updateParenthesesGroups = new EventEmitter<FilterParenthesesGroup[]>();
-
+  @Input({ required: true }) filterOp: string[] = []
+  @Input({ required: true }) onlyNumber: boolean = false
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['filters'] && this.filters) {
       this.filterCount = this.filters.length > 0
@@ -62,8 +63,9 @@ export class FilterComponent implements OnChanges {
                    fid > id ? fid - 1 : fid;
           })
       };
-    }).filter(g => g.filterIds.length > 0);
-
+    });
+    if (this.filters.length==0)
+      updatedGroups.filter(g => g.filterIds.length > 0)
     this.parenthesesGroups = updatedGroups;
     this.updateFilters.emit(this.filters);
     this.updateParenthesesGroups.emit(this.parenthesesGroups);

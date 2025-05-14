@@ -30,7 +30,7 @@ export class StorageService {
 
     }
     catch (error) {
-      console.error('Error saving charts to localStorage:', error);
+      console.error('Error saving Visualizations to localStorage:', error);
     }
 
   }
@@ -39,7 +39,7 @@ export class StorageService {
       const savedData = localStorage.getItem(this.STORAGE_KEY);
       return savedData ? JSON.parse(savedData) : [];
     } catch (error) {
-      console.error('Error loading charts from localStorage:', error);
+      console.error('Error loading Visualizations from localStorage:', error);
       return [];
     }
   }
@@ -52,7 +52,9 @@ export class StorageService {
       GroupByFields: [],
       Aggregates:[],
       AggregateFilter: [],
-      AggregateFilterLogicalOperators : []
+      AggregateFilterLogicalOperators: [],
+      OrderBy: [],
+      maxResults:0
     };
   }
 

@@ -1,11 +1,15 @@
-<div style="margin-top: 20px">
-  <label class="control-label">Select Table:</label>
-  <select class="form-control input-sm" type="select" [(ngModel)]="seletedTable" [ngModelOptions]="{standalone: true}" (change)="TableSelection()">
-    <option selected value="">Open this select menu</option>
-    @for(table of tables; track table)
-    { 
-    <option [value]="table">{{table}}</option>
-    }
+<div class="panel panel-info">
+  <div class="panel-heading">Select Table:</div>
+  <div class="panel-body">
+    <div style="margin-top: 20px">
+      <select class="form-control input-sm" type="select" [(ngModel)]="seletedTable" [ngModelOptions]="{standalone: true}" (change)="TableSelection()">
+        <option selected value="">Open this select menu</option>
+        @for(table of tables; track table)
+        {
+        <option [value]="table">{{table}}</option>
+        }
 
-  </select>
+      </select>
+    </div>
+  </div>
 </div>

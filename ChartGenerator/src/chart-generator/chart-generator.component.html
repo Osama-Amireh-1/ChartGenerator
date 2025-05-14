@@ -20,6 +20,6 @@
                         [token]="token"></app-chart-creator-form>
 
 
-<app-grid-view [charts]="charts" [isShowMode]="isShowMode"
+<app-grid-view [Visualizations]="Visualizations" [isShowMode]="isShowMode"
                (chartConfigChanged)="saveVisualizations()"
                (chartRemoved)="removeChart($event)"></app-grid-view>

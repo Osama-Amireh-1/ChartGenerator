@@ -1,0 +1,18 @@
+<div class="panel panel-info">
+  <div class="panel-heading">Top</div>
+  <div class="panel-body">
+    <div class="row" style="margin-bottom: 10px">
+      <div class="col-xs-4">
+        <button class="btn btn-primary btn-sm" (click)="onShowModeChange()">
+          {{ showInput ? 'Cancel Top Filter' : 'Add Top Filter' }}
+        </button>
+        <div *ngIf="showInput">
+          <label>Top:</label>
+          <input type="number" class="form-control input-sm" placeholder="Value" [(ngModel)]="top" (ngModelChange)="onTopValueChange()" [ngModelOptions]="{standalone: true}" />
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+    </div>

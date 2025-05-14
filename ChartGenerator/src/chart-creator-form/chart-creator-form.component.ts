@@ -7,7 +7,7 @@ import { FilterComponent } from '../filter/filter.component'
 import { FilterGroupsComponent } from '../filter-groups/filter-groups.component';
 import { GroupByComponent } from '../group-by/group-by.component';
 import { AggregateComponent } from '../aggregate/aggregate.component';
-import { map, retry } from 'rxjs';
+import { groupBy, map, retry } from 'rxjs';
 import { FormActionsComponent } from '../form-actions/form-actions.component';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { DatabaseService } from '../database-service/database-service.service';
@@ -17,12 +17,15 @@ import { RequestData } from '../Interfaces/request-data';
 import { VisualizationConfig } from '../Interfaces/visualization-config';
 import { FilterParenthesesGroup } from '../Interfaces/filter-parentheses-group';
 import { VisualizationSelectorComponent } from '../visualization-selector/visualization-selector.component';
+import { OrderBy } from '../Interfaces/order-by';
+import { OrderByComponent } from '../order-by/order-by.component';
+import { TopSelectorComponent } from '../top-selector/top-selector.component';
 //declare var $: any; 
 
 @Component({
   selector: 'app-chart-creator-form',
   imports: [CommonModule, FormsModule, TableSelectorComponent, FilterComponent, FilterGroupsComponent, GroupByComponent, AggregateComponent,
-    VisualizationSelectorComponent, FormActionsComponent, ProgressBarComponent],
+    VisualizationSelectorComponent, FormActionsComponent, ProgressBarComponent, OrderByComponent, TopSelectorComponent],
   templateUrl: './chart-creator-form.component.html',
   styleUrl: './chart-creator-form.component.css',
   standalone: true,
@@ -32,7 +35,7 @@ export class ChartCreatorFormComponent {
   progressValue: number = 0;
   seletedTable: string = "";
   columns: string[] = [];
-  tables: string[] = ["a",'b'];
+  tables: string[] = ["a", 'b'];
   groupByFelids: string[] = [];
   @Input() getTableNamesByTypeURL = "";
   @Input() getColumnURL = "";
@@ -49,13 +52,17 @@ export class ChartCreatorFormComponent {
   logicalFilterLink: string[] = [];
   logicalAggregateLink: string[] = [];
   visualizationType: string = "";
-  numberOfRows=0
+  numberOfRows = 0
   numberOfColumns = 0
-  tilte =""
+  tilte = ""
   @Input() openRequested: boolean = false;
-  groupCount = 0;
+  //groupCount = 0;
   @Input({ required: true }) token: string = "";
-
+  whereFilterOp: string[] = ["=", ">", "<", ">=", "<=", "!=", "STARTSWITH", "CONTAINS","ENDSWITH" ]
+  havingFilterOp: string[] = ["=", ">", "<", ">=", "<=", "!="]
+  orderBies: OrderBy[] = []
+  orderByFeileds: string[] = []
+  top: number=0
   constructor(private DatabaseServ: DatabaseService) {
 
   }
@@ -103,6 +110,8 @@ export class ChartCreatorFormComponent {
       Aggregates:[],
       AggregateFilter:[],
       AggregateFilterLogicalOperators: [],
+      OrderBy: [],
+      maxResults: 0
   
     };
     this.dataRequste.TableName = this.seletedTable
@@ -263,6 +272,21 @@ export class ChartCreatorFormComponent {
 
     }
     this.dataRequste.GroupByFields = this.groupByFelids;
+    this.orderBies.forEach(orderBy => {
+      if (orderBy.field && orderBy.sort != undefined) {
+        this.dataRequste.OrderBy.push({
+          Orderby: orderBy.field,
+          SortOrder: orderBy.sort
+        })
+
+      }
+      if (this.top > 0) {
+        this.dataRequste.maxResults = this.top;
+      }
+      else {
+        this.dataRequste.maxResults=0
+      }
+    });
   }
 
   excuteQureyButtonClicked() {
@@ -301,6 +325,7 @@ export class ChartCreatorFormComponent {
     this.numberOfColumns = 0;
     this.tableType = this.tableType;
     this.tilte = "";
+    this.top = 0;
     (window as any).$('#chartModal').modal('hide');
 
   }
@@ -322,6 +347,8 @@ export class ChartCreatorFormComponent {
   }
   handleUpdateGroupBy(GroupByFelids: string[]) {
     this.groupByFelids = GroupByFelids;
+    this.updateOrderByFields();
+
   }
   handleAddAggregates(Aggregates: Aggregate[]) {
     this.aggregates = Aggregates;
@@ -331,6 +358,8 @@ export class ChartCreatorFormComponent {
       .map(item => `${item.aggregateFunction.toLowerCase()}_${item.field}`);
 
     this.aggregateFiltersColumns = aggregateColumns;
+    this.updateOrderByFields();
+
   }
   handleRemoveAggregates(Aggregates: Aggregate[]) {
     this.aggregates = Aggregates;
@@ -361,6 +390,7 @@ export class ChartCreatorFormComponent {
 
     this.aggregateParenthesesGroups = updatedGroups;
     this.aggregateFiltersColumns = aggregateColumns;
+    this.updateOrderByFields();
 
   }
   handleUpdateHavingFilter(filters: Filter[]) {
@@ -377,8 +407,17 @@ export class ChartCreatorFormComponent {
     this.tilte = chartConfig.title
     console.log(this.tilte)
   }
-  handlegroupCountUpdate(groupCount: number) {
-    this.groupCount = groupCount;
+  private updateOrderByFields(): void {
+    this.orderByFeileds = [...this.groupByFelids, ...this.aggregateFiltersColumns];
   }
+  handleUpdateOrderBy(OrderBy: OrderBy[]):void {
+    this.orderBies = OrderBy
+  }
+  handleUpdateTopValue(Top: number) {
+    this.top = Top;
+  }
+  //handlegroupCountUpdate(groupCount: number) {
+  //  this.groupCount = groupCount;
+  //}
 }
 

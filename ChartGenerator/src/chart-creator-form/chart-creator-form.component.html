@@ -25,7 +25,7 @@
             {
             <div class="margin-Bottom-3">
               <h3>Step 2</h3>
-              <app-filter [columns]="columns" (updateFilters)="handleUpdateWhereFilter($event)" (updateParenthesesGroups)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups" [header]="'Filter'" [filters]="wherefilters"></app-filter>
+              <app-filter [columns]="columns" (updateFilters)="handleUpdateWhereFilter($event)" (updateParenthesesGroups)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups" [header]="'Filter'" [filters]="wherefilters" [filterOp]="whereFilterOp" [onlyNumber]="false"></app-filter>
               <app-filter-groups [filters]="wherefilters" (updateFiltersParentheses)="handleUpdateWhereFilterParentheses($event)" [parenthesesGroups]="whereParenthesesGroups"></app-filter-groups>
             </div>
             }
@@ -42,13 +42,15 @@
             <div class="margin-Bottom-3">
               <h3>Step 4</h3>
               <app-aggregate [columns]="columns" (addAggregates)="handleAddAggregates($event)" (removeAggregates)="handleRemoveAggregates($event)" [aggregates]="aggregates"></app-aggregate>
+              <app-order-by [columns]="orderByFeileds" [orderBies]="orderBies" (updateOrderBy)="handleUpdateOrderBy($event)"></app-order-by>
+              <app-top-selector [top]="top" (updateTopValue)="handleUpdateTopValue($event)"></app-top-selector>
             </div>
             }
             @if(currentStep === 5)
             {
             <div class="margin-Bottom-3">
               <h3>Step 5</h3>
-              <app-filter [columns]="aggregateFiltersColumns" (updateFilters)="handleUpdateHavingFilter($event)" (updateParenthesesGroups)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups" [header]="'Aggregate Filter'" [filters]="aggregateFilters"></app-filter>
+              <app-filter [columns]="aggregateFiltersColumns" (updateFilters)="handleUpdateHavingFilter($event)" (updateParenthesesGroups)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups" [header]="'Aggregate Filter'" [filters]="aggregateFilters" [filterOp]="havingFilterOp" [onlyNumber]="true"></app-filter>
               <app-filter-groups [filters]="aggregateFilters" (updateFiltersParentheses)="handleUpdateHavingFilterParentheses($event)" [parenthesesGroups]="aggregateParenthesesGroups"></app-filter-groups>
             </div>
             }
