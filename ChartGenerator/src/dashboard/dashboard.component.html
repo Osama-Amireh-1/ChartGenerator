@@ -1,0 +1,13 @@
+<!--<app-dashboard-control (showModeChanged)="handleChangeEditMode($event)" (generateChartClick)="handleGenerateChartClick()" (addDashboardClick)="handleAddDashboard()" (selectDashboardChange)="handleselectDashboar($event)"
+                       [dashboards]="dashboards" [selectedDashboard]="selectedDashboardID" [isShowMode]="isShowMode" (saveClicked)="handleSaveDashboard()"></app-dashboard-control>
+
+@if(dashboards.length==0)
+{
+<app-dashboard-placeholder (addDashboardClick)="handleAddDashboard()"></app-dashboard-placeholder>
+}
+@if(selectedDashboardID!="")
+{
+<app-chart-generator [getTableNamesByTypeURL]="getTableNamesByTypeURL" [getColumnURL]="getColumnURL" [getDataURL]="getDataURL" [tableType]="tableType" [token]="token"
+                     [isShowMode]="isShowMode" [openForm]="openForm"></app-chart-generator>
+}
+<app-create-dashboard-form [openRequested]="openCreateDashboard" (saveDashboard)="handleSavedDashboard($event)" (dontDashboard)="handleDontDashboard()"></app-create-dashboard-form>-->

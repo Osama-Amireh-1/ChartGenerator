@@ -11,10 +11,12 @@ import { StorageService } from '../StorgeService/storage-service.service';
 import { DatabaseService } from '../database-service/database-service.service';
 import { RequestData } from '../Interfaces/request-data';
 import { VisualizationResource } from '../Interfaces/visualization-resource';
+import { DashboardControlComponent } from '../dashboard-control/dashboard-control.component';
+import { MultiStepFormComponent } from '../multi-step-form/multi-step-form.component';
 
 @Component({
   selector: 'app-chart-generator',
-  imports: [ChartCreatorFormComponent, CommonModule, MatGridListModule, GridViewComponent],
+  imports: [ChartCreatorFormComponent, CommonModule, MatGridListModule, GridViewComponent, DashboardControlComponent, MultiStepFormComponent],
   templateUrl: './chart-generator.component.html',
   styleUrl: './chart-generator.component.css',
   standalone: true,
@@ -27,8 +29,8 @@ export class ChartGeneratorComponent implements OnInit {
   @Input({ required: true }) tableType = "";
   @Input() dataSource: SavedVisualizationData[]=[]
   Visualizations: VisualizationResource[] = [];
-  openForm = false;
-  isShowMode = true;
+  @Input() openForm = false;
+  @Input() isShowMode = true;
   VisualizationRequestData: Map<string, RequestData> = new Map();
   @Input({ required: true }) token: string="";
 
@@ -149,9 +151,9 @@ export class ChartGeneratorComponent implements OnInit {
     setTimeout(() => this.openForm = false, 0);
   }
 
-  changeMode()
+  handleChangeMode(mode: boolean)
   {
-    this.isShowMode = !this.isShowMode;
+    this.isShowMode = mode
     console.log(this.isShowMode)
   }
 

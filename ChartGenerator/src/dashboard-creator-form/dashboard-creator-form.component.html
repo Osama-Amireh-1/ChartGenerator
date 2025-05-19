@@ -1,0 +1,27 @@
+<div class="modal" tabindex="-1" role="dialog" id="dashboaedModal">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Dashboard</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <label>Dashboard Title</label>
+          <input type="text" class="form-control input-sm" [(ngModel)]="dashboard.Name" />
+        </div>
+        <div>
+          <label>Dashboard Description</label>
+          <input type="text" class="form-control input-sm" [(ngModel)]="dashboard.Description" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dontSaveClicked()">Don`t Save</button>
+        <button type="button" class="btn btn-primary" (click)="saveDashboardClicked()" [disabled]="DisableSave()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+

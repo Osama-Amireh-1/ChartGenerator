@@ -1,0 +1,43 @@
+
+<div class="chart-builder-container">
+
+  <!--<app-progress-bar></app-progress-bar>-->
+  <form>
+
+    <div class="row" [ngClass]="{Done: seletedTable !== '' }">
+      <div class="col-sm-1">
+        <i class="fa fa-circle"></i>
+      </div>
+      <div class="col-sm-3">
+        <p style="font-weight:bold">STEP 1:</p>
+      </div>
+
+    </div>
+    <div style="margin:10px">
+      <label style="margin-left:10px">Select data source</label>
+      <app-table-selector [tableType]="tableType" [token]="token" (tableSelected)="fetchColumns($event)" ></app-table-selector>
+    </div>
+
+
+    <div class="row">
+      <div class="col-sm-1">
+        <i class="fa fa-circle"></i>
+      </div>
+      <div class="col-sm-3">
+        <p style="font-weight:bold">STEP 2:</p>
+      </div>
+
+    </div>
+    <div style="margin:15px">
+      <a href="#" (click)="addFilterAndFilterGroupsClicked()">
+        <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+        <label>Filters & Filter groups</label>
+      </a>     
+    </div>
+  </form>
+
+</div>
+
+
+
+  <app-add-filter-form [header]="'Filters'" [openForm]="openAddFilter" (saveFilters)="handleSavedWhereFilters($event)" (saveFilterParenthesesGroup)="handleSavedWhereFilterParenthesesGroup($event)" [filterOp]="whereFilterOp" [columns]="columns"></app-add-filter-form>

@@ -1,4 +1,4 @@
-<div class="panel panel-info">
+<!--<div class="panel panel-info">
   <div class="panel-heading">
     <h3 class="panel-title">Filter Groups</h3>
   </div>
@@ -14,35 +14,39 @@
       No groups created yet. Click "Create New Group" to start.
     </div>
     }
-    @for(group of parenthesesGroups; track group.id)
-    {
-    <div class="well well-sm" style="margin-top: 10px;">
-      <div class="row">
-        <div class="col-xs-12">
-          <strong>Group {{ group.id }}:</strong>
-          <button type="button" class="btn btn-danger btn-xs pull-right" (click)="removeGroup(group.id)">
-            <span class="glyphicon glyphicon-trash"></span> Remove Group
-          </button>
-        </div>
-      </div>
 
-      <div class="row" style="margin-top: 10px;">
-        <div class="col-xs-12">
-          @for(filter of filters; track filter.id)
-          {
-          <div class="checkbox-inline">
-            <label>
-              <input type="checkbox"
-                     [id]="'group-' + group.id + '-filter-' + filter.id"
-                     [checked]="isFilterInGroup(group.id, filter.id)"
-                     (change)="handleCheckboxChange(group.id, filter.id, $event)">
-              Filter {{ filter.id }}
-            </label>
-          </div>
-          }
-        </div>
-      </div>
+  </div>
+</div>-->
+  @for(group of parenthesesGroups; track group.id)
+  {
+<div style="margin-top: 10px;">
+  <div class="row">
+    <div class="col-xs-6">
+
+      <strong>Group {{ group.id }}:</strong>
     </div>
-    }
+    <div lass="col-xs-6" style="text-align:right; margin-right:105px">
+
+    <i class="fa fa-trash" style="color:red;" (click)="removeGroup(group.id)"></i>
+
+  </div>
+  </div>
+
+  <div class="row" style="margin-top: 10px;">
+    <div class="col-xs-12">
+      @for(filter of filters; track filter.id)
+      {
+      <div class="checkbox-inline">
+        <label>
+          <input type="checkbox"
+                 [id]="'group-' + group.id + '-filter-' + filter.id"
+                 [checked]="isFilterInGroup(group.id, filter.id)"
+                 (change)="handleCheckboxChange(group.id, filter.id, $event)">
+          Filter {{ filter.id }}
+        </label>
+      </div>
+      }
+    </div>
   </div>
 </div>
+  }

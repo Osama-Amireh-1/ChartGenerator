@@ -1,8 +1,8 @@
-<div class="panel panel-info">
+<!--<div class="panel panel-info">
   <div class="panel-heading">Select Table:</div>
   <div class="panel-body">
-    <div style="margin-top: 20px">
-      <select class="form-control input-sm" type="select" [(ngModel)]="seletedTable" [ngModelOptions]="{standalone: true}" (change)="TableSelection()">
+    <div style="margin-top: 20px">-->
+      <select class="input-sm form-control input-sm" style="width:90%" type="select" [(ngModel)]="seletedTable" [ngModelOptions]="{standalone: true}" (change)="TableSelection()">
         <option selected value="">Open this select menu</option>
         @for(table of tables; track table)
         {
@@ -10,6 +10,6 @@
         }
 
       </select>
-    </div>
+    <!--</div>
   </div>
-</div>
+</div>-->

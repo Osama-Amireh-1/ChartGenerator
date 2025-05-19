@@ -1,0 +1,23 @@
+  <div class="row control-header">
+
+  @if(this.isShowMode)
+  {
+    <div class="col-sm-3">
+      <i class="fa fa-edit" style="color: #F78204; margin-right: 10px"></i>
+      <a class="Edit" href="#" (click)="editClick()">Edit Dashboard</a>
+    </div>
+  }
+  @if(!this.isShowMode)
+  {
+    <div class="col-sm-3">
+      <i class="fa fa-plus-circle" style="color: #F78204; margin-right: 10px"></i>
+      <a class="Edit" href="#">New chart</a>
+    </div>
+
+  <div style="text-align:right">
+    <button type="button" class="btn btn-warning">Save</button>
+    <button type="button" class="btn btn-default" (click)="cancelClicked()" style="margin-left:10px">Cancel</button>
+
+  </div>
+  }
+</div>

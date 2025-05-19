@@ -1,0 +1,10 @@
+.control-header {
+  width: 100%;
+  margin-top: 50px;
+  padding:20px;
+}
+.Edit {
+  background-color: none;
+  text-decoration: none;
+  color: #F78204;
+}

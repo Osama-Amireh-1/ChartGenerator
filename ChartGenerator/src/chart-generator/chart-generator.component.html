@@ -1,4 +1,4 @@
-      @if(!isShowMode)
+      <!--@if(!isShowMode)
 {
 <div class="container margin-top-5">
   <button type="button" class="btn btn-primary" (click)="changeMode()">Show Mode</button>
@@ -11,14 +11,15 @@
   <button type="button" class="btn btn-primary" (click)="changeMode()">Edit Mode</button>
 
 </div>
-}
-<app-chart-creator-form [getTableNamesByTypeURL]="getTableNamesByTypeURL"
+}-->
+<app-dashboard-control (showModeChanged)="handleChangeMode($event)"  [isShowMode]="isShowMode"></app-dashboard-control>
+<!--<app-chart-creator-form [getTableNamesByTypeURL]="getTableNamesByTypeURL"
                         [tableType]="tableType"
                         [getColumnURL]="getColumnURL"
                         (Execute)="fetchData($event)"
                         [openRequested]="openForm"
-                        [token]="token"></app-chart-creator-form>
-
+                        [token]="token"></app-chart-creator-form>-->
+<app-multi-step-form [tableType]="tableType" [token]="token"></app-multi-step-form>
 
 <app-grid-view [Visualizations]="Visualizations" [isShowMode]="isShowMode"
                (chartConfigChanged)="saveVisualizations()"

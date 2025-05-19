@@ -11,21 +11,26 @@ import { Filter } from '../Interfaces/filter';
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.css'
 })
-export class FilterComponent implements OnChanges {
+export class FilterComponent  {
   @Input() columns: string[] = [];
   @Input() filters: Filter[] = [];
-  filterCount = 0; k: string[] = [];
+  @Input() addNewFilter = false
+  filterCount = 0;
   @Input() parenthesesGroups: FilterParenthesesGroup[] = [];
   @Output() updateFilters = new EventEmitter<Filter[]>();
-  @Input({ required: true }) header: string = ""
+  //@Input({ required: true }) header: string = ""
   @Output() updateParenthesesGroups = new EventEmitter<FilterParenthesesGroup[]>();
-  @Input({ required: true }) filterOp: string[] = []
-  @Input({ required: true }) onlyNumber: boolean = false
+  @Input() filterOp: string[] = []
+  @Input() onlyNumber: boolean = false
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['filters'] && this.filters) {
       this.filterCount = this.filters.length > 0
         ? Math.max(...this.filters.map(f => f.id)) + 1
         : 0;
+    }
+
+    if (changes['addNewFilter'] && this.addNewFilter == true) {
+      this.addFilter()
     }
   }
   addFilter(): void {
@@ -40,38 +45,49 @@ export class FilterComponent implements OnChanges {
     this.updateFilters.emit(this.filters);
 
   }
+  //  this.filters.push(newFilter);
+  //  this.updateFilters.emit(this.filters);
+
+  //}
 
 
   removeFilter(id: number): void {
-   
-  const idMap = new Map<number, number>();
-    
-    this.filters = this.filters.filter(f => f.id !== id);
-    
-    this.filters.forEach((filter, index) => {
+    const filteredFilters = this.filters.filter(f => f.id !== id);
+    const idMap = new Map<number, number>();
+
+    const updatedFilters = filteredFilters.map((filter, index) => {
       idMap.set(filter.id, index);
-      filter.id = index;
+      return { ...filter, id: index };
     });
-    
+
     const updatedGroups = this.parenthesesGroups.map(group => {
       return {
         ...group,
         filterIds: group.filterIds
-          .filter(fid => fid !== id)  
+          .filter(fid => fid !== id)
           .map(fid => {
-            return idMap.has(fid) ? idMap.get(fid)! : 
-                   fid > id ? fid - 1 : fid;
+            return idMap.has(fid) ? idMap.get(fid)! :
+              fid > id ? fid - 1 : fid;
           })
       };
     });
-    if (this.filters.length==0)
-      updatedGroups.filter(g => g.filterIds.length > 0)
-    this.parenthesesGroups = updatedGroups;
-    this.updateFilters.emit(this.filters);
-    this.updateParenthesesGroups.emit(this.parenthesesGroups);
+    console.log("updatedGroups", updatedGroups)
+
+    const finalGroups = updatedFilters.length > 0
+      ? [...updatedGroups]
+      :[... updatedGroups.filter(g => g.filterIds.length > 0)];
+
+    this.filters = [...updatedFilters];
+    this.parenthesesGroups = [...finalGroups];
+    console.log("Final", finalGroups)
+    console.log("Final2", this.parenthesesGroups)
+
+    this.updateFilters.emit([...this.filters]);
+    this.updateParenthesesGroups.emit([...this.parenthesesGroups]);
   }
 
   isFirstInGroup(group: FilterParenthesesGroup, filterId: number): boolean {
+    console.log("isFirstInGroup",group.filterIds.length > 0 && filterId === Math.min(...group.filterIds))
     return group.filterIds.length > 0 && filterId === Math.min(...group.filterIds);
 
   }

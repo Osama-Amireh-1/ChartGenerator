@@ -26,12 +26,7 @@ export class ProgressBarComponent {
       this.stepClicked.emit(this.currentStep)
 
     }
-    //else if (this.isAllowClick())
-    //{
-    //  console.log("test")
-    //  this.currentStep = Step
-    //  this.stepClicked.emit(this.currentStep)
-    //}
+   
   }
 
   isAllowClick(): boolean {

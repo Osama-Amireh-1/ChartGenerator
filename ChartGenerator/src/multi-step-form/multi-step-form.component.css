@@ -1,0 +1,23 @@
+
+.chart-builder-container {
+  width: 400px;
+  height: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  padding: 15px;
+  margin: 20px auto;
+  position: absolute;
+  right: 0px;
+  z-index: 100;
+  background-color: #F8F7F7;
+}
+
+.Done {
+  color: #f0ad4e
+}
+a{
+    text-decoration:none;
+    color:black
+}

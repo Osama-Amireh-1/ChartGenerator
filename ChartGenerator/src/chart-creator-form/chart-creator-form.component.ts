@@ -34,7 +34,7 @@ export class ChartCreatorFormComponent {
   currentStep: number = 1;
   progressValue: number = 0;
   seletedTable: string = "";
-  columns: string[] = [];
+  columns: string[] = ['a', 'b'];
   tables: string[] = ["a", 'b'];
   groupByFelids: string[] = [];
   @Input() getTableNamesByTypeURL = "";

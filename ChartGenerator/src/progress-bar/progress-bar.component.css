@@ -1,23 +1,71 @@
-.step-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #007bff;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+/* progress-bar.component.css */
+.chart-builder-container {
+  padding: 15px;
+  background-color: #fff;
+  font-family: Arial, sans-serif;
 }
 
-.step-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  margin: 0 10px;
-  transform: translateY(-85%);
+.edit-dashboard {
+  margin-bottom: 20px;
 }
-.step-circle.active {
-  background-color: #337ab7;
-  color: white;
+
+.edit-link {
+  color: #f7941d;
+  text-decoration: none;
+}
+
+  .edit-link .glyphicon {
+    margin-right: 5px;
+  }
+
+.text-warning {
+  color: #f7941d;
+}
+
+.step-block {
+  margin-bottom: 20px;
+}
+
+.step-title {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.step-content {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.select-data label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.form-control {
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+
+.filters-section {
+  margin: 10px 0;
+}
+
+h5 {
+  margin: 15px 0 8px 0;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.filter-item, .group-item {
+  padding: 3px 0;
+  color: #555;
+  font-size: 13px;
 }

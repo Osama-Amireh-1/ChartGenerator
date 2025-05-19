@@ -16,6 +16,7 @@ export class FilterGroupsComponent implements OnChanges {
   @Input() groupCount = 0;
   @Input() filters: Filter[] = [];
   @Output() updateFiltersParentheses = new EventEmitter<FilterParenthesesGroup[]>();
+  @Input() addNewFilterGroup: boolean = false
   //@Output() upateGroupCount = new EventEmitter<number>(); 
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -23,6 +24,10 @@ export class FilterGroupsComponent implements OnChanges {
       this.groupCount = this.parenthesesGroups.length > 0
         ? Math.max(...this.parenthesesGroups.map(g => g.id)) + 1
         : 0;
+    }
+    console.log(this.addNewFilterGroup)
+    if (changes['addNewFilterGroup'] && this.addNewFilterGroup==true) {
+      this.createGroup()
     }
   }
 
@@ -33,7 +38,7 @@ export class FilterGroupsComponent implements OnChanges {
       filterIds: []
     };
     this.parenthesesGroups.push(newGroup);
-    //this.upateGroupCount.emit(this.groupCount)
+   // this.upateGroupCount.emit(this.groupCount)
   }
 
   handleCheckboxChange(groupId: number, filterId: number, event: Event): void {
@@ -45,12 +50,15 @@ export class FilterGroupsComponent implements OnChanges {
   }
 
   toggleFilterInGroup(groupId: number, filterId: number, checked: boolean): void {
+
     const group = this.parenthesesGroups.find(g => g.id === groupId);
     if (!group) return;
     if (checked) {
       if (!group.filterIds.includes(filterId)) {
         group.filterIds.push(filterId);
         group.filterIds.sort((a, b) => a - b);
+        console.log("fiter",group)
+
       }
     }
     else {
@@ -61,26 +69,27 @@ export class FilterGroupsComponent implements OnChanges {
     //  this.parenthesesGroups = this.parenthesesGroups.filter(g => g.id !== groupId);
     //}
   }
-
   removeGroup(groupId: number): void {
-    this.parenthesesGroups = this.parenthesesGroups.filter(g => g.id !== groupId)
-      .map(item => {
-        if (item.id > groupId) {
-          return {
-            ...item,
-            id: item.id - 1
-          }
-        }
-        return item
-      });
-    console.log(this.parenthesesGroups)
+    const originalLength = this.parenthesesGroups.length;
 
-    this.updateFiltersParentheses.emit(this.parenthesesGroups)
+    this.parenthesesGroups = this.parenthesesGroups
+      .filter(g => g.id !== groupId)
+      .map((group, index) => ({
+        ...group,
+        id: index
+      }));
 
+    if (this.parenthesesGroups.length < originalLength) {
+      this.groupCount = this.parenthesesGroups.length;
+    }
+
+    this.updateFiltersParentheses.emit([...this.parenthesesGroups])
   }
 
 
   isFilterInGroup(groupId: number, filterId: number): boolean {
+    console
+      .log("isFilterInGroup", this.parenthesesGroups)
     const group = this.parenthesesGroups.find(g => g.id === groupId);
     return group ? group.filterIds.includes(filterId) : false;
   }
