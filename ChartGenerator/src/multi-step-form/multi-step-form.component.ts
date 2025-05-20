@@ -49,6 +49,7 @@ export class MultiStepFormComponent {
   orderByFeileds: string[] = []
   top: number = 0
   openAddFilter: boolean = false
+  isWhereFilterSaved: boolean = false
   constructor(private DatabaseServ: DatabaseService) { }
 
 
@@ -62,16 +63,28 @@ export class MultiStepFormComponent {
     });
   }
   addFilterAndFilterGroupsClicked() {
-    console.log(this.openAddFilter)
+    this.wherefilters = [...this.wherefilters];
+    this.whereParenthesesGroups = [...this.whereParenthesesGroups];
     this.openAddFilter = true;
     setTimeout(() => this.openAddFilter = false, 0);
 
   }
   handleSavedWhereFilters(filter: Filter[]) {
     this.wherefilters = filter;
+    this.isWhereFilterSaved = true;
+
   }
   handleSavedWhereFilterParenthesesGroup(parenthesesGroup: FilterParenthesesGroup[]) {
     this.whereParenthesesGroups = parenthesesGroup
 
+  }
+  isFirstInGroup(group: FilterParenthesesGroup, filterId: number): boolean {
+    return group.filterIds.length > 0 && filterId === Math.min(...group.filterIds);
+
+  }
+
+
+  isLastInGroup(group: FilterParenthesesGroup, filterId: number): boolean {
+    return group.filterIds.length > 0 && filterId === Math.max(...group.filterIds);
   }
 }

@@ -32,7 +32,34 @@
       <a href="#" (click)="addFilterAndFilterGroupsClicked()">
         <i class="fa fa-plus-circle" style="margin-right:5px"></i>
         <label>Filters & Filter groups</label>
-      </a>     
+      </a>
+      @if (isWhereFilterSaved) {
+      @for (filter of wherefilters; track filter; let i = $index) {
+
+      @if (i > 0) {
+      <div>{{ filter.logicalLink }}</div>
+      }
+
+     
+
+      <div>
+        @for (group of whereParenthesesGroups; track group.id) {
+        @if (isFirstInGroup(group, filter.id)) {
+        <span style="font-size: 18px; font-weight: bold;">(</span>
+        }
+        }
+        {{ filter.field }} {{ filter.operator }} {{ filter.value }}
+        @for (group of whereParenthesesGroups; track group.id) {
+        @if (isLastInGroup(group, filter.id)) {
+        <span style="font-size: 18px; font-weight: bold;">)</span>
+        }
+        }
+      </div>
+
+
+
+      }
+      }
     </div>
   </form>
 
@@ -40,4 +67,4 @@
 
 
 
-  <app-add-filter-form [header]="'Filters'" [openForm]="openAddFilter" (saveFilters)="handleSavedWhereFilters($event)" (saveFilterParenthesesGroup)="handleSavedWhereFilterParenthesesGroup($event)" [filterOp]="whereFilterOp" [columns]="columns"></app-add-filter-form>
+  <app-add-filter-form [header]="'Filters'" [openForm]="openAddFilter" (saveFilters)="handleSavedWhereFilters($event)" (saveFilterParenthesesGroup)="handleSavedWhereFilterParenthesesGroup($event)" [filterOp]="whereFilterOp" [columns]="columns" [filters]="wherefilters" [parenthesesGroups]="whereParenthesesGroups"></app-add-filter-form>

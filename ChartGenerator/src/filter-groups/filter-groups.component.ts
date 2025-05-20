@@ -29,6 +29,13 @@ export class FilterGroupsComponent implements OnChanges {
     if (changes['addNewFilterGroup'] && this.addNewFilterGroup==true) {
       this.createGroup()
     }
+    if (changes['filters']) {
+      this.filters = [...changes['filters'].currentValue];
+    }
+
+    if (changes['parenthesesGroups']) {
+      this.parenthesesGroups = [...changes['parenthesesGroups'].currentValue];
+    }
   }
 
 

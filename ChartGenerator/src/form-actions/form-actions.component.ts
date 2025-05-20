@@ -50,6 +50,10 @@ export class FormActionsComponent<TPayload = void> {
   //  return false;
   //}
 
-  @Output() saveClicked = new EventEmitter <void>()
+  @Output() saveClicked = new EventEmitter<void>()
+
+  savedBtnClicked() {
+    this.saveClicked.emit();
+  }
 
 }

@@ -11,7 +11,7 @@
 
         <form>
           <div style="margin-bottom:10px;">
-            <div> <h3 style="display:inline;margin-right:10px">Filter |</h3>  <a href="#" style="color: #f0ad4e" (click)="handleAddNewFilter()"><i class="fa fa-plus-circle" ></i> Filter</a></div>
+            <div> <h3 style="display:inline;margin-right:10px">Filter |</h3>  <a  style="color: #f0ad4e" (click)="isAllowToAddNewFilter()?handleAddNewFilter():null"><i class="fa fa-plus-circle" ></i> Filter</a></div>
           </div>
           <div>
             <app-filter [addNewFilter]="addNewFilter" (updateFilters)="handleUpdateFilter($event)" [parenthesesGroups]="parenthesesGroups" [filters]="filters" (updateParenthesesGroups)="handleUpdateFilterParentheses($event)" [filterOp]="filterOp" [columns]="columns"></app-filter>
@@ -25,7 +25,7 @@
             <app-filter-groups (updateFiltersParentheses)="handleUpdateFilterParentheses($event)" [addNewFilterGroup]="addNewFilterGroup" [filters]="filters" [parenthesesGroups]="parenthesesGroups"></app-filter-groups>
           </div>
           <div>
-            <app-form-actions (saveClicked)="handleSaveFilters"></app-form-actions>
+            <app-form-actions (saveClicked)="handleSaveFilters()"></app-form-actions>
           </div>
         </form>
 

@@ -87,7 +87,6 @@ export class FilterComponent  {
   }
 
   isFirstInGroup(group: FilterParenthesesGroup, filterId: number): boolean {
-    console.log("isFirstInGroup",group.filterIds.length > 0 && filterId === Math.min(...group.filterIds))
     return group.filterIds.length > 0 && filterId === Math.min(...group.filterIds);
 
   }
