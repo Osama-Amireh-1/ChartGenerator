@@ -4,63 +4,248 @@
   <!--<app-progress-bar></app-progress-bar>-->
   <form>
 
-    <div class="row" [ngClass]="{Done: seletedTable !== '' }">
-      <div class="col-sm-1">
-        <i class="fa fa-circle"></i>
-      </div>
-      <div class="col-sm-3">
-        <p style="font-weight:bold">STEP 1:</p>
-      </div>
-
-    </div>
-    <div style="margin:10px">
-      <label style="margin-left:10px">Select data source</label>
-      <app-table-selector [tableType]="tableType" [token]="token" (tableSelected)="fetchColumns($event)" ></app-table-selector>
-    </div>
-
-
     <div class="row">
       <div class="col-sm-1">
         <i class="fa fa-circle"></i>
       </div>
-      <div class="col-sm-3">
-        <p style="font-weight:bold">STEP 2:</p>
+      <div class="col-sm-11">
+        <label style="margin-left:5px">Select data source</label>
+        <app-table-selector [tableType]="tableType" [token]="token" (tableSelected)="fetchColumns($event)"></app-table-selector>
+
       </div>
 
     </div>
-    <div style="margin:15px">
-      <a href="#" (click)="addFilterAndFilterGroupsClicked()">
-        <i class="fa fa-plus-circle" style="margin-right:5px"></i>
-        <label>Filters & Filter groups</label>
-      </a>
-      @if (isWhereFilterSaved) {
-      @for (filter of wherefilters; track filter; let i = $index) {
+    <!--<div style="margin:10px">
+    <i class="fa fa-circle"></i>
+    <label style="margin-left:10px">Select data source</label>
+    <app-table-selector [tableType]="tableType" [token]="token" (tableSelected)="fetchColumns($event)"></app-table-selector>
+  </div>-->
 
-      @if (i > 0) {
-      <div>{{ filter.logicalLink }}</div>
-      }
 
-     
+    <div class="row" style="margin-top:20px">
+      <div class="col-sm-1">
+        <i class="fa fa-circle"></i>
+      </div>
+      <div class="col-sm-11">
+        @if(wherefilters.length==0)
+        {
+        <a href="#" (click)="addFilterAndFilterGroupsClicked()">
+          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+          <label>Filters & Filter groups</label>
+        </a>
+        }
+        @else
+        {
+        <a href="#" (click)="addFilterAndFilterGroupsClicked()">
+          <i class="fa fa-edit" style="margin-right:5px"></i>
+          <label>Edit Filters & Filter groups</label>
+        </a>
+        }
+        @if(wherefilters.length>0)
+        {
+        <label>Filters</label>
+        }
+        @for (filter of wherefilters; track filter; let i = $index) {
 
-      <div>
-        @for (group of whereParenthesesGroups; track group.id) {
-        @if (isFirstInGroup(group, filter.id)) {
-        <span style="font-size: 18px; font-weight: bold;">(</span>
+        @if (i > 0) {
+        <div>{{ filter.logicalLink }}</div>
         }
-        }
-        {{ filter.field }} {{ filter.operator }} {{ filter.value }}
-        @for (group of whereParenthesesGroups; track group.id) {
-        @if (isLastInGroup(group, filter.id)) {
-        <span style="font-size: 18px; font-weight: bold;">)</span>
-        }
+
+
+
+        <div>
+          @for (group of whereParenthesesGroups; track group.id) {
+          @if (isFirstInGroup(group, filter.id)) {
+          <span style="font-size: 18px; font-weight: bold;">(</span>
+          }
+          }
+          {{ filter.field }} {{ filter.operator }} {{ filter.value }}
+          @for (group of whereParenthesesGroups; track group.id) {
+          @if (isLastInGroup(group, filter.id)) {
+          <span style="font-size: 18px; font-weight: bold;">)</span>
+          }
+          }
+        </div>
+
+
+
+
         }
       </div>
 
-
-
-      }
-      }
     </div>
+    <div class="row" style="margin-top:20px">
+      <div class="col-sm-1">
+        <i class="fa fa-circle"></i>
+      </div>
+      <div class="col-sm-11">
+        @if(groupByFields.length==0)
+        {
+        <a (click)="openGroupingForm()">
+          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+          <label>Grouping</label>
+        </a>
+        }
+        @else
+        {
+        <a (click)="openGroupingForm()">
+          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+          <label>Edit Groups</label>
+        </a>
+
+        }
+
+        <div>
+          @if(groupByFields.length>0)
+          {
+          <label>GroupBy</label>
+          }
+          @for (group of groupByFields; track group) {
+          <div>{{group}}</div>
+          }
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="row" style="margin-top:20px">
+      <div class="col-sm-1">
+        <i class="fa fa-circle"></i>
+      </div>
+      <div class="col-sm-11">
+        @if(aggregates.length==0)
+        {
+        <a (click)="openaAgregateForm()">
+          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+          <label>Agregates</label>
+        </a>
+        }
+        @else
+        {
+        <a (click)="openaAgregateForm()">
+          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+          <label>Edit Agregates</label>
+        </a>
+        }
+        <div>
+          @if(aggregates.length>0)
+          {
+          <span>Aggregates</span>
+
+          }
+          @for(aggregate of aggregates; track aggregate.id)
+          {          <div>{{aggregate.aggregateFunction}}({{aggregate.field}})</div>
+
+
+          }
+        </div>
+        <div>
+          @if(aggregateFilters.length>0)
+          {
+          <span>Aggregates Filter</span>
+          }
+          @for (filter of aggregateFilters; track filter; let i = $index) {
+
+          @if (i > 0) {
+          <div>{{ filter.logicalLink }}</div>
+          }
+
+
+
+          <div>
+            @for (group of aggregateParenthesesGroups; track group.id) {
+            @if (isFirstInGroup(group, filter.id)) {
+            <span style="font-size: 18px; font-weight: bold;">(</span>
+            }
+            }
+            {{ filter.field }} {{ filter.operator }} {{ filter.value }}
+            @for (group of aggregateParenthesesGroups; track group.id) {
+            @if (isLastInGroup(group, filter.id)) {
+            <span style="font-size: 18px; font-weight: bold;">)</span>
+            }
+            }
+          </div>
+
+
+
+
+          }
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:20px">
+      <div class="col-sm-1">
+        <i class="fa fa-circle"></i>
+      </div>
+      <div class="col-sm-11">
+        @if(orderBies.length==0)
+        {
+        <a (click)="openaOrderByForm()">
+          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+          <label>OrderBy & Top</label>
+        </a>
+        }
+        @else
+        {
+        <a (click)="openaOrderByForm()">
+          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+          <label>Edit OrderBy & Top</label>
+        </a>
+        }
+        <div>
+          @if(orderBies.length>0)
+          {
+          <span>orderBy</span>
+          }
+          @for(orderBy of orderBies; track orderBy.id)
+          {
+          <div>{{ orderBy.field }} {{ orderBy.sort ? 'Asc' : 'Desc' }}</div>
+          }
+        </div>
+        <div>
+          @if(top>0)
+          {
+          <span>Show Top: {{top}}</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:20px">
+      <div class="col-sm-1">
+        <i class="fa fa-circle"></i>
+      </div>
+      <div class="col-sm-11">
+        @if(visualizationDetails.title == "")
+        {
+        <a (click)="openVisualizationForm()">
+          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+          <label>Visualization</label>
+        </a>
+        }
+        @else
+        {
+        <a (click)="openVisualizationForm()">
+          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+          <label>Edit Visualization</label>
+        </a>
+        }
+        @if(visualizationDetails.title != "")
+        {
+        <div>
+          <label>Visualization Details</label>
+          <div>Title:{{visualizationDetails.title}}</div>
+          <div>Type:{{visualizationDetails.visualizationType}}</div>
+          <div>Number of Rows:{{visualizationDetails.numberOfRows}}</div>
+          <div>Number of Columns:{{visualizationDetails.numberOfColumns}}</div>
+
+        </div>
+        }
+      </div>
+    </div>
+
+    <app-form-actions (saveClicked)="handleAddisualizationDetails()" (cancelClicked)="handleCancelvisualizationDetails()"></app-form-actions>
   </form>
 
 </div>
@@ -68,3 +253,7 @@
 
 
   <app-add-filter-form [header]="'Filters'" [openForm]="openAddFilter" (saveFilters)="handleSavedWhereFilters($event)" (saveFilterParenthesesGroup)="handleSavedWhereFilterParenthesesGroup($event)" [filterOp]="whereFilterOp" [columns]="columns" [filters]="wherefilters" [parenthesesGroups]="whereParenthesesGroups"></app-add-filter-form>
+  <app-add-grouping-form [columns]="columns" [openForm]="openGrouping" (saveGroupByClicked)="handleSavedGroupBy($event)" [groupByFields]="groupByFields"></app-add-grouping-form>
+  <app-add-aggregate-form  [openForm]="openAgregate" [columns]="columns" [aggregateParenthesesGroups]="aggregateParenthesesGroups" [aggregateFilters]="aggregateFilters" [aggregates]="aggregates" [aggregateFiltersColumns]="aggregateFiltersColumns" (saveAggregates)="handleSavedAggregates($event)" (saveAggregateFiltersColumns)="handleSavedAggregatesFiltersColumns($event)" (saveAggregateFilters)="handleSavedAggregatesFilters($event)"  (saveAggregateFilterParenthesesGroup)="handleSavedAggregatesFiltersParentheses($event)"></app-add-aggregate-form>
+  <app-add-order-by-and-top-form [openForm]="openOrderBy" [columns]="orderByFeileds" (saveOrderBy)="handleSavedOrderBy($event)" (saveTop)="handleSavedTop($event)"></app-add-order-by-and-top-form>
+  <app-add-visualization-details-form [openForm]="openVisualization" (saveVisualizationDetails)="handleSavedVisualizationDetails($event)" [visualizationDetails]="visualizationDetails"></app-add-visualization-details-form>

@@ -79,8 +79,6 @@ export class FilterComponent  {
 
     this.filters = [...updatedFilters];
     this.parenthesesGroups = [...finalGroups];
-    console.log("Final", finalGroups)
-    console.log("Final2", this.parenthesesGroups)
 
     this.updateFilters.emit([...this.filters]);
     this.updateParenthesesGroups.emit([...this.parenthesesGroups]);
@@ -117,4 +115,17 @@ export class FilterComponent  {
     this.updateFilters.emit(this.filters);
    
   }
+  isAllowToAddNewFilter(): boolean {
+    for (var i = 0; i < this.filters.length; i++) {
+      if (this.filters[i].field == "" || this.filters[i].operator == "" || this.filters[i].value == "" || this.filters[i].logicalLink == "") {
+        return false
+      }
+    }
+    return true
+
+  }
+  handleAddNewFilter() {
+    this.addFilter()
+  }
+
 }

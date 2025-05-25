@@ -1,6 +1,7 @@
 import { OrderBy } from "./order-by";
 import { RequestAggregate } from "./request-aggregate";
 import { RequestFilter } from "./request-filter";
+import { RequestGroupBy } from "./request-group-by";
 import { RequestOrderBy } from "./request-order-by";
 
 export interface RequestData {
@@ -11,7 +12,7 @@ export interface RequestData {
   WhereFillters: RequestFilter[],
 
   WhereFilltersLogicalOperators: string[],
-  GroupByFields: string[],
+  GroupBy: RequestGroupBy[],
   //aggregateFields: string [],
   //aggregateFunctions: string[],
   Aggregates: RequestAggregate[]

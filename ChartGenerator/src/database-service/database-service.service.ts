@@ -26,5 +26,14 @@ export class DatabaseService {
     //const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post(url, body );
   }
+  getSavedCharts(URL: string, DashboardID: string, ClusterCode: string, propertyCode: string, Token: string): Observable<any> {
+    const params = new HttpParams()
+      .set('DashboardID', DashboardID)
+      .set('ClusterCode', ClusterCode)
+      .set('propertyCode', propertyCode);
+    return this.http.get<any>(URL, {
+      params: params
+    })
+  }
 
 }

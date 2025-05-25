@@ -33,6 +33,7 @@ export class GridViewComponent implements OnInit, OnChanges {
 
     }
   }
+  @Input() isCreeateChartClicked: boolean = false
 
   get Visualizations(): VisualizationResource[] {
     return this._charts;
@@ -160,9 +161,9 @@ export class GridViewComponent implements OnInit, OnChanges {
         rows: rows,
         x: x,
         y: y,
-        chartData: chart
-       
+        chartData: chart,
       };
+      console.log('cc',chart)
 
       this.gridItems.push(item);
     });

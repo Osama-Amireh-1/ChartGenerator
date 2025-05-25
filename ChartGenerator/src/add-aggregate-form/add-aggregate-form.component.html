@@ -1,0 +1,29 @@
+<div class="modal" tabindex="-1" role="dialog" id="AddAggregate">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Aggregates</h5>
+      </div>
+      <div class="modal-body p-20">
+        <div style="margin-bottom:10px;">
+        </div>
+        <form>
+          <div>
+            <app-aggregate (addAggregates)="handleAddAggregates($event)" (removeAggregates)="handleRemoveAggregates($event)" [columns]="columns" [aggregates]="aggregates"></app-aggregate>
+
+          </div>
+          <div style="margin-top:20px">
+            <app-filter [columns]="aggregateFiltersColumns" [filterOp]="havingFilterOp" (updateFilters)="handleUpdateFilter($event)" [filters]="aggregateFilters" [parenthesesGroups]="aggregateParenthesesGroups"  (updateParenthesesGroups)="handleUpdateFilterParentheses($event)"></app-filter>
+          </div>
+          <div style="margin-top:20px">
+              <app-filter-groups (updateFiltersParentheses)="handleUpdateFilterParentheses($event)" [filters]="aggregateFilters" [parenthesesGroups]="aggregateParenthesesGroups"></app-filter-groups>
+          </div>
+          <div>
+            <app-form-actions (saveClicked)="handleSaveAggregate()" (cancelClicked)="handleCancelAggregate()"></app-form-actions>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

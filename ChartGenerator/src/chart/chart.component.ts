@@ -15,8 +15,6 @@ export class ChartComponent implements AfterViewInit {
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
   chart: Chart | null = null;
 
-
-
   ngAfterViewInit(): void {
     this.createChart();
   }
@@ -24,11 +22,22 @@ export class ChartComponent implements AfterViewInit {
   createChart(): void {
     if (!this.chartCanvas) return;
     const ctx = this.chartCanvas.nativeElement.getContext('2d');
-    if (!ctx || !this.data || this.data.length === 0) return;
+    if (!ctx) return;
 
     const type: ChartJSChartType = (this.chartType.toLowerCase() as ChartJSChartType) || 'bar';
     const isPieChart = type === 'pie';
-    const { labels, datasets } = this.extractChartData(this.data);
+
+    let labels: any[] = [];
+    let datasets: any[] = [];
+
+    if (this.data && this.data.length > 0) {
+      const extractedData = this.extractChartData(this.data);
+      labels = extractedData.labels;
+      datasets = extractedData.datasets;
+    } else {
+      labels = [];
+      datasets = [];
+    }
 
     const colorSet = [
       "rgb(75, 192, 192)",
@@ -41,21 +50,21 @@ export class ChartComponent implements AfterViewInit {
       "rgb(0, 128, 0)"
     ];
 
-    const styledDatasets = datasets.map((dataset, index) => {
-      const color = colorSet[index % colorSet.length];
+    let styledDatasets: any[] = [];
 
-      return {
-        ...dataset,
-        backgroundColor: isPieChart ? colorSet.slice(0, labels.length) : color,
-        borderColor: type === 'line' ? color : undefined,
-        fill: type === 'line' ? false : undefined,
-        tension: type === 'line' ? 0.1 : undefined
-      };
-    });
+    if (this.data && this.data.length > 0) {
+      styledDatasets = datasets.map((dataset, index) => {
+        const color = colorSet[index % colorSet.length];
 
-    
-
-  
+        return {
+          ...dataset,
+          backgroundColor: isPieChart ? colorSet.slice(0, labels.length) : color,
+          borderColor: type === 'line' ? color : undefined,
+          fill: type === 'line' ? false : undefined,
+          tension: type === 'line' ? 0.1 : undefined
+        };
+      });
+    }
 
     const chartData: any = {
       labels: labels,
@@ -67,36 +76,33 @@ export class ChartComponent implements AfterViewInit {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: true,
+          display: true, 
           position: 'top'
         },
         title: {
           display: true,
-          text: this.title,
+          text: this.title, 
         }
-
       }
-
     };
-   
+
     if (type !== 'pie') {
       options.scales = {
-      x: {
-        title: {
-          display: true,
-          text: "column"
+        x: {
+          title: {
+            display: true,
+            text: "column"
+          }
+        },
+        y: {
+          beginAtZero: true,
+          title: {
+            display: type === 'line' || type === 'bar',
+            text: 'Value'
+          }
         }
-      },
-      y: {
-        beginAtZero: true,
-        title: {
-          display: type === 'line' || type === 'bar',
-          text: 'Value'
-        }
-      }
+      };
     }
-    }
-
 
     const config: ChartConfiguration = {
       type: type,
@@ -109,25 +115,24 @@ export class ChartComponent implements AfterViewInit {
     this.chart = new Chart(ctx, config);
   }
 
-
   extractChartData(data: any[]): { labels: any[], datasets: any[] } {
     if (!data || data.length === 0) {
       return { labels: [], datasets: [] };
     }
-    
+
     const firstItem = data[0];
-    
+
     if (firstItem.Key && typeof firstItem.Key === 'object') {
       const dataProperties = Object.keys(firstItem).filter(prop => prop !== 'Key');
-      
+
       const labels = data.map(item => {
         const keyObj = item.Key;
         if (!keyObj) return 'Unknown';
-        
+
         const keyValues = Object.values(keyObj);
         return keyValues.join('-');
       });
-      
+
       const datasets = dataProperties.map(property => {
         return {
           label: property,
@@ -139,15 +144,15 @@ export class ChartComponent implements AfterViewInit {
           })
         };
       });
-      
+
       return { labels, datasets };
     }
-    
+
     else {
       const columnNames = Object.keys(firstItem);
-      const labelColumn = columnNames[0]; 
+      const labelColumn = columnNames[0];
       const dataColumns = columnNames.slice(1);
-      
+
       const labels = data.map(item => {
         const labelValue = item[labelColumn];
         if (typeof labelValue === 'object' && labelValue !== null) {
@@ -155,20 +160,17 @@ export class ChartComponent implements AfterViewInit {
         }
         return labelValue;
       });
-      
+
       const datasets = dataColumns.map(column => {
         return {
           label: column,
           data: data.map(item => parseFloat(item[column]) || 0)
         };
       });
-      
+
       return { labels, datasets };
     }
   }
-
-
-
 
   destroyChart(): void {
     if (this.chart) {

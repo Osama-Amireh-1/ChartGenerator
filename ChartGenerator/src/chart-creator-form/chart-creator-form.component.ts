@@ -106,7 +106,7 @@ export class ChartCreatorFormComponent {
       TableName: '',
       WhereFillters:[], 
       WhereFilltersLogicalOperators: [],
-      GroupByFields: [],
+      GroupBy: [],
       Aggregates:[],
       AggregateFilter:[],
       AggregateFilterLogicalOperators: [],
@@ -122,7 +122,8 @@ export class ChartCreatorFormComponent {
       this.dataRequste.WhereFillters.push({
         FilterField: filter.field,
         FilterOperator: filter.operator,
-        FilterValue: filter.value
+        FilterValue: filter.value,
+        Index: filter.id
 
       })
         
@@ -187,7 +188,8 @@ export class ChartCreatorFormComponent {
       if (agg.aggregateFunction && agg.field) {
         this.dataRequste.Aggregates.push({
           aggregateField: agg.field,
-          aggregateFunction:agg.aggregateFunction
+          aggregateFunction: agg.aggregateFunction,
+          Index: agg.id
         })
       
       }
@@ -201,7 +203,8 @@ export class ChartCreatorFormComponent {
       this.dataRequste.AggregateFilter.push({
         FilterField: filter.field,
         FilterOperator: filter.operator,
-        FilterValue: filter.value
+        FilterValue: filter.value,
+        Index: filter.id
       })
 
     });
@@ -271,12 +274,21 @@ export class ChartCreatorFormComponent {
       
 
     }
-    this.dataRequste.GroupByFields = this.groupByFelids;
+
+    this.groupByFelids.forEach((Felids,index) => {
+      if (Felids) {
+        this.dataRequste.GroupBy.push({
+          field: Felids,
+          Index: index
+        })
+      }
+    })
     this.orderBies.forEach(orderBy => {
       if (orderBy.field && orderBy.sort != undefined) {
         this.dataRequste.OrderBy.push({
           Orderby: orderBy.field,
-          SortOrder: orderBy.sort
+          SortOrder: orderBy.sort,
+          index: orderBy.id
         })
 
       }

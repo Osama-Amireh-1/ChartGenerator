@@ -1,10 +1,116 @@
 .control-header {
   width: 100%;
   margin-top: 50px;
-  padding:20px;
+  padding: 20px;
 }
-.Edit {
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+  .header-row h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+a {
   background-color: none;
   text-decoration: none;
-  color: #F78204;
+  color: #f0ad4e;
+}
+
+  a:hover {
+    cursor: pointer;
+  }
+
+label {
+  font-family: Inter;
+  font-size: 16px;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.form-item {
+  margin-bottom: 10px;
+}
+
+select {
+  border-radius: 7px;
+  width: 300px;
+  display: inline-block;
+  margin-left:10px
+}
+
+.actions {
+  text-align: right;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+  .actions a {
+    display: inline-block;
+  }
+
+.button-container {
+  text-align: right;
+}
+
+  .button-container button {
+    margin-left: 10px;
+  }
+
+@media (max-width: 767px) {
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-item {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  select {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 5px;
+  }
+
+  .actions {
+    text-align: left;
+    margin-top: 10px;
+    white-space: normal;
+    justify-content: flex-start;
+  }
+
+  .button-container {
+    text-align: center;
+    margin-top: 15px;
+  }
+
+    .button-container button {
+      margin: 5px;
+      width: 45%;
+    }
+
+  .control-header {
+    padding: 15px;
+  }
 }

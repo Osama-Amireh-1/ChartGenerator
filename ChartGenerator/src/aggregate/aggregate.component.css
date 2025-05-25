@@ -1,0 +1,22 @@
+a.btn-danger {
+  background-color: transparent !important;
+}
+
+  a.btn-danger:focus,
+  a.btn-danger:active,
+  a.btn-danger:hover {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+.heading {
+  display: inline;
+  margin-right: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  font-family: Inter;
+  margin-left: 20px;
+}
+select {
+  border-radius: 7px;
+}

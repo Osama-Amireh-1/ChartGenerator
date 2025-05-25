@@ -1,4 +1,4 @@
-<div class="panel panel-info">
+<!--<div class="panel panel-info">
   <div class="panel-heading">Group By</div>
   <div class="panel-body">
     @for (column of columns; track column) {
@@ -12,4 +12,16 @@
     </div>
     }
   </div>
+</div>-->
+
+
+<div>
+  <mat-form-field appearance="outline" style="width: 50%; font-size: 16px; min-height: 80px;">
+    <mat-label style="font-size: 16px;">Fields</mat-label>
+    <mat-select [formControl]="groupBy" multiple style="font-size: 16px;">
+      @for (col of columns; track col) {
+      <mat-option [value]="col" style="font-size: 16px;">{{col}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 </div>

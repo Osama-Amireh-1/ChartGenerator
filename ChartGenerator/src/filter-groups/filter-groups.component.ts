@@ -52,7 +52,7 @@ export class FilterGroupsComponent implements OnChanges {
     const isChecked = (event.target as HTMLInputElement).checked;
     this.toggleFilterInGroup(groupId, filterId, isChecked);
 
-    this.updateFiltersParentheses.emit(this.parenthesesGroups)
+    this.updateFiltersParentheses.emit([...this.parenthesesGroups])
 
   }
 
@@ -95,10 +95,13 @@ export class FilterGroupsComponent implements OnChanges {
 
 
   isFilterInGroup(groupId: number, filterId: number): boolean {
-    console
-      .log("isFilterInGroup", this.parenthesesGroups)
+
     const group = this.parenthesesGroups.find(g => g.id === groupId);
     return group ? group.filterIds.includes(filterId) : false;
+  }
+  handleAddNewFilterGroup() {
+    this.createGroup()
+
   }
 
 }

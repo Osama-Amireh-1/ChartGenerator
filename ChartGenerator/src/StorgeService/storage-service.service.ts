@@ -49,7 +49,7 @@ export class StorageService {
       TableName: '',
       WhereFillters: [],
       WhereFilltersLogicalOperators: [],
-      GroupByFields: [],
+      GroupBy: [],
       Aggregates:[],
       AggregateFilter: [],
       AggregateFilterLogicalOperators: [],

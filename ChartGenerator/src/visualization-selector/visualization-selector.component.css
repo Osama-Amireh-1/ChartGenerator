@@ -1,0 +1,15 @@
+.heading {
+  display: inline;
+  margin-right: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  font-family: Inter;
+  margin-left: 20px;
+}
+
+select,input {
+  border-radius: 7px;
+}
+label {
+  font-family: Inter;
+}

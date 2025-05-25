@@ -1,0 +1,25 @@
+<div class="modal" tabindex="-1" role="dialog" id="AddVisualizationDetails">
+  <div class="modal-dialog modal-m" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Visualization</h5>
+      </div>
+      <div class="modal-body pa-30">
+        <form>
+          <div>
+            <app-visualization-selector [title]="visualizationDetails.title" [numberOfColumns]="visualizationDetails.numberOfColumns"
+                                        [numberOfRows]="visualizationDetails.numberOfRows" [visualizationType]="visualizationDetails.visualizationType"
+                                        (updateVisualization)="handleVisualizationDetailsChanged($event)"></app-visualization-selector>
+
+          </div>
+
+          <div>
+            <app-form-actions (saveClicked)="handleSaveVisualizationDetails()" (cancelClicked)="handleCancelVisualizationDetails()"></app-form-actions>
+
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

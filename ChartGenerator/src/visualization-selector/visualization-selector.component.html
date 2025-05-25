@@ -1,41 +1,39 @@
-<div class="panel panel-info">
-  <div class="panel-heading">Chart Type</div>
-  <div class="panel-body">
-    <div>
-      <label>Title</label>
-      <input type="text" [(ngModel)]="title" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}" class="form-control input-sm"/>
-    </div>
-    <div>
-      <label>Visualization Type:</label>
-      <select class="form-control input-sm" [(ngModel)]="visualizationType"  (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
-        <option value=''>None</option>
-        <option value="bar">Bar</option>
-        <option value="line">Line</option>
-        <option value="pie">Pie</option>
-        <option value="Table">Table</option>
-      </select>
-    </div>
-    <div>
-      <label>Number of Rows</label>
-      <select class="form-control input-sm" [(ngModel)]="numberOfRows" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
-        <option value="0">Number of Rows:</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-      </select>
-    </div>
-    <div>
-      <label>Number of Columns</label>
-      <select class="form-control input-sm" [(ngModel)]="numberOfColumns" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
-        <option value="0">Number of Column:</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-      </select>
-    </div>
-  </div>
+<div style="margin-bottom:5px"> <h3 class="heading">Visualization Detials</h3></div>
+
+
+<div style="margin-bottom: 10px;margin-left:20px; margin-right:10px;">
+  <label>Title</label>
+  <input type="text" [(ngModel)]="title" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}" class="form-control input-sm" />
+</div>
+<div style="margin-bottom: 10px; margin-left: 20px; margin-right: 10px;">
+  <label>Visualization Type:</label>
+  <select class="form-control input-sm" [(ngModel)]="visualizationType" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
+    <option value=''>None</option>
+    <option value="bar">Bar</option>
+    <option value="line">Line</option>
+    <option value="pie">Pie</option>
+    <option value="Table">Table</option>
+  </select>
+</div>
+<div style="margin-bottom: 10px; margin-left: 20px; margin-right: 10px;">
+  <label>Number of Rows</label>
+  <select class="form-control input-sm" [(ngModel)]="numberOfRows" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
+    <option value="0">Number of Rows:</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+  </select>
+</div>
+<div style="margin-bottom: 10px; margin-left: 20px; margin-right: 10px;">
+  <label>Number of Columns</label>
+  <select class="form-control input-sm" [(ngModel)]="numberOfColumns" (ngModelChange)="onVisualizationConfigChange()" [ngModelOptions]="{standalone: true}">
+    <option value="0">Number of Column:</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+  </select>
 </div>

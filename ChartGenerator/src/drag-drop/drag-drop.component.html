@@ -1,0 +1,28 @@
+<div class="drag-drop-container">
+  <h3>Selected Fields (Drag to reorder)</h3>
+
+  <div cdkDropList
+       class="drag-drop-list"
+       (cdkDropListDropped)="drop($event)">
+
+    @for (field of groupByFields; track field; let i = $index) {
+    <div class="drag-drop-item"
+         cdkDrag>
+
+      <div class="drag-handle" cdkDragHandle>
+        <mat-icon>drag_indicator</mat-icon>
+      </div>
+
+      <span class="field-name">{{ field }}</span>
+
+      <button mat-icon-button
+              class="remove-btn"
+              (click)="removeField(i)"
+              title="Remove field">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    }
+  </div>
+  
+</div>

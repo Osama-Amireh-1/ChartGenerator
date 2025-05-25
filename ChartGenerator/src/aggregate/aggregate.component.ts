@@ -16,12 +16,16 @@ export class AggregateComponent implements OnChanges {
   @Input() columns: string[] = [];
   @Output() addAggregates = new EventEmitter<Aggregate[]>();
   @Output() removeAggregates = new EventEmitter<Aggregate[]>();
+  @Input() addNewAggregate = false
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['aggregates'] && this.aggregates) {
       this.aggregateCount = this.aggregates.length > 0
         ? Math.max(...this.aggregates.map(agg => agg.id)) + 1
         : 0;
+    }
+    if (changes['addNewAggregate'] && this.addNewAggregate == true) {
+      this.addAggregate()
     }
   }
 
@@ -57,6 +61,22 @@ export class AggregateComponent implements OnChanges {
 
 
     this.addAggregates.emit(this.aggregates);
+
+  }
+
+  handleAddNewAggregate() {
+    //this.addNewAggregate = true;
+    //setTimeout(() => this.addNewAggregate = false, 0);
+    this.addAggregate()
+
+  }
+  isAllowToAddNewAggregate(): boolean {
+    for (var i = 0; i < this.aggregates.length; i++) {
+      if (this.aggregates[i].field == "" || this.aggregates[i].aggregateFunction == "") {
+        return false
+      }
+    }
+    return true
 
   }
 

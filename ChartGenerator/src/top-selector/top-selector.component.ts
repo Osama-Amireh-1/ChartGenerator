@@ -13,16 +13,24 @@ export class TopSelectorComponent {
   @Output() updateTopValue = new EventEmitter<number>
   showInput = false;
 
-  onShowModeChange() {
-    this.showInput = !this.showInput
-    if (this.showInput == false) {
-      this.top = 0
-    }
-  }
+  //onShowModeChange() {
+  //  this.showInput = !this.showInput
+  //  if (this.showInput == false) {
+  //    this.top = 0
+  //  }
+  //}
 
   onTopValueChange() {
  
     this.updateTopValue.emit(this.top);
+  }
+  AddTop() {
+    this.showInput = true;
+  }
+  DeleteTop() {
+    this.showInput = false;
+
+    this.top = 0
   }
 
 }

@@ -51,9 +51,13 @@ export class FormActionsComponent<TPayload = void> {
   //}
 
   @Output() saveClicked = new EventEmitter<void>()
+  @Output() cancelClicked = new EventEmitter<void>()
 
   savedBtnClicked() {
     this.saveClicked.emit();
+  }
+  cancelBtnClicked() {
+    this.cancelClicked.emit()
   }
 
 }

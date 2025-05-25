@@ -27,10 +27,18 @@ export class ChartGeneratorComponent implements OnInit {
   @Input({ required: true }) getColumnURL = "";
   @Input({ required: true }) getDataURL = "";
   @Input({ required: true }) tableType = "";
-  @Input() dataSource: SavedVisualizationData[]=[]
-  Visualizations: VisualizationResource[] = [];
+  dataSource: SavedVisualizationData[]=[]
+  savedVisualizations: VisualizationResource[] = [];
+  unSavedVisualizations: VisualizationResource[]=[]
   @Input() openForm = false;
   @Input() isShowMode = true;
+  @Input() dashboardID: string = ""
+  @Input() dashboardName: string = "";
+  @Input() clusterCode: string = ""
+  @Input() propertyCode: string = ""
+  @Input() dashboarScope: string=""
+ isCreeateChartClicked = false;
+
   VisualizationRequestData: Map<string, RequestData> = new Map();
   @Input({ required: true }) token: string="";
 
@@ -40,14 +48,15 @@ export class ChartGeneratorComponent implements OnInit {
   }
 
   loadSavedVisualization() {
-    const savedCharts = this.storageService.loadSavedCharts();
-    if (savedCharts.length > 0) {
-      console.log(savedCharts.length)
-     savedCharts.forEach(chart => {
-        this.VisualizationRequestData.set(chart.id, chart.requestData);
-        this.fetchDataForSavedVisualization(chart)
-      })
-    }
+   // this.databaseServ.getSavedCharts()
+    //const savedCharts = this.storageService.loadSavedCharts();
+    //if (savedCharts.length > 0) {
+    //  console.log(savedCharts.length)
+    // savedCharts.forEach(chart => {
+    //    this.VisualizationRequestData.set(chart.id, chart.requestData);
+    //    this.fetchDataForSavedVisualization(chart)
+    //  })
+    //}
 
     //if (this.dataSource.length > 0) {
     //
@@ -56,31 +65,31 @@ export class ChartGeneratorComponent implements OnInit {
     //    this.fetchDataForSavedVisualization(Data)
     //  })
     //}
-
+    this.unSavedVisualizations = [...this.savedVisualizations]
   }
   fetchDataForSavedVisualization(chart: SavedVisualizationData) {
-    const requestData = chart.requestData;
-    //const requestParams = this.buildHttpParams(requestData);
+  //  const requestData = chart.requestData;
+  //  //const requestParams = this.buildHttpParams(requestData);
 
-    let Data: any
+  //  let Data: any
 
-    this.databaseServ.postData(this.getDataURL, requestData, this.token).subscribe(data => {
-      this.addChartWithData(
-        chart.id,
-        data.Data,
-        chart.chartType,
-        chart.numberOfRows,
-        chart.numberOfColumns,
-        chart.tilte,
-        chart.x,
-        chart.y
-      );
-    });
-    console.log(Data)
+  //  this.databaseServ.postData(this.getDataURL, requestData, this.token).subscribe(data => {
+  //    this.addChartWithData(
+  //      chart.id,
+  //      data.Data,
+  //      chart.chartType,
+  //      chart.numberOfRows,
+  //      chart.numberOfColumns,
+  //      chart.tilte,
+  //      chart.x,
+  //      chart.y
+  //    );
+  //  });
+  //  console.log(Data)
 
     
   }
-  addChartWithData(id: any, data: any[], chartType: string, rows: number, cols: number, Tilte: string, x?: number, y?: number, ): void {
+  addChart(id: any, chartType: string, rows: number, cols: number, Tilte: string, requestData: RequestData, data?: any[],x?: number, y?: number): void {
     const newChart: VisualizationResource = {
       Id: id,
       data: data,
@@ -89,29 +98,33 @@ export class ChartGeneratorComponent implements OnInit {
       numberOfColumns: cols,
       title: Tilte,
       x: x,
-      y: y
+      y: y,
+      requestData: requestData
     };
-
-    this.Visualizations = [...this.Visualizations, newChart];
+    this.unSavedVisualizations = [...this.unSavedVisualizations, newChart]
   }
 
-  buildHttpParams(requestData: any): HttpParams {
-    let params = new HttpParams();
 
-    Object.entries(requestData).forEach(([key, values]) => {
-      if (Array.isArray(values)) {
-        values.forEach(value => {
-          if (value !== undefined && value !== null) {
-            params = params.append(key, String(value)); 
-          }
-        });
-      } else if (values !== undefined && values !== null) {
-        params = params.append(key, String(values));
-      }
-    });
+  //  this.Visualizations = [...this.Visualizations, newChart];
+  //}
 
-    return params;
-  }
+  //buildHttpParams(requestData: any): HttpParams {
+  //  let params = new HttpParams();
+
+  //  Object.entries(requestData).forEach(([key, values]) => {
+  //    if (Array.isArray(values)) {
+  //      values.forEach(value => {
+  //        if (value !== undefined && value !== null) {
+  //          params = params.append(key, String(value)); 
+  //        }
+  //      });
+  //    } else if (values !== undefined && values !== null) {
+  //      params = params.append(key, String(values));
+  //    }
+  //  });
+
+  //  return params;
+  //}
   fetchData(request: any) {
     console.log("Received from child:", request);
     const requestData = request.dataRequste;
@@ -119,30 +132,31 @@ export class ChartGeneratorComponent implements OnInit {
 
     this.VisualizationRequestData.set(request.Id, requestData);
 
-    console.log(request.dataRequste)
+   // console.log(request.dataRequste)
    
     this.databaseServ.postData(this.getDataURL, requestData, this.token).subscribe(data => {
-      this.addChartWithData(
+      this.addChart(
         request.Id,
         data.Data,
         request.chartType,
         request.NumberOfRows,
         request.NumberOfColumns,
         request.Title,
+        requestData
       );
-      this.saveVisualizations();
+    //  this.saveVisualizations();
     });
   }
   saveVisualizations(): void {
-    console.log(this.Visualizations);
-    this.storageService.saveVisualization(this.Visualizations, this.VisualizationRequestData);
+    console.log(this.savedVisualizations);
+    //this.storageService.saveVisualization(this.Visualizations, this.VisualizationRequestData);
   }
 
   
   removeChart(chartId: string): void {
-    this.Visualizations = this.Visualizations.filter(chart => chart.Id !== chartId);
-    this.VisualizationRequestData.delete(chartId);
-    this.saveVisualizations();
+    //this.Visualizations = this.Visualizations.filter(chart => chart.Id !== chartId);
+    //this.VisualizationRequestData.delete(chartId);
+    //this.saveVisualizations();
   }
 
   openChartModalClicked() {
@@ -154,7 +168,27 @@ export class ChartGeneratorComponent implements OnInit {
   handleChangeMode(mode: boolean)
   {
     this.isShowMode = mode
+    this.isCreeateChartClicked = false
     console.log(this.isShowMode)
   }
 
+  handleCreateChart(isCreateChart: boolean) {
+    this.isCreeateChartClicked = isCreateChart
+  }
+  handleCancelCreateChart() {
+    this.isCreeateChartClicked = false
+  }
+  createChartClick() {
+    this.isCreeateChartClicked = true
+
+  }
+  handleAddNewVisualization(request: any) {
+    const data: any = [];
+    this.addChart(request.Id,
+      request.chartType,
+      request.numberOfRows,
+      request.numberOfColumns,
+      request.tilte,
+      request.dataRequste,data)
+  }
 }

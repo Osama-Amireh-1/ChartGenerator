@@ -41,38 +41,41 @@ export class AddFilterFormComponent implements OnChanges {
     (window as any).$('#AddFilter').modal('show');
 
   }
-  handleAddNewFilter() {
-    this.addNewFilter = true;
-    setTimeout(() => this.addNewFilter = false, 0);
+  //handleAddNewFilter() {
+  //  this.addNewFilter = true;
+  //  setTimeout(() => this.addNewFilter = false, 0);
 
-  }
+  //}
 
-  handleAddNewFilterGroup() {
-    this.addNewFilterGroup = true
-    setTimeout(() => this.addNewFilterGroup = false, 0);
+  //handleAddNewFilterGroup() {
+  //  this.addNewFilterGroup = true
+  //  setTimeout(() => this.addNewFilterGroup = false, 0);
 
-  }
+  //}
   handleUpdateFilter(filters: Filter[]) {
     this.filters = [...filters];
 
   }
-  isAllowToAddNewFilter(): boolean {
-    for (var i = 0; i < this.filters.length; i++) {
-      if (this.filters[i].field == "" || this.filters[i].operator == "" || this.filters[i].value == "" || this.filters[i].logicalLink == "") {
-        return false
-      }
-    }
-    return true
+  //isAllowToAddNewFilter(): boolean {
+  //  for (var i = 0; i < this.filters.length; i++) {
+  //    if (this.filters[i].field == "" || this.filters[i].operator == "" || this.filters[i].value == "" || this.filters[i].logicalLink == "") {
+  //      return false
+  //    }
+  //  }
+  //  return true
 
-  }
+  //}
   handleUpdateFilterParentheses(parenthesesGroups: FilterParenthesesGroup[]) {
     this.parenthesesGroups = [...parenthesesGroups];
 
   }
   handleSaveFilters() {
-    this.saveFilters.emit(this.filters);
-    this.saveFilterParenthesesGroup.emit(this.parenthesesGroups);
+    this.saveFilters.emit([...this.filters]);
+    this.saveFilterParenthesesGroup.emit([...this.parenthesesGroups]);
     (window as any).$('#AddFilter').modal('hide');
 
+  }
+  handleCancelFilters() {
+    (window as any).$('#AddFilter').modal('hide');
   }
 }

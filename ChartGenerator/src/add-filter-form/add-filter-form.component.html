@@ -3,29 +3,19 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Create Filters & Filter Groups</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body p-20">
 
         <form>
-          <div style="margin-bottom:10px;">
-            <div> <h3 style="display:inline;margin-right:10px">Filter |</h3>  <a  style="color: #f0ad4e" (click)="isAllowToAddNewFilter()?handleAddNewFilter():null"><i class="fa fa-plus-circle" ></i> Filter</a></div>
-          </div>
           <div>
-            <app-filter [addNewFilter]="addNewFilter" (updateFilters)="handleUpdateFilter($event)" [parenthesesGroups]="parenthesesGroups" [filters]="filters" (updateParenthesesGroups)="handleUpdateFilterParentheses($event)" [filterOp]="filterOp" [columns]="columns"></app-filter>
+            <app-filter (updateFilters)="handleUpdateFilter($event)" [parenthesesGroups]="parenthesesGroups" [filters]="filters" (updateParenthesesGroups)="handleUpdateFilterParentheses($event)" [filterOp]="filterOp" [columns]="columns"></app-filter>
           </div>
 
-
-          <div style="margin-top:20px;">
-            <div> <h3 style="display:inline;margin-right:10px">Filter groups | </h3>  <a href="#" style="color: #f0ad4e" (click)="handleAddNewFilterGroup()"><i class="fa fa-plus-circle"></i> Filter groups</a></div>
+          <div>
+            <app-filter-groups (updateFiltersParentheses)="handleUpdateFilterParentheses($event)" [filters]="filters" [parenthesesGroups]="parenthesesGroups"></app-filter-groups>
           </div>
           <div>
-            <app-filter-groups (updateFiltersParentheses)="handleUpdateFilterParentheses($event)" [addNewFilterGroup]="addNewFilterGroup" [filters]="filters" [parenthesesGroups]="parenthesesGroups"></app-filter-groups>
-          </div>
-          <div>
-            <app-form-actions (saveClicked)="handleSaveFilters()"></app-form-actions>
+            <app-form-actions (saveClicked)="handleSaveFilters()" (cancelClicked)="handleCancelFilters()"></app-form-actions>
           </div>
         </form>
 

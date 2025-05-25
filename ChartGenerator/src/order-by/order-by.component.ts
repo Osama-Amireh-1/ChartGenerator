@@ -26,7 +26,7 @@ export class OrderByComponent implements OnChanges {
     const newOrderBy: OrderBy = {
       id: this.orderByCount++,
       field: '',
-      sort: -1
+      sort: -1,
     };
     const updateOrderBy = [...this.orderBies, newOrderBy]
     this.orderBies = updateOrderBy
@@ -42,11 +42,24 @@ export class OrderByComponent implements OnChanges {
     this.orderByCount = filteredOrderBy.length;
     const updatedorderBy = filteredOrderBy.map((OrderBy, index) => ({
       ...OrderBy,
-      id: index
+      id: index,
+      index: index
     }));
     this.orderByCount = updatedorderBy.length;
     this.orderBies = updatedorderBy;
     this.updateOrderBy.emit(this.orderBies);
 
+  }
+  isAllowToAddNewOrderBy() {
+    for (var i = 0; i < this.orderBies.length; i++) {
+      if (this.orderBies[i].field == "" || this.orderBies[i].sort ==-1) {
+        return false
+      }
+    }
+    return true
+
+  }
+  handleAddNewOrderBy() {
+    this.addOrderBy()
   }
 }

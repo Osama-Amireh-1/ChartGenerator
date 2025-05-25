@@ -1,175 +1,84 @@
-<!--<div class="panel panel-info">
-  <div class="panel-heading">{{header}}</div>
-  <div class="panel-body">
-    @for(filter of filters; track filter.id; let i = $index)
-    {
-    <div class="row" style="margin-bottom: 10px">
 
-      <div class="col-xs-1">
-        @if(i > 0)
-        {
-        <select class="form-control input-sm" [(ngModel)]="filter.logicalLink" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
-          <option value="AND">AND</option>
-          <option value="OR">OR</option>
-        </select>
-        }
-      </div>
-      <div class="col-xs-1">
-        @for(group of parenthesesGroups; track group.id)
-        {
-        <span>
-          @if(isFirstInGroup(group, filter.id))
-          {
-          <span style="font-size: 18px; font-weight: bold;">(</span>
-          }
-        </span>
-        }
-      </div>
-
-
-      <div class="col-xs-3">
-        <select class="form-control input-sm" [(ngModel)]="filter.field" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
-          <option value="">Select column</option>
-          @for(column of columns; track column)
-          {
-          <option [value]="column">{{column}}</option>
-          }
-        </select>
-      </div>
-
-      <div class="col-xs-2">
-        <select class="form-control input-sm" [(ngModel)]="filter.operator" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
-          @for(op of filterOp; track op)
-          {
-          <option [value]="op">{{op}}</option>
-          }
-        </select>
-      </div>
-
-      <div class="col-xs-3">
-        <input [type]="onlyNumber? 'number': 'text'" class="form-control input-sm" placeholder="Value" [(ngModel)]="filter.value" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
-      </div>
-
-      <div class="col-xs-1">
-        @for(group of parenthesesGroups; track group.id)
-        {
-        <span>
-          @if(isLastInGroup(group, filter.id))
-          {
-          <span style="font-size: 18px; font-weight: bold;">)</span>
-          }
-        </span>
-        }
-      </div>
-      @if(filters.length > 0)
-      {
-      <div class="col-xs-1" >
-        <button type="button" class="btn btn-danger btn-sm" (click)="removeFilter(filter.id)">
-          <span class="glyphicon glyphicon-remove"></span>
-        </button>
-      </div>
-      }
-    </div>
-    }
-    <div class="row" style="margin-top: 10px;">
-      <div class="col-xs-1">
-        <button type="button" class="btn btn-primary btn-sm" (click)="addFilter()">
-          <span class="glyphicon glyphicon-plus"></span> Add Filter
-        </button>
-      </div>
-    </div>
-  </div>
-</div>-->
-
-<div style="text-align:center">
-
+<div style="margin-bottom:5px"> <h3 class="heading">Filter |</h3>  <a style="color: #f0ad4e" (click)="isAllowToAddNewFilter()?handleAddNewFilter():null"><i class="fa fa-plus-circle"></i> Filter</a></div>
+<div style="text-align:left">
   @if(filters.length>0)
   {
-  <div class="row">
-    <div class="col-xs-1"></div>
-      <div class="col-xs-3">
-        <label>Column</label>
-      </div>
-      <div class="col-xs-2">
-        <label>Operation</label>
-      </div>
-      <div class="col-xs-3">
-        <label>Value</label>
-      </div>
+  <div class="row" style="margin-bottom:5px;">
+    <div class="col-xs-4" style="display: flex; align-items: center; gap: 4px;">
+      <span style="margin-left: 24px;">Columns</span>
     </div>
-    }
-
-
-    @for(filter of filters; track filter.id; let i = $index)
-    {
-
-    @if(i > 0) {
-
-  <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-    <div class="col-xs-1"></div>
-
-
-    <div class="col-sm-2">
+    <div class="col-xs-2">
+      <span>Operation</span>
+    </div>
+    <div class="col-xs-3">
+      <span>Value</span>
+    </div>
+  </div>
+  }
+  @for(filter of filters; track filter.id; let i = $index)
+  {
+  @if(i > 0) {
+  <div class="row" style="margin-top: 5px; margin-bottom: 10px;margin-left:10px">
+    <div class="col-xs-12" style="margin-bottom: 5px;">
       <select class="form-control input-sm LogicalLink" [(ngModel)]="filter.logicalLink" [ngModelOptions]="{standalone: true}" (ngModelChange)="OnFilterChange()">
         <option value="AND">AND</option>
         <option value="OR">OR</option>
       </select>
     </div>
   </div>
-    }
-
-    <div class="row">
-      <div class="col-xs-1">
-        @for(group of parenthesesGroups; track group.id)
-        {
-        @if(isFirstInGroup(group, filter.id))
-        {
-        <span style="font-size: 18px; font-weight: bold;">(</span>
-        }
-        }
-      </div>
-      <div class="col-xs-3">
-
-        <select class="form-control input-sm" [(ngModel)]="filter.field" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
-          <option value="">Select column</option>
-          @for(column of columns; track column)
+  }
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-xs-4">
+      <div style="display: flex; align-items: center; gap: 3px; margin-bottom: 10px;">
+        <div style="width: 20px; flex-shrink: 0; font-size: 18px; font-weight: bold;">
+          @for(group of parenthesesGroups; track group.id)
           {
+          @if(isFirstInGroup(group, filter.id)) {
+          (
+          }
+          }
+        </div>
+        <select class="form-control input-sm" style="flex: 1;"
+                [(ngModel)]="filter.field"
+                (ngModelChange)="OnFilterChange()"
+                [ngModelOptions]="{standalone: true}">
+          <option value="">Select Columns</option>
+          @for(column of columns; track column) {
           <option [value]="column">{{column}}</option>
           }
         </select>
       </div>
-
-      <div class="col-xs-2">
-        <select class="form-control input-sm" [(ngModel)]="filter.operator" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
-          @for(op of filterOp; track op)
-          {
-          <option [value]="op">{{op}}</option>
-          }
-        </select>
-      </div>
-
-      <div class="col-xs-3">
-        <input [type]="onlyNumber? 'number': 'text'" class="form-control input-sm" placeholder="Value" [(ngModel)]="filter.value" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
-      </div>
-      <div class="col-xs-1">
-        @for(group of parenthesesGroups; track group.id)
-        {
-        @if(isLastInGroup(group, filter.id))
-        {
-        <span style="font-size: 18px; font-weight: bold;">)</span>
-        }
-        }
-      </div>
-      <div class="col-xs-1">
-        <a href="#" (click)="removeFilter(i)">
-          <i class="fa fa-trash" style="color:red"></i>
-        </a>
-
-      </div>
-
     </div>
+    <div class="col-xs-2" style="margin-bottom: 10px;">
+      <select class="form-control input-sm" [(ngModel)]="filter.operator" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
+        @for(op of filterOp; track op)
+        {
+        <option [value]="op">{{op}}</option>
+        }
+      </select>
+    </div>
+    <div class="col-xs-3">
+      <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 10px;">
+        <div>
+          <input [type]="onlyNumber? 'number': 'text'" class="form-control input-sm" placeholder="Value" [(ngModel)]="filter.value" (ngModelChange)="OnFilterChange()" [ngModelOptions]="{standalone: true}">
 
-
-
-    }
+        </div>
+        <div style="width: 20px; flex-shrink: 0; font-size: 18px; font-weight: bold;">
+          @for(group of parenthesesGroups; track group.id)
+          {
+          @if(isLastInGroup(group, filter.id)) {
+          )
+          }
+          }
+        </div>
+        <div>
+          <a (click)="removeFilter(i)" class="btn btn-link btn-sm btn-danger" style="color: #d9534f; padding: 0;">
+            <i class="fa fa-trash"></i>
+          </a>
+        </div>
+       
+      </div>
+    </div>
   </div>
+  }
+</div>

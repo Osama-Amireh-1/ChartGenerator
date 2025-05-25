@@ -1,4 +1,4 @@
-      <!--@if(!isShowMode)
+<!--@if(!isShowMode)
 {
 <div class="container margin-top-5">
   <button type="button" class="btn btn-primary" (click)="changeMode()">Show Mode</button>
@@ -12,15 +12,28 @@
 
 </div>
 }-->
-<app-dashboard-control (showModeChanged)="handleChangeMode($event)"  [isShowMode]="isShowMode"></app-dashboard-control>
+
+<app-dashboard-control (showModeChanged)="handleChangeMode($event)" [isShowMode]="isShowMode" (createChartClicked)="handleCreateChart($event)" [isCreeateChartClicked]="isCreeateChartClicked"
+                       [dashboarScope]="dashboarScope" [dashboardName]="dashboardName"></app-dashboard-control>
 <!--<app-chart-creator-form [getTableNamesByTypeURL]="getTableNamesByTypeURL"
                         [tableType]="tableType"
                         [getColumnURL]="getColumnURL"
                         (Execute)="fetchData($event)"
                         [openRequested]="openForm"
                         [token]="token"></app-chart-creator-form>-->
-<app-multi-step-form [tableType]="tableType" [token]="token"></app-multi-step-form>
-
-<app-grid-view [Visualizations]="Visualizations" [isShowMode]="isShowMode"
+@if(isCreeateChartClicked)
+{
+<app-multi-step-form [tableType]="tableType" [token]="token" (isCancelCreateChartClicked)="handleCancelCreateChart()" (addNewVisualization)="handleAddNewVisualization($event)"></app-multi-step-form>
+}
+@if(!isShowMode && !isCreeateChartClicked)
+{
+<div class="Create">
+  <a (click)="createChartClick()">
+    <i class="fa fa-plus-circle"></i>
+    New chart
+  </a>
+</div>
+}
+<app-grid-view [Visualizations]="unSavedVisualizations" [isShowMode]="isShowMode"
                (chartConfigChanged)="saveVisualizations()"
-               (chartRemoved)="removeChart($event)"></app-grid-view>
+               (chartRemoved)="removeChart($event)" [isCreeateChartClicked]="isCreeateChartClicked"></app-grid-view>

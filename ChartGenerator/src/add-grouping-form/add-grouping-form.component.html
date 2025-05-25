@@ -1,0 +1,20 @@
+<div class="modal" tabindex="-1" role="dialog" id="AddGrouping">
+  <div class="modal-dialog modal-m" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create grouping</h5>
+      </div>
+      <div class="modal-body pa-30">
+        <form>
+          <app-group-by [columns]="columns" (updateGroupBy)="handelUpdateGroupByFields($event)" [groupByFields]="groupByFields"></app-group-by>
+          <app-drag-drop (updateGroupByOrder)="handelUpdateGroupByFields($event)" [groupByFields]="groupByFields"></app-drag-drop>
+
+          <div style="margin-top:50px">
+            <app-form-actions (saveClicked)="handleSaveGroupBy()" (cancelClicked)="handleCancelGroupBy()"></app-form-actions>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

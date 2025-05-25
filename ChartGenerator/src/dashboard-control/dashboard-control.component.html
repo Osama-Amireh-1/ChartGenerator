@@ -1,23 +1,43 @@
-  <div class="row control-header">
-
+<div class="control-header">
   @if(this.isShowMode)
   {
-    <div class="col-sm-3">
-      <i class="fa fa-edit" style="color: #F78204; margin-right: 10px"></i>
-      <a class="Edit" href="#" (click)="editClick()">Edit Dashboard</a>
+  <div class="header-row">
+    <h1>{{dashboardName}}</h1>
+    <div class="actions">
+      <a (click)="editClick()">
+        <i class="fa fa-edit"></i>
+        Edit Dashboard |
+      </a>
+      <a (click)="deleteClick()">
+        <i class="fa fa-trash"></i>
+        Delete Dashboard
+      </a>
     </div>
+  </div>
   }
   @if(!this.isShowMode)
   {
-    <div class="col-sm-3">
-      <i class="fa fa-plus-circle" style="color: #F78204; margin-right: 10px"></i>
-      <a class="Edit" href="#">New chart</a>
+  <div class="row">
+    <div class="col-xs-12 col-md-8">
+      <div class="flex">
+        <div class="form-item">
+          <label>Name: {{dashboardName}}</label>
+        </div>
+        <div class="form-item">
+          <label>Scope:</label>
+          <select class="input-sm form-control" [(ngModel)]="dashboarScope" [ngModelOptions]="{standalone: true}">
+            <option value="Cluster">Cluster</option>
+            <option value="Property">property</option>
+          </select>
+        </div>
+      </div>
     </div>
-
-  <div style="text-align:right">
-    <button type="button" class="btn btn-warning">Save</button>
-    <button type="button" class="btn btn-default" (click)="cancelClicked()" style="margin-left:10px">Cancel</button>
-
+    <div class="col-xs-12 col-md-4">
+      <div class="button-container">
+        <button type="button" class="btn btn-warning">Save</button>
+        <button type="button" class="btn btn-default" (click)="cancelClicked()">Cancel</button>
+      </div>
+    </div>
   </div>
   }
 </div>

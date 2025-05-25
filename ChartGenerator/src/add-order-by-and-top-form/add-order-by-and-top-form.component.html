@@ -1,0 +1,24 @@
+<div class="modal" tabindex="-1" role="dialog" id="AddOrderByAndTop">
+  <div class="modal-dialog modal-m" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create OrderBy & Top</h5>
+      </div>
+      <div class="modal-body pa-30">
+        <form>
+          <div>
+            <app-order-by [columns]="columns" [orderBies]="orderBies" (updateOrderBy)="handleOderbyChanged($event)"></app-order-by>
+          </div>
+          <div>
+            <app-top-selector (updateTopValue)="handleTopValueChange($event)" [top]="top"></app-top-selector>
+          </div>
+          <div>
+            <app-form-actions (saveClicked)="handleSaveOrderByAndTop()" (cancelClicked)="handleCancelOrderByAndTop()"></app-form-actions>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

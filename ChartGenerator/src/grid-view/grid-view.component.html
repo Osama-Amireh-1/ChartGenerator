@@ -1,6 +1,6 @@
-<div class="gridster-container" [ngClass]="{'show-mode': isShowMode}">
+<div class="gridster-container" [ngClass]="{'show-mode': isShowMode, 'Edit-mode': isCreeateChartClicked}">
   <gridster [options]="gridsterOptions">
-    @for(item of gridItems; track item.chartData.Id) 
+    @for(item of gridItems; track item.chartData.Id)
     {
     <gridster-item [item]="item"
                    (itemChange)="onItemChange(item)">
@@ -12,14 +12,14 @@
         </button>
       </div>
       @if(item.chartData.type !== 'Table')
-      {  <app-chart [data]="item.chartData.data"
+      {  <app-chart [data]="item.chartData.data|| []"
                     [chartType]="item.chartData.type" [title]="item.chartData.title">
 
       </app-chart>
       }
       @if(item.chartData.type === 'Table')
       {
-      <app-table [Data]="item.chartData.data" [title]="item.chartData.title"></app-table>
+      <app-table [Data]="item.chartData.data|| []" [title]="item.chartData.title"></app-table>
       }
     </gridster-item>
     }

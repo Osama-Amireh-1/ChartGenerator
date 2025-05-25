@@ -16,7 +16,14 @@ export class DashboardControlComponent {
   //@Input() dashboards: DashboardInfo[] = [];
   ////@Output() countChange = new EventEmitter<number>();
   @Output() showModeChanged = new EventEmitter<boolean>();
+  @Output() createChartClicked = new EventEmitter<boolean>();
+
   @Input() isShowMode: boolean = true;
+  @Input() isCreeateChartClicked = false;
+  @Input() dashboarScope: string = ""
+  @Input() dashboardName: string = "";
+
+
   //@Output() generateChartClick = new EventEmitter<void>();
   //@Input() selectedDashboard: string="";
   //@Output() addDashboardClick = new EventEmitter<void>();
@@ -36,8 +43,19 @@ export class DashboardControlComponent {
   }
   cancelClicked() {
     this.isShowMode = true
-    this.showModeChanged.emit(this.isShowMode)
+    this.isCreeateChartClicked = false;
 
+    this.showModeChanged.emit(this.isShowMode)
+    this.createChartClicked.emit(this.isCreeateChartClicked);
+
+
+  }
+  deleteClick() {
+
+  }
+  createChartClick() {
+    this.isCreeateChartClicked = true;
+    this.createChartClicked.emit(this.isCreeateChartClicked);
   }
   //generateChartBtnClick() {
   //  this.generateChartClick.emit();
