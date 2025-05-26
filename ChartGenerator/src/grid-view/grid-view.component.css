@@ -10,10 +10,12 @@
   border-radius: 4px;
   overflow: hidden;
 }
-.Edit-mode gridster {
+.ShowForm gridster {
   width: calc(100vw - 450px);
 }
-
+.HideForm gridster {
+  width: 100vw;
+}
 .show-mode gridster {
   background: white !important;
 }
@@ -39,4 +41,25 @@ gridster-item {
 .margin-top-right-5 {
   margin-top: 5px;
   margin-right:5px
+}
+a {
+  background-color: none;
+  text-decoration: none;
+}
+
+.delete:hover {
+  cursor: pointer;
+  color: red
+}
+.delete {
+  color: red;
+}
+
+.edit:hover {
+  cursor: pointer;
+  color: #f0ad4e;
+}
+
+.edit {
+  color: #f0ad4e;
 }

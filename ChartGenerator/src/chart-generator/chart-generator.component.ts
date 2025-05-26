@@ -13,6 +13,7 @@ import { RequestData } from '../Interfaces/request-data';
 import { VisualizationResource } from '../Interfaces/visualization-resource';
 import { DashboardControlComponent } from '../dashboard-control/dashboard-control.component';
 import { MultiStepFormComponent } from '../multi-step-form/multi-step-form.component';
+import { RequestToEdit } from '../Interfaces/request-to-edit';
 
 @Component({
   selector: 'app-chart-generator',
@@ -36,12 +37,15 @@ export class ChartGeneratorComponent implements OnInit {
   @Input() dashboardName: string = "";
   @Input() clusterCode: string = ""
   @Input() propertyCode: string = ""
-  @Input() dashboarScope: string=""
+  @Input() dashboarScope: string = ""
+
  isCreeateChartClicked = false;
 
   VisualizationRequestData: Map<string, RequestData> = new Map();
   @Input({ required: true }) token: string="";
 
+  chartToEdit!: RequestToEdit
+  @Input() isEditChart: boolean = false;
   constructor(private databaseServ: DatabaseService, private storageService: StorageService) {}
     ngOnInit(): void {
       this.loadSavedVisualization();
@@ -169,13 +173,16 @@ export class ChartGeneratorComponent implements OnInit {
   {
     this.isShowMode = mode
     this.isCreeateChartClicked = false
-    console.log(this.isShowMode)
+    console.log("saved", this.savedVisualizations)
+    this.unSavedVisualizations = [... this.savedVisualizations]
+    console.log("us", this.unSavedVisualizations)
+
   }
 
   handleCreateChart(isCreateChart: boolean) {
     this.isCreeateChartClicked = isCreateChart
   }
-  handleCancelCreateChart() {
+  handleCloseCreateChartForm() {
     this.isCreeateChartClicked = false
   }
   createChartClick() {
@@ -189,6 +196,39 @@ export class ChartGeneratorComponent implements OnInit {
       request.numberOfRows,
       request.numberOfColumns,
       request.tilte,
-      request.dataRequste,data)
+      request.dataRequste,
+      data)
+  }
+  
+  handleEditExistChart(request: any) {
+    const index = this.unSavedVisualizations.findIndex(v => v.Id === request.Id);
+    if (index !== -1) {
+      const existChart = this.unSavedVisualizations[index];
+    
+      const updatedChart = {
+        ...existChart,
+        title: request.tilte || request.title,
+        numberOfRows: request.numberOfRows,
+        numberOfColumns: request.numberOfColumns,
+        type: request.chartType,
+        x: request.x,
+        y: request.y,
+        requestData: request.dataRequste,
+        data: request.dataRequste ? [] : existChart.data
+      };
+
+      this.unSavedVisualizations = [
+        ...this.unSavedVisualizations.slice(0, index),
+        updatedChart,
+        ...this.unSavedVisualizations.slice(index + 1)
+      ];
+      console.log('Updated chart:', updatedChart);
+      console.log(this.unSavedVisualizations)
+    }
+  }
+  handelEditClicked(Edit: RequestToEdit) {
+    this.chartToEdit = Edit
+    this.isCreeateChartClicked = true
+  
   }
 }

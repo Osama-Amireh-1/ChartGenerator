@@ -1,15 +1,25 @@
-<div class="gridster-container" [ngClass]="{'show-mode': isShowMode, 'Edit-mode': isCreeateChartClicked}">
+<div class="gridster-container" [ngClass]="{'show-mode': isShowMode,  'ShowForm':isCreeateChartClicked}">
   <gridster [options]="gridsterOptions">
     @for(item of gridItems; track item.chartData.Id)
     {
     <gridster-item [item]="item"
                    (itemChange)="onItemChange(item)">
-      <div class="text-right margin-top-right-5">
-        <button class=" btn btn-danger btn-xs" type="button" mat-mini-fab
-                (mousedown)="removeItem($event, item)"
-                (touchstart)="removeItem($event, item)">
-          <mat-icon>delete</mat-icon>
-        </button>
+      <div class="margin-top-right-5" style="text-align:right">
+        <div style="display:inline-block">
+          <a class="edit"
+             (mousedown)="editChartClicked($event, item)"
+              (touchstart)="editChartClicked($event, item)">
+            <i class="fa fa-edit"></i>
+          </a>
+        </div>
+        <div style="display:inline-block">
+          <a (mousedown)="removeItem($event, item)"
+             (touchstart)="removeItem($event, item)" class="delete">
+            <i class="fa fa-trash"></i>
+          </a>
+        </div>
+
+
       </div>
       @if(item.chartData.type !== 'Table')
       {  <app-chart [data]="item.chartData.data|| []"

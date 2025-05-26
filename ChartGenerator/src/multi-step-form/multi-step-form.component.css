@@ -30,4 +30,11 @@ a{
   a:hover {
       cursor:pointer
   }
+  a label {
+    cursor: pointer
+  }
+.more-less {
+  text-decoration: underline;
+  color: #f0ad4e
+}
 

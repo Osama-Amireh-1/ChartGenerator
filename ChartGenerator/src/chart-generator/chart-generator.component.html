@@ -13,7 +13,7 @@
 </div>
 }-->
 
-<app-dashboard-control (showModeChanged)="handleChangeMode($event)" [isShowMode]="isShowMode" (createChartClicked)="handleCreateChart($event)" [isCreeateChartClicked]="isCreeateChartClicked"
+<app-dashboard-control (showModeChanged)="handleChangeMode($event)" [isShowMode]="isShowMode"
                        [dashboarScope]="dashboarScope" [dashboardName]="dashboardName"></app-dashboard-control>
 <!--<app-chart-creator-form [getTableNamesByTypeURL]="getTableNamesByTypeURL"
                         [tableType]="tableType"
@@ -23,7 +23,7 @@
                         [token]="token"></app-chart-creator-form>-->
 @if(isCreeateChartClicked)
 {
-<app-multi-step-form [tableType]="tableType" [token]="token" (isCancelCreateChartClicked)="handleCancelCreateChart()" (addNewVisualization)="handleAddNewVisualization($event)"></app-multi-step-form>
+<app-multi-step-form [tableType]="tableType" [token]="token" (closeCreateChartForm)="handleCloseCreateChartForm()" (addNewVisualization)="handleAddNewVisualization($event)" [chartToEdit]="chartToEdit" (editExistVisualization)="handleEditExistChart($event)"></app-multi-step-form>
 }
 @if(!isShowMode && !isCreeateChartClicked)
 {
@@ -36,4 +36,4 @@
 }
 <app-grid-view [Visualizations]="unSavedVisualizations" [isShowMode]="isShowMode"
                (chartConfigChanged)="saveVisualizations()"
-               (chartRemoved)="removeChart($event)" [isCreeateChartClicked]="isCreeateChartClicked"></app-grid-view>
+               (chartRemoved)="removeChart($event)" [isCreeateChartClicked]="isCreeateChartClicked" (editChart)="handelEditClicked($event)"></app-grid-view>

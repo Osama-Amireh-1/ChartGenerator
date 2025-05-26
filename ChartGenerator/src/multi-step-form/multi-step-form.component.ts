@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { TableSelectorComponent } from '../table-selector/table-selector.component';
 import { FilterParenthesesGroup } from '../Interfaces/filter-parentheses-group';
 import { Filter } from '../Interfaces/filter';
@@ -19,6 +19,7 @@ import { RequestGroupBy } from '../Interfaces/request-group-by';
 import { SavedVisualizationData } from '../Interfaces/saved-visualization-data';
 import { DataSource } from '@angular/cdk/collections';
 import { v4 as uuidv4 } from 'uuid';
+import { RequestToEdit } from '../Interfaces/request-to-edit';
 
 @Component({
   selector: 'app-multi-step-form',
@@ -27,7 +28,7 @@ import { v4 as uuidv4 } from 'uuid';
   templateUrl: './multi-step-form.component.html',
   styleUrl: './multi-step-form.component.css'
 })
-export class MultiStepFormComponent {
+export class MultiStepFormComponent implements OnChanges {
 
   seletedTable: string = '';
   columns: string[] = ['a', 'b'];
@@ -72,9 +73,24 @@ export class MultiStepFormComponent {
   openAgregate: boolean = false
   openOrderBy: boolean = false
   openVisualization: boolean = false
-  @Output() isCancelCreateChartClicked = new EventEmitter<void>();
-  @Output() addNewVisualization = new EventEmitter <any>()
+  @Output() closeCreateChartForm = new EventEmitter<void>();
+  @Output() addNewVisualization = new EventEmitter<any>();
+  @Output() editExistVisualization = new EventEmitter<any>()
+  @Input() chartToEdit!: RequestToEdit
+  showMoreWhereFilters = false;
+  showMoreGroupBy = false;
+  showMoreAggregates = false
+  showMoreAggregateFilters = false
+  showMoreOrderBy = false
+  isEditChart: boolean = false
   constructor(private DatabaseServ: DatabaseService) { }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['chartToEdit'] && this.chartToEdit) {
+      this.populateFromRequestData(this.chartToEdit);
+      this.isEditChart = true
+    }
+    }
+
 
 
   fetchColumns(SelectedTable: string) {
@@ -358,22 +374,42 @@ export class MultiStepFormComponent {
   }
   handleAddisualizationDetails() {
     this.prepareRequestData();
-    this.addNewVisualization.emit({
-      Id: uuidv4(),
-      tilte: this.visualizationDetails.title,
-      chartType: this.visualizationDetails.visualizationType,
-      numberOfColumns: this.visualizationDetails.numberOfColumns,
-      numberOfRows: this.visualizationDetails.numberOfRows,
-      dataRequste: this.dataRequste
+    if (this.isEditChart) {
+      this.editExistVisualization.emit({
+        Id: this.chartToEdit.Id,
+        tilte: this.visualizationDetails.title,
+        chartType: this.visualizationDetails.visualizationType,
+        numberOfColumns: this.visualizationDetails.numberOfColumns,
+        numberOfRows: this.visualizationDetails.numberOfRows,
+        dataRequste: this.dataRequste,
+        x: this.chartToEdit.x,
+        y: this.chartToEdit.y
+        
+      })
+      this.isEditChart = false
 
-    })
+    }
+    else {
+      this.addNewVisualization.emit({
+        Id: uuidv4(),
+        tilte: this.visualizationDetails.title,
+        chartType: this.visualizationDetails.visualizationType,
+        numberOfColumns: this.visualizationDetails.numberOfColumns,
+        numberOfRows: this.visualizationDetails.numberOfRows,
+        dataRequste: this.dataRequste
+
+      })
+    }
+    this.restForm()
+    this.closeCreateChartForm.emit()
 
   }
   handleCancelvisualizationDetails() {
-    this.isCancelCreateChartClicked.emit();
+    this.closeCreateChartForm.emit();
+    this.restForm()
   }
 
-  populateFromRequestData(requestData: any): void {
+  populateFromRequestData(EditedData: RequestToEdit): void {
     this.wherefilters = [];
     this.whereParenthesesGroups = [];
     this.logicalFilterLink = [];
@@ -383,11 +419,17 @@ export class MultiStepFormComponent {
     this.logicalAggregateLink = [];
     this.groupByFields = [];
     this.orderBies = [];
+    this.visualizationDetails = {
+      title: "",
+      visualizationType: "",
+      numberOfColumns: 0,
+      numberOfRows:0
+    }
 
-    this.seletedTable = requestData.TableName || '';
+    this.seletedTable = EditedData.RequestData.TableName || '';
 
-    if (requestData.WhereFillters && requestData.WhereFillters.length > 0) {
-      requestData.WhereFillters.forEach((filter: any) => {
+    if (EditedData.RequestData.WhereFillters && EditedData.RequestData.WhereFillters.length > 0) {
+      EditedData.RequestData.WhereFillters.forEach((filter: any) => {
         this.wherefilters.push({
           id: filter.Index,
           field: filter.FilterField,
@@ -397,17 +439,16 @@ export class MultiStepFormComponent {
         });
       });
 
-      if (requestData.WhereFilltersLogicalOperators && requestData.WhereFilltersLogicalOperators.length > 0) {
-        this.reconstructParenthesesGroups(
-          requestData.WhereFilltersLogicalOperators,
+      if (EditedData.RequestData.WhereFilltersLogicalOperators && EditedData.RequestData.WhereFilltersLogicalOperators.length > 0) {
+        this.whereParenthesesGroups = this.reconstructParenthesesGroups(
+          EditedData.RequestData.WhereFilltersLogicalOperators,
           this.wherefilters,
-          this.whereParenthesesGroups
         );
       }
     }
 
-    if (requestData.Aggregates && requestData.Aggregates.length > 0) {
-      requestData.Aggregates.forEach((agg: any) => {
+    if (EditedData.RequestData.Aggregates && EditedData.RequestData.Aggregates.length > 0) {
+      EditedData.RequestData.Aggregates.forEach((agg: any) => {
         this.aggregates.push({
           id: agg.Index,
           field: agg.aggregateField,
@@ -416,8 +457,8 @@ export class MultiStepFormComponent {
       });
     }
 
-    if (requestData.AggregateFilter && requestData.AggregateFilter.length > 0) {
-      requestData.AggregateFilter.forEach((filter: any) => {
+    if (EditedData.RequestData.AggregateFilter && EditedData.RequestData.AggregateFilter.length > 0) {
+      EditedData.RequestData.AggregateFilter.forEach((filter: any) => {
         this.aggregateFilters.push({
           id: filter.Index,
           field: filter.FilterField,
@@ -427,24 +468,23 @@ export class MultiStepFormComponent {
         });
       });
 
-      if (requestData.AggregateFilterLogicalOperators && requestData.AggregateFilterLogicalOperators.length > 0) {
-        this.reconstructParenthesesGroups(
-          requestData.AggregateFilterLogicalOperators,
+      if (EditedData.RequestData.AggregateFilterLogicalOperators && EditedData.RequestData.AggregateFilterLogicalOperators.length > 0) {
+        this.aggregateParenthesesGroups=  this.reconstructParenthesesGroups(
+          EditedData.RequestData.AggregateFilterLogicalOperators,
           this.aggregateFilters,
-          this.aggregateParenthesesGroups
         );
       }
     }
 
-    if (requestData.GroupBy && requestData.GroupBy.length > 0) {
-      const sortedGroupBy = requestData.GroupBy.sort((a: any, b: any) => a.Index - b.Index);
+    if (EditedData.RequestData.GroupBy && EditedData.RequestData.GroupBy.length > 0) {
+      const sortedGroupBy = EditedData.RequestData.GroupBy.sort((a: any, b: any) => a.Index - b.Index);
       sortedGroupBy.forEach((group: any) => {
         this.groupByFields[group.Index] = group.field;
       });
     }
 
-    if (requestData.OrderBy && requestData.OrderBy.length > 0) {
-      requestData.OrderBy.forEach((orderBy: any) => {
+    if (EditedData.RequestData.OrderBy && EditedData.RequestData.OrderBy.length > 0) {
+      EditedData.RequestData.OrderBy.forEach((orderBy: any) => {
         this.orderBies.push({
           id: orderBy.index,
           field: orderBy.Orderby,
@@ -453,17 +493,21 @@ export class MultiStepFormComponent {
       });
     }
 
-    this.top = requestData.maxResults || 0;
+    this.top = EditedData.RequestData.maxResults || 0;
+    this.visualizationDetails.title = EditedData.title
+    this.visualizationDetails.visualizationType = EditedData.type
+    this.visualizationDetails.numberOfRows = EditedData.numberOfRows
+    this.visualizationDetails.numberOfColumns = EditedData.numberOfColumns
   }
 
   private reconstructParenthesesGroups(
     operators: string[],
     filters: any[],
-    parenthesesGroups: any[]
-  ): void {
+  ): FilterParenthesesGroup[] {
+    const parenthesesGroups: FilterParenthesesGroup[]=[]
     const stack: number[] = [];
     const groups: Map<number, number[]> = new Map();
-    let groupId = 0;
+    let groupId = 1;
     let filterIndex = 0;
 
     for (let i = 0; i < operators.length; i++) {
@@ -515,6 +559,7 @@ export class MultiStepFormComponent {
         });
       }
     }
+    return parenthesesGroups;
   }
   restForm() {
     this.wherefilters = [];

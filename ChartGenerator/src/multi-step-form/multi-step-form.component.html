@@ -10,8 +10,7 @@
       </div>
       <div class="col-sm-11">
         <label style="margin-left:5px">Select data source</label>
-        <app-table-selector [tableType]="tableType" [token]="token" (tableSelected)="fetchColumns($event)"></app-table-selector>
-
+        <app-table-selector [tableType]="tableType" [token]="token" (tableSelected)="fetchColumns($event)" [seletedTable]="seletedTable"></app-table-selector>
       </div>
 
     </div>
@@ -29,23 +28,25 @@
       <div class="col-sm-11">
         @if(wherefilters.length==0)
         {
-        <a href="#" (click)="addFilterAndFilterGroupsClicked()">
+        <a  (click)="addFilterAndFilterGroupsClicked()">
           <i class="fa fa-plus-circle" style="margin-right:5px"></i>
           <label>Filters & Filter groups</label>
         </a>
         }
         @else
         {
-        <a href="#" (click)="addFilterAndFilterGroupsClicked()">
+        <a  (click)="addFilterAndFilterGroupsClicked()">
           <i class="fa fa-edit" style="margin-right:5px"></i>
           <label>Edit Filters & Filter groups</label>
         </a>
         }
         @if(wherefilters.length>0)
         {
-        <label>Filters</label>
+        <div>
+          <label>Filters</label>
+        </div>
         }
-        @for (filter of wherefilters; track filter; let i = $index) {
+        @for (filter of (showMoreWhereFilters ? wherefilters : wherefilters.slice(0, 2)); track filter; let i = $index) {
 
         @if (i > 0) {
         <div>{{ filter.logicalLink }}</div>
@@ -67,9 +68,15 @@
           }
         </div>
 
-
-
-
+        }
+        @if(wherefilters.length>2)
+        {
+        <div>
+          <a (click)="showMoreWhereFilters = !showMoreWhereFilters" class="more-less">
+            View {{ showMoreWhereFilters ? 'less' : (wherefilters.length - 2) + ' more' }}
+          </a>
+        </div>
+       
         }
       </div>
 
@@ -100,153 +107,187 @@
           {
           <label>GroupBy</label>
           }
-          @for (group of groupByFields; track group) {
-          <div>{{group}}</div>
+          @for (group of (showMoreGroupBy ? groupByFields : groupByFields.slice(0, 2)); track group;let i = $index) {
+          <div>{{i+1}}.{{group}}</div>
           }
         </div>
 
       </div>
-
-    </div>
-
-    <div class="row" style="margin-top:20px">
-      <div class="col-sm-1">
-        <i class="fa fa-circle"></i>
+      @if(groupByFields.length>2)
+      {
+      <div>
+        <a (click)="showMoreGroupBy = !showMoreGroupBy" class="more-less">
+          View {{ showMoreGroupBy ? 'less' : (groupByFields.length - 2) + ' more' }}
+        </a>
       </div>
-      <div class="col-sm-11">
-        @if(aggregates.length==0)
-        {
-        <a (click)="openaAgregateForm()">
-          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
-          <label>Agregates</label>
-        </a>
+        
         }
-        @else
-        {
-        <a (click)="openaAgregateForm()">
-          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
-          <label>Edit Agregates</label>
-        </a>
-        }
-        <div>
-          @if(aggregates.length>0)
-          {
-          <span>Aggregates</span>
+      </div>
 
-          }
-          @for(aggregate of aggregates; track aggregate.id)
-          {          <div>{{aggregate.aggregateFunction}}({{aggregate.field}})</div>
-
-
-          }
+      <div class="row" style="margin-top:20px">
+        <div class="col-sm-1">
+          <i class="fa fa-circle"></i>
         </div>
-        <div>
-          @if(aggregateFilters.length>0)
+        <div class="col-sm-11">
+          @if(aggregates.length==0)
           {
-          <span>Aggregates Filter</span>
+          <a (click)="openaAgregateForm()">
+            <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+            <label>Agregates</label>
+          </a>
           }
-          @for (filter of aggregateFilters; track filter; let i = $index) {
-
-          @if (i > 0) {
-          <div>{{ filter.logicalLink }}</div>
+          @else
+          {
+          <a (click)="openaAgregateForm()">
+            <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+            <label>Edit Agregates</label>
+          </a>
           }
-
-
-
           <div>
-            @for (group of aggregateParenthesesGroups; track group.id) {
-            @if (isFirstInGroup(group, filter.id)) {
-            <span style="font-size: 18px; font-weight: bold;">(</span>
+            @if(aggregates.length>0)
+            {
+            <label>Aggregates</label>
+
             }
-            }
-            {{ filter.field }} {{ filter.operator }} {{ filter.value }}
-            @for (group of aggregateParenthesesGroups; track group.id) {
-            @if (isLastInGroup(group, filter.id)) {
-            <span style="font-size: 18px; font-weight: bold;">)</span>
-            }
+            @for(aggregate of (showMoreAggregates? aggregates:aggregates.slice(0,2)); track aggregate.id)
+            {          <div>{{aggregate.aggregateFunction}}({{aggregate.field}})</div>
+
             }
           </div>
-
-
-
-
-          }
-        </div>
-      </div>
-    </div>
-    <div class="row" style="margin-top:20px">
-      <div class="col-sm-1">
-        <i class="fa fa-circle"></i>
-      </div>
-      <div class="col-sm-11">
-        @if(orderBies.length==0)
-        {
-        <a (click)="openaOrderByForm()">
-          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
-          <label>OrderBy & Top</label>
-        </a>
-        }
-        @else
-        {
-        <a (click)="openaOrderByForm()">
-          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
-          <label>Edit OrderBy & Top</label>
-        </a>
-        }
-        <div>
-          @if(orderBies.length>0)
+          @if(aggregates.length>2)
           {
-          <span>orderBy</span>
-          }
-          @for(orderBy of orderBies; track orderBy.id)
+          <div>
+            <a (click)="showMoreAggregates = !showMoreAggregates" class="more-less">
+              View {{ showMoreAggregates ? 'less' : (aggregates.length - 2) + ' more' }}
+            </a>
+          </div>
+          
+            }
+            <div>
+              @if(aggregateFilters.length>0)
+              {
+              <label>Aggregates Filter</label>
+              }
+              @for (filter of (showMoreAggregateFilters? aggregateFilters:aggregateFilters.slice(0,2)); track filter; let i = $index) {
+
+              @if (i > 0) {
+              <div>{{ filter.logicalLink }}</div>
+              }
+
+
+
+              <div>
+                @for (group of aggregateParenthesesGroups; track group.id) {
+                @if (isFirstInGroup(group, filter.id)) {
+                <span style="font-size: 18px; font-weight: bold;">(</span>
+                }
+                }
+                {{ filter.field }} {{ filter.operator }} {{ filter.value }}
+                @for (group of aggregateParenthesesGroups; track group.id) {
+                @if (isLastInGroup(group, filter.id)) {
+                <span style="font-size: 18px; font-weight: bold;">)</span>
+                }
+                }
+              </div>
+
+
+
+
+              }
+            </div>
+            @if(aggregateFilters.length>2)
+            {
+            <div>
+              <a (click)="showMoreAggregateFilters = !showMoreAggregateFilters" class="more-less">
+                View {{ showMoreAggregateFilters ? 'less' : (aggregateFilters.length - 2) + ' more' }}
+              </a>
+            </div>
+          
+            }
+          </div>
+        </div>
+      <div class="row" style="margin-top:20px">
+        <div class="col-sm-1">
+          <i class="fa fa-circle"></i>
+        </div>
+        <div class="col-sm-11">
+          @if(orderBies.length==0)
           {
-          <div>{{ orderBy.field }} {{ orderBy.sort ? 'Asc' : 'Desc' }}</div>
+          <a (click)="openaOrderByForm()">
+            <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+            <label>OrderBy & Top</label>
+          </a>
           }
-        </div>
-        <div>
-          @if(top>0)
+          @else
           {
-          <span>Show Top: {{top}}</span>
+          <a (click)="openaOrderByForm()">
+            <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+            <label>Edit OrderBy & Top</label>
+          </a>
+          }
+          <div>
+            @if(orderBies.length>0)
+            {
+            <label>orderBy</label>
+            }
+            @for(orderBy of (showMoreOrderBy? orderBies:orderBies.slice(0,2)); track orderBy.id)
+            {
+            <div>{{ orderBy.field }} {{ orderBy.sort ? 'Asc' : 'Desc' }}</div>
+            }
+          </div>
+          @if(orderBies.length>2)
+          {
+          <div>
+            <a (click)="showMoreOrderBy = !showMoreOrderBy" class="more-less">
+              View {{ showMoreOrderBy ? 'less' : (orderBies.length - 2) + ' more' }}
+            </a>
+          </div>
+
+          }
+          <div>
+            @if(top>0)
+            {
+            <label>Show Top: {{top}}</label>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:20px">
+        <div class="col-sm-1">
+          <i class="fa fa-circle"></i>
+        </div>
+        <div class="col-sm-11">
+          @if(visualizationDetails.title == "")
+          {
+          <a (click)="openVisualizationForm()">
+            <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+            <label>Visualization</label>
+          </a>
+          }
+          @else
+          {
+          <a (click)="openVisualizationForm()">
+            <i class="fa fa-plus-circle" style="margin-right:5px"></i>
+            <label>Edit Visualization</label>
+          </a>
+          }
+          @if(visualizationDetails.title != "")
+          {
+          <div>
+            <label>Visualization Details</label>
+            <div>Title:{{visualizationDetails.title}}</div>
+            <div>Type:{{visualizationDetails.visualizationType}}</div>
+            <div>Number of Rows:{{visualizationDetails.numberOfRows}}</div>
+            <div>Number of Columns:{{visualizationDetails.numberOfColumns}}</div>
+
+          </div>
           }
         </div>
       </div>
-    </div>
 
-    <div class="row" style="margin-top:20px">
-      <div class="col-sm-1">
-        <i class="fa fa-circle"></i>
-      </div>
-      <div class="col-sm-11">
-        @if(visualizationDetails.title == "")
-        {
-        <a (click)="openVisualizationForm()">
-          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
-          <label>Visualization</label>
-        </a>
-        }
-        @else
-        {
-        <a (click)="openVisualizationForm()">
-          <i class="fa fa-plus-circle" style="margin-right:5px"></i>
-          <label>Edit Visualization</label>
-        </a>
-        }
-        @if(visualizationDetails.title != "")
-        {
-        <div>
-          <label>Visualization Details</label>
-          <div>Title:{{visualizationDetails.title}}</div>
-          <div>Type:{{visualizationDetails.visualizationType}}</div>
-          <div>Number of Rows:{{visualizationDetails.numberOfRows}}</div>
-          <div>Number of Columns:{{visualizationDetails.numberOfColumns}}</div>
-
-        </div>
-        }
-      </div>
-    </div>
-
-    <app-form-actions (saveClicked)="handleAddisualizationDetails()" (cancelClicked)="handleCancelvisualizationDetails()"></app-form-actions>
-  </form>
+      <app-form-actions (saveClicked)="handleAddisualizationDetails()" (cancelClicked)="handleCancelvisualizationDetails()"></app-form-actions>
+</form>
 
 </div>
 

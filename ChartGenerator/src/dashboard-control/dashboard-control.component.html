@@ -21,7 +21,8 @@
     <div class="col-xs-12 col-md-8">
       <div class="flex">
         <div class="form-item">
-          <label>Name: {{dashboardName}}</label>
+          <label>Name:</label>
+          <input class="input-sm form-control" [(ngModel)]="currentName" [ngModelOptions]="{standalone: true}" />
         </div>
         <div class="form-item">
           <label>Scope:</label>

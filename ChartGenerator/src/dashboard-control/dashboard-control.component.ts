@@ -10,19 +10,27 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './dashboard-control.component.css',
   standalone: true
 })
-export class DashboardControlComponent {
+export class DashboardControlComponent implements OnChanges {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['dashboardName'] && this.dashboardName) {
+      this.currentName = this.dashboardName
+    }
+    if (changes['dashboarScope'] && this.dashboarScope) {
+      this.currentScope = this.dashboarScope
+    }
+  }
 
 
   //@Input() dashboards: DashboardInfo[] = [];
   ////@Output() countChange = new EventEmitter<number>();
   @Output() showModeChanged = new EventEmitter<boolean>();
-  @Output() createChartClicked = new EventEmitter<boolean>();
 
   @Input() isShowMode: boolean = true;
-  @Input() isCreeateChartClicked = false;
   @Input() dashboarScope: string = ""
   @Input() dashboardName: string = "";
-
+  currentName: string = ""
+  currentScope: string=""
+  
 
   //@Output() generateChartClick = new EventEmitter<void>();
   //@Input() selectedDashboard: string="";
@@ -43,20 +51,18 @@ export class DashboardControlComponent {
   }
   cancelClicked() {
     this.isShowMode = true
-    this.isCreeateChartClicked = false;
-
+   // this.isCreeateChartClicked = false;
     this.showModeChanged.emit(this.isShowMode)
-    this.createChartClicked.emit(this.isCreeateChartClicked);
-
 
   }
   deleteClick() {
 
   }
-  createChartClick() {
-    this.isCreeateChartClicked = true;
-    this.createChartClicked.emit(this.isCreeateChartClicked);
+  saveClicked() {
+    this.dashboardName = this.currentName
+    this.dashboarScope = this.currentScope
   }
+ 
   //generateChartBtnClick() {
   //  this.generateChartClick.emit();
   //}

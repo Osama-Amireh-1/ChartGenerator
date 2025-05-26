@@ -1,7 +1,7 @@
-i:hover {
+a:hover {
   cursor: pointer;
+  text-decoration: underline;
 }
-
 .heading {
   display: inline;
   margin-right: 10px;

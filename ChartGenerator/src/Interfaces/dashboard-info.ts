@@ -1,5 +1,8 @@
+import { SavedVisualizationData } from "./saved-visualization-data"
+
 export interface DashboardInfo {
   Id: string,
   Name: string
-  Description: string
+  Scope: string
+  charts: SavedVisualizationData[]
 }

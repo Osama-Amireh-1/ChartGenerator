@@ -69,6 +69,12 @@ select {
   .button-container button {
     margin-left: 10px;
   }
+input {
+  display: inline-block;
+  width: 300px;
+  margin-left: 10px;
+  border-radius: 7px;
+}
 
 @media (max-width: 767px) {
   .header-row {
@@ -92,7 +98,11 @@ select {
     margin-left: 0;
     margin-top: 5px;
   }
-
+  input {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 5px;
+  }
   .actions {
     text-align: left;
     margin-top: 10px;
@@ -113,4 +123,5 @@ select {
   .control-header {
     padding: 15px;
   }
+
 }

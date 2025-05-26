@@ -12,11 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class DashboardCreatorFormComponent implements OnChanges {
   @Input() openRequested = false
-  dashboard: DashboardInfo = {
-      Name: "",
-      Id: '',
-      Description: ''
-  }
+  dashboard!: DashboardInfo 
 @Output() saveDashboard = new EventEmitter<DashboardInfo>();
   @Output() dontDashboard = new EventEmitter<void>();
 
@@ -26,11 +22,11 @@ export class DashboardCreatorFormComponent implements OnChanges {
     }
   }
   restForm() {
-    this.dashboard = {
-      Name: "",
-      Id: '',
-      Description: ''
-    }
+  //  this.dashboard = {
+  //    Name: "",
+  //    Id: '',
+  //    Description: ''
+  //  }
   }
     openModal() {
     (window as any).$('#dashboaedModal').modal('show');
@@ -50,9 +46,9 @@ export class DashboardCreatorFormComponent implements OnChanges {
   }
 
   DisableSave() {
-    if (this.dashboard.Description == "" && this.dashboard.Name == "") {
-      return true
-    }
-    return false
+    //if (this.dashboard.Description == "" && this.dashboard.Name == "") {
+    //  return true
+    //}
+    //return false
   }
 }

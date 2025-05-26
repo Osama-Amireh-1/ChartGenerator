@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartComponent } from '../chart/chart.component';
 import { GridsterModule, GridsterConfig, GridsterItem, GridType, CompactType, DisplayGrid, GridsterItemComponentInterface, GridsterComponentInterface, PushDirections, Resizable, Draggable, GridsterItemComponent, GridsterComponent } from 'angular-gridster2';
 import { MatIconModule } from '@angular/material/icon';
 import { TableComponent } from '../table/table.component';
 import { VisualizationResource } from '../Interfaces/visualization-resource';
+import { RequestToEdit } from '../Interfaces/request-to-edit';
 
 interface Safe extends GridsterConfig {
   draggable: Draggable;
@@ -28,10 +29,9 @@ export class GridViewComponent implements OnInit, OnChanges {
 
   @Input() set Visualizations(value: VisualizationResource[]) {
     this._charts = value;
-    if (value?.length) {
       this.updateGridItems();
 
-    }
+   
   }
   @Input() isCreeateChartClicked: boolean = false
 
@@ -44,7 +44,9 @@ export class GridViewComponent implements OnInit, OnChanges {
   gridItems: Array<GridsterItem & { chartData: VisualizationResource }> = [];
   @Output() chartConfigChanged = new EventEmitter<VisualizationResource>();
   @Output() chartRemoved = new EventEmitter<string>();
-  @Input() isShowMode!: boolean
+  @Input() isShowMode!: boolean;
+  @Output() editChart = new EventEmitter<RequestToEdit>();
+
   ngOnInit(): void {
     this.initGridsterOptions();
     if (this.isShowMode) {
@@ -55,6 +57,9 @@ export class GridViewComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isShowMode']) {
       this.toggleShowMode(this.isShowMode);
+    }
+    if (changes['Visualizations']) {
+      this.updateGridItems()
     }
   }
 
@@ -163,9 +168,8 @@ export class GridViewComponent implements OnInit, OnChanges {
         y: y,
         chartData: chart,
       };
-      console.log('cc',chart)
-
       this.gridItems.push(item);
+      console.log()
     });
 
     if (this.gridsterOptions.api && this.gridsterOptions.api.optionsChanged) {
@@ -214,6 +218,20 @@ export class GridViewComponent implements OnInit, OnChanges {
     }
 
     this.chartRemoved.emit(item.chartData.Id);
+  }
+  editChartClicked($event: MouseEvent | TouchEvent, item: GridsterItem & { chartData: VisualizationResource; }) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    this.editChart.emit({
+      Id: item['chartData'].Id,
+      RequestData: item['chartData'].requestData,
+      title: item['chartData'].title,
+      numberOfColumns: item['chartData'].numberOfColumns,
+      numberOfRows: item['chartData'].numberOfRows,
+      type: item['chartData'].type,
+      x: item['chartData'].x,
+      y: item['chartData'].y
 
+    })
   }
 }
